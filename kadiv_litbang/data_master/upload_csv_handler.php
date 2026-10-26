@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-if (empty($_SESSION['user_id']) || ($_SESSION['tipe'] ?? '') !== 'admin') {
+if (empty($_SESSION['user_id']) || ($_SESSION['tipe'] ?? '') !== 'kepala divisi litbang') {
     header('Location: ../../login.php');
     exit;
 }
@@ -34,8 +34,8 @@ if (isset($_GET['template'])) {
     header('Content-Disposition: attachment; filename="template_master_' . $uploadType . '.csv"');
     $out = fopen('php://output', 'w');
     fwrite($out, "\xEF\xBB\xBF");
-    fputcsv($out, ['field', 'value'], ';');
-    foreach ($templateFields as $field) fputcsv($out, [$field, '0'], ';');
+    fputcsv($out, ['field', 'value'], ';', '"', "\\");
+    foreach ($templateFields as $field) fputcsv($out, [$field, '0'], ';', '"', "\\");
     fclose($out);
     exit;
 }
@@ -68,7 +68,7 @@ rewind($handle);
 $delimiter = substr_count((string)$firstLine, ';') >= substr_count((string)$firstLine, ',') ? ';' : ',';
 $dataUpdate = [];
 $rowNumber = 0;
-while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
+while (($row = fgetcsv($handle, 0, $delimiter, '"', "\\")) !== false) {
     $rowNumber++;
     if (count($row) < 2) continue;
     $field = trim(preg_replace('/^\xEF\xBB\xBF/', '', (string)$row[0]));

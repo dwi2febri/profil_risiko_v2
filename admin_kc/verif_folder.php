@@ -1,7 +1,7 @@
 <?php error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE); ?>
 
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../login.php");
     exit();
@@ -11,9 +11,9 @@ if (!isset($_SESSION['user_id'])) {
 ?>
 
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 $cek = $_SESSION['tipe'];
-if ($cek != "admin") {
+if ($cek != "admin kc") {
     header("Location: ../../login.php");
     exit();
 }

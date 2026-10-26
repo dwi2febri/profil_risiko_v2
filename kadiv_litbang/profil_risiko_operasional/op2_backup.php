@@ -2321,6 +2321,7 @@ Melakukan evaluasi dan pengkinian terhadap prosedur Manajemen Risiko operasional
                                         <button class="btn btn-primary" form="my_form" type="submit" name="submit">Simpan</button>
                                     </div>
                                 </div>
+                            <?php endif; ?>
 
                             </div>
 

@@ -1578,7 +1578,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             </select>
             </div>
             <div class="col-xl-2">
-            <button class="btn btn-primary" type="submit" name="submit">Cari Tren</button> <?= $peringatan ?>
+            <button class="btn btn-primary" type="submit" name="submit">Cari Tren</button> <?= $peringatan ?? '' ?>
             </div>
         </form>
         <br></br>
@@ -1664,6 +1664,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -1685,8 +1687,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -1748,6 +1751,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -1769,8 +1774,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -1832,6 +1838,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -1853,8 +1861,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -1952,6 +1961,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -1973,8 +1984,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2035,6 +2047,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2056,8 +2070,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2118,6 +2133,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2139,8 +2156,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2230,6 +2248,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2251,8 +2271,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2313,6 +2334,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2334,8 +2357,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2396,6 +2420,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2417,8 +2443,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2511,6 +2538,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2532,8 +2561,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2594,6 +2624,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2615,8 +2647,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2677,6 +2710,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2698,8 +2733,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2797,6 +2833,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2818,8 +2856,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2879,6 +2918,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2900,8 +2941,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -2962,6 +3004,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -2983,8 +3027,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -3074,6 +3119,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -3095,8 +3142,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -3157,6 +3205,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -3178,8 +3228,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -3240,6 +3291,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                             $sumX2 += $x[$i] * $x[$i];
                                                         }
 
+                                                        if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                        $tren = 'Stay';
                                                         $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -3261,8 +3314,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         } else {
                                                             echo '<span>-</span> </i>';
                                                         }
-                                                        
-                                                        
+                                                        } else {
+                                                            echo '<span>-</span>';
+                                                        }
                                                         ?></b></center>
                                                 </th>
                                             </tr>
@@ -4065,6 +4119,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4086,8 +4142,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4133,6 +4190,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4154,8 +4213,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4201,6 +4261,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4222,8 +4284,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4269,6 +4332,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4290,8 +4355,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4337,6 +4403,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4358,8 +4426,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4405,6 +4474,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4426,8 +4497,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4473,6 +4545,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4494,8 +4568,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4541,6 +4616,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4562,8 +4639,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4609,6 +4687,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4630,8 +4710,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4679,6 +4760,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4700,8 +4783,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4747,6 +4831,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4768,8 +4854,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4815,6 +4902,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4836,8 +4925,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4883,6 +4973,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4904,8 +4996,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -4951,6 +5044,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -4972,8 +5067,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5019,6 +5115,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5040,8 +5138,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5087,6 +5186,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5108,8 +5209,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5155,6 +5257,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5176,8 +5280,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5223,6 +5328,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5244,8 +5351,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5291,6 +5399,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5312,8 +5422,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5359,6 +5470,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5380,8 +5493,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5427,6 +5541,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5448,8 +5564,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5495,6 +5612,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5516,8 +5635,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5563,6 +5683,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5584,8 +5706,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5631,6 +5754,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5652,8 +5777,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5699,6 +5825,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5720,8 +5848,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5767,6 +5896,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5788,8 +5919,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5835,6 +5967,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5856,8 +5990,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5903,6 +6038,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5924,8 +6061,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -5971,6 +6109,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -5992,8 +6132,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6039,6 +6180,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6060,8 +6203,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6107,6 +6251,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6128,8 +6274,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6175,6 +6322,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6196,8 +6345,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6243,6 +6393,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6264,8 +6416,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6311,6 +6464,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6332,8 +6487,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6379,6 +6535,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6400,8 +6558,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6447,6 +6606,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6468,8 +6629,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6515,6 +6677,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6536,8 +6700,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6583,6 +6748,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6604,8 +6771,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6651,6 +6819,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6672,8 +6842,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6719,6 +6890,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6740,8 +6913,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6787,6 +6961,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6808,8 +6984,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6855,6 +7032,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6876,8 +7055,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6923,6 +7103,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -6944,8 +7126,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -6991,6 +7174,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7012,8 +7197,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7059,6 +7245,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7080,8 +7268,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7127,6 +7316,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7148,8 +7339,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7195,6 +7387,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7216,8 +7410,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7263,6 +7458,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7284,8 +7481,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7331,6 +7529,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7352,8 +7552,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7399,6 +7600,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7420,8 +7623,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7467,6 +7671,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7488,8 +7694,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7535,6 +7742,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7556,8 +7765,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7603,6 +7813,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7624,8 +7836,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7671,6 +7884,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7692,8 +7907,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7739,6 +7955,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7760,8 +7978,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7807,6 +8026,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7828,8 +8049,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7875,6 +8097,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7896,8 +8120,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -7943,6 +8168,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -7964,8 +8191,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -8011,6 +8239,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8032,8 +8262,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -8116,6 +8347,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8137,8 +8370,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8184,6 +8418,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8205,8 +8441,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8252,6 +8489,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8273,8 +8512,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8320,6 +8560,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8341,8 +8583,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8388,6 +8631,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8409,8 +8654,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8456,6 +8702,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8477,8 +8725,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8524,6 +8773,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8545,8 +8796,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8592,6 +8844,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8613,8 +8867,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8660,6 +8915,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8681,8 +8938,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8728,6 +8986,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8749,8 +9009,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8796,6 +9057,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8817,8 +9080,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8864,6 +9128,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8885,8 +9151,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -8932,6 +9199,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -8953,8 +9222,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9000,6 +9270,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9021,8 +9293,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9068,6 +9341,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9089,8 +9364,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9136,6 +9412,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9157,8 +9435,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9204,6 +9483,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9225,8 +9506,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9272,6 +9554,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9293,8 +9577,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9340,6 +9625,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9361,8 +9648,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9408,6 +9696,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9429,8 +9719,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9476,6 +9767,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9497,8 +9790,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9544,6 +9838,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9565,8 +9861,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9612,6 +9909,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9633,8 +9932,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9680,6 +9980,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9701,8 +10003,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9748,6 +10051,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9769,8 +10074,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9816,6 +10122,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9837,8 +10145,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9884,6 +10193,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9905,8 +10216,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -9952,6 +10264,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -9973,8 +10287,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10020,6 +10335,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10041,8 +10358,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10088,6 +10406,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10109,8 +10429,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10156,6 +10477,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10177,8 +10500,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10224,6 +10548,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10245,8 +10571,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10292,6 +10619,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10313,8 +10642,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10360,6 +10690,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10381,8 +10713,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -10467,6 +10800,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10488,8 +10823,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10536,6 +10872,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10557,8 +10895,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10605,6 +10944,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10626,8 +10967,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10674,6 +11016,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10695,8 +11039,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10743,6 +11088,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10764,8 +11111,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10812,6 +11160,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10833,8 +11183,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10881,6 +11232,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10902,8 +11255,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -10950,6 +11304,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -10971,8 +11327,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11019,6 +11376,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11040,8 +11399,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11090,6 +11450,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11111,8 +11473,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11159,6 +11522,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11180,8 +11545,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11228,6 +11594,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11249,8 +11617,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11297,6 +11666,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11318,8 +11689,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11366,6 +11738,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11387,8 +11761,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11435,6 +11810,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11456,8 +11833,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11504,6 +11882,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11525,8 +11905,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11573,6 +11954,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11594,8 +11977,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11642,6 +12026,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11663,8 +12049,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11711,6 +12098,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11732,8 +12121,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11780,6 +12170,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11801,8 +12193,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11849,6 +12242,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11870,8 +12265,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11918,6 +12314,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -11939,8 +12337,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -11987,6 +12386,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12008,8 +12409,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12056,6 +12458,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12077,8 +12481,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12125,6 +12530,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12146,8 +12553,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12194,6 +12602,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12215,8 +12625,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12263,6 +12674,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12284,8 +12697,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12332,6 +12746,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12353,8 +12769,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12401,6 +12818,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12422,8 +12841,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12470,6 +12890,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12491,8 +12913,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12539,6 +12962,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12560,8 +12985,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12608,6 +13034,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12629,8 +13057,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12677,6 +13106,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12698,8 +13129,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12746,6 +13178,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12767,8 +13201,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12815,6 +13250,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12836,8 +13273,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12884,6 +13322,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12905,8 +13345,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -12953,6 +13394,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -12974,8 +13417,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -13023,6 +13467,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13044,8 +13490,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -13092,6 +13539,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 $sumX2 += $x[$i] * $x[$i];
                                                                             }
 
+                                                                            if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                            $tren = 'Stay';
                                                                             $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13113,8 +13562,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                             } else {
                                                                                 echo '<span>-</span> </i>';
                                                                             }
-                                                                            
-                                                                            
+                                                                            } else {
+                                                                                echo '<span>-</span>';
+                                                                            }
                                                                             ?></b></center>
                                                                         </th>
                                                                     </tr>
@@ -13200,6 +13650,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13221,8 +13673,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13269,6 +13722,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13290,8 +13745,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13338,6 +13794,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13359,8 +13817,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13407,6 +13866,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13428,8 +13889,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13476,6 +13938,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13497,8 +13961,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13545,6 +14010,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13566,8 +14033,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13614,6 +14082,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13635,8 +14105,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13683,6 +14154,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13704,8 +14177,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13752,6 +14226,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13773,8 +14249,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13821,6 +14298,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13842,8 +14321,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13890,6 +14370,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13911,8 +14393,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -13959,6 +14442,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -13980,8 +14465,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14028,6 +14514,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14049,8 +14537,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14097,6 +14586,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14118,8 +14609,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14166,6 +14658,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14187,8 +14681,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14235,6 +14730,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14256,8 +14753,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14304,6 +14802,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14325,8 +14825,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14373,6 +14874,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14394,8 +14897,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14442,6 +14946,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14463,8 +14969,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14511,6 +15018,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14532,8 +15041,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14580,6 +15090,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14601,8 +15113,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>
@@ -14649,6 +15162,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     $sumX2 += $x[$i] * $x[$i];
                                                                                 }
 
+                                                                                if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
+                                                                                $tren = 'Stay';
                                                                                 $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
@@ -14670,8 +15185,9 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 } else {
                                                                                     echo '<span>-</span> </i>';
                                                                                 }
-                                                                                
-                                                                                
+                                                                                } else {
+                                                                                    echo '<span>-</span>';
+                                                                                }
                                                                                 ?></b></center>
                                                                             </th>
                                                                         </tr>

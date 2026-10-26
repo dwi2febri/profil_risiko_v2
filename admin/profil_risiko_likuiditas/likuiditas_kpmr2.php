@@ -334,6 +334,9 @@ if (!$pilihHeader) {
 $id_pilih = (int)$pilihHeader['id'];
 $periode_master_id = (int)$pilihHeader['kpmr_periode_id'];
 
+require_once __DIR__ . '/../includes/pembanding_parameter.php';
+$detailPembanding = admin_pembanding_parameter($conn, $detailPembanding, 'kpmr', 'RISIKO LIKUIDITAS', $periode_master_id);
+
 $checkedParam = [];
 $checkedSub = [];
 $qChecklist = q($conn, "

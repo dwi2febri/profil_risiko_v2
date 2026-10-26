@@ -82,7 +82,7 @@ function lik_ensure_ket_row($conn, $id){
 if (!function_exists('lik_label_inheren')) {
 function lik_label_inheren($nilai){
     $nilai = (float)$nilai;
-    iif ($nilai < 1.00 || $nilai > 5.00) {
+    if ($nilai < 1.00 || $nilai > 5.00) {
         return '';
     }
 
