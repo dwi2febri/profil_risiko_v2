@@ -1,0 +1,3036 @@
+<?php
+if (empty($id) || $id === null) {
+  // Display modal notification on page load
+  $displayModal = true;
+} else {
+  $displayModal = false;
+}
+?>
+<script>
+  $(document).ready(function() {
+    <?php if ($displayModal) { ?>
+      $('#myModal').modal('show');
+    <?php } ?>
+  });
+
+  window.onclick = null;
+  
+</script>
+
+<div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">Notifikasi</h5>
+        <a href="javascript:history.back()"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></a>
+      </div>
+      <div class="modal-body">
+      <h5><center><b>Mohon untuk memilih laporan risiko di (menu dashboard -> laporan profil risiko -> klik (aktif)) terlebih dahulu.</b></center></h5>
+      </div>
+      <div class="modal-footer">
+      <a href="javascript:history.back()"><button type="button" class="btn btn-danger" data-dismiss="modal">Close</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php
+include "../fungsi/fungsi.php";
+
+
+$id = $_GET['id'];
+
+$frame_laporan_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT user,tahun,periode,data_pembanding FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+$jenis_pr = $frame_laporan_likuiditas['user'];
+$tahun = $frame_laporan_likuiditas['tahun'];
+$periode = $frame_laporan_likuiditas['periode'];
+$dp = $frame_laporan_likuiditas['data_pembanding'];
+
+
+$master_likuiditas_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
+$master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+
+$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
+$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$id'"));
+$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$id'"));
+
+$pembanding_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$dp'"));
+$pembanding_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$dp'"));
+$pembanding_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$dp'"));
+
+$hasil = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
+
+
+$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE user = '$jenis_pr' AND tahun = '$tahun' AND periode = '$periode'"));
+
+$ket_inhern_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
+
+
+$ambang_batas_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = '$tahun'"));
+$bobot_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = '$id'"));
+
+
+
+//pembobotan
+$pembobotan = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM bobot_likuiditas_per_parameter WHERE tahun = '$tahun'"));
+$bobot2_1 = $pembobotan['sub_parameter2_1'];
+$bobot2_2 = $pembobotan['sub_parameter2_2'];
+$bobot2_3 = $pembobotan['sub_parameter2_3'];
+$bobot2_4 = $pembobotan['sub_parameter2_4'];
+$bobot2_5 = $pembobotan['sub_parameter2_5'];
+$bobot2_6 = $pembobotan['sub_parameter2_6'];
+$bobot2_7 = $pembobotan['sub_parameter2_7'];
+$bobot2_8 = $pembobotan['sub_parameter2_8'];
+$bobot2_9 = $pembobotan['sub_parameter2_9'];
+$bobot3_1 = $pembobotan['sub_parameter3_1'];
+$bobot3_2 = $pembobotan['sub_parameter3_2'];
+$bobot3_3 = $pembobotan['sub_parameter3_3'];
+$bobot3_4 = $pembobotan['sub_parameter3_4'];
+$bobot4_1 = $pembobotan['sub_parameter4_1'];
+$bobot4_2 = $pembobotan['sub_parameter4_2'];
+$bobot4_3 = $pembobotan['sub_parameter4_3'];
+$bobot4_4 = $pembobotan['sub_parameter4_4'];
+$bobot5_1 = $pembobotan['sub_parameter5_1'];
+$bobot5_2 = $pembobotan['sub_parameter5_2'];
+$bobot5_3 = $pembobotan['sub_parameter5_3'];
+$bobot6_1 = $pembobotan['sub_parameter6_1'];
+$bobot6_2 = $pembobotan['sub_parameter6_2'];
+$bobot6_3 = $pembobotan['sub_parameter6_3'];
+$bobot6_4 = $pembobotan['sub_parameter6_4'];
+$bobot6_5 = $pembobotan['sub_parameter6_5'];
+$bobot6_6 = $pembobotan['sub_parameter6_6'];
+
+//setingan ditetapkan
+$set_pil1 = $inheren['inheren_lik_set_pil1'];
+$set_pil2 = $inheren['inheren_lik_set_pil2'];
+$set_pil3 = $inheren['inheren_lik_set_pil3'];
+$set_tingkat_risiko = $inheren['inheren_lik_set_tingkat_risiko'];
+
+
+
+
+//penamaan rasio
+$kyd = $master_kredit_P1['kyd'];
+
+$aset_likuid = $master_likuiditas_P1['aset_likuid'];
+$kas = $master_likuiditas_P1['kas'];
+$giro_aba = $master_likuiditas_P1['giro_aba'];
+$tabungan_aba = $master_likuiditas_P1['tabungan_aba'];
+$total_aset = $master_likuiditas_P1['total_aset'];
+$kewajiban_lancar = $master_likuiditas_P1['kewajiban_lancar'];
+$kewajiban_segera = $master_likuiditas_P1['kewajiban_segera'];
+$tabungan = $master_likuiditas_P1['tabungan'];
+$deposito = $master_likuiditas_P1['deposito'];
+$pendanaan_jangka_pendek = $master_likuiditas_P1['pendanaan_jangka_pendek'];
+$kewajiban_jangka_pendek = $master_likuiditas_P1['kewajiban_jangka_pendek'];
+$deposito_1bln = $master_likuiditas_P1['deposito_1bln'];
+$deposito_3bln = $master_likuiditas_P1['deposito_3bln'];
+$deposito_6bln = $master_likuiditas_P1['deposito_6bln'];
+$deposito_12bln = $master_likuiditas_P1['deposito_12bln'];
+$pendanaan_non_inti = $master_likuiditas_P1['pendanaan_non_inti'];
+$dpk_lbh_2m = $master_likuiditas_P1['dpk_lbh_2m'];
+$deposito_diatas_cr = $master_likuiditas_P1['deposito_diatas_cr'];
+$deposito_diatas_lps = $master_likuiditas_P1['deposito_diatas_lps'];
+$korporasi = $master_likuiditas_P1['korporasi'];
+
+$dpk_des_thn_sebelum = $master_likuiditas_P1['dpk_des_thn_sebelum'];
+$alat_likuid = $master_likuiditas_P1['alat_likuid'];
+$penempatan_pd_bank_lain = $master_likuiditas_P1['penempatan_pd_bank_lain'];
+$modal_disetor = $master_likuiditas_P1['modal_disetor'];
+$kredit_des_thn_sebelum = $master_likuiditas_P1['kredit_des_thn_sebelum'];
+$pinjaman = $master_likuiditas_P1['pinjaman'];
+$kredit_kolek_lancar = $master_likuiditas_P1['kredit_kolek_lancar'];
+$pertumbuhan_kredit = $master_likuiditas_P1['pertumbuhan_kredit'];
+$dpk_dijamin_lps = $master_likuiditas_P1['dpk_dijamin_lps'];
+$simpanan_tdk_dijamin_lps = $master_likuiditas_P1['simpanan_tdk_dijamin_lps'];
+$total_dpk = $master_likuiditas_P1['total_dpk'];
+$dpk_tdk_dijamin_lps = $master_likuiditas_P1['dpk_tdk_dijamin_lps'];
+$deposan_tabungan_terbesar25 = $master_likuiditas_P1['deposan_tabungan_terbesar25'];
+$besar_deposan25 = $master_likuiditas_P1['besar_deposan25'];
+$besar_penabung25 = $master_likuiditas_P1['besar_penabung25'];
+$deposito_rs = $master_likuiditas_P1['deposito_rs'];
+$arus_kas_netto = $master_likuiditas_P1['arus_kas_netto'];
+$kas_besar_debet = $master_likuiditas_P1['kas_besar_debet'];
+$kas_besar_kredit = $master_likuiditas_P1['kas_besar_kredit'];
+$deposito_inti = $master_likuiditas_P1['deposito_inti'];
+
+
+
+
+
+// menghitung rumus
+$p1 = round(($aset_likuid / $total_aset) * 100, 2);
+$p1a_atas =($total_aset - $aset_likuid);
+$p1a_bawah =($total_dpk - $aset_likuid);
+$p1a = round(($p1a_atas/$p1a_bawah) * 100, 2);
+
+$p2 = round(($aset_likuid / $kewajiban_lancar) * 100, 2);
+
+$p2a = round(($aset_likuid / $pendanaan_jangka_pendek) * 100, 2);
+$p2b = round(($aset_likuid / $kewajiban_jangka_pendek) * 100, 2);
+$p2c = round(($arus_kas_netto / $total_dpk) * 100, 2);
+$p2d = round(($tabungan / $total_dpk) * 100, 2);
+$p2e = round(($deposito_3bln / $total_dpk) * 100, 2);
+$p2f = round(($deposito_6bln / $total_dpk) * 100, 2);
+$p2g = round(($deposito_12bln / $total_dpk) * 100, 2);
+$p2h = round(($modal_disetor / $total_dpk) * 100, 2);
+$p2i = round(($pinjaman / $total_dpk) * 100, 2);
+
+
+$p3 = round((100 * $kyd) / $total_dpk, 2);
+$p3a = round(($dpk_dijamin_lps / $total_dpk) * 100, 2);
+
+$p3b_atas = ($alat_likuid+$kredit_kolek_lancar);
+$p3b = round(($p3b_atas / $total_dpk) * 100, 2);
+$p3c = round(($deposito_6bln / $alat_likuid) * 100, 2);
+
+$p3d_atas = (($kyd-$kredit_des_thn_sebelum)/$kredit_des_thn_sebelum) * 100;
+$p3d_bawah = (($total_dpk-$dpk_des_thn_sebelum)/$dpk_des_thn_sebelum) * 100;
+$p3d = round(($p3d_atas / $p3d_bawah) * 100, 2);
+
+$p4 = round(($deposan_tabungan_terbesar25/ $total_dpk) *100, 2);
+
+if ($pendanaan_non_inti == 0) {
+    $p5 = 0;
+} else {
+    $p5 = round((100 * $pendanaan_non_inti) / $total_dpk, 2);
+}
+
+$p5a_atas = ($pendanaan_non_inti-$alat_likuid);
+$p5a_bawah = ($total_aset-$aset_likuid);
+$p5a = round($p5a_atas / $p5a_bawah , 2);
+
+$p5b = round(($deposito_rs / $alat_likuid) * 100, 2);
+$p5c = round(($aset_likuid / $pendanaan_non_inti) * 100, 2);
+
+$p5d = round(($deposito_inti / $total_dpk) * 100, 2);
+
+
+
+
+
+
+
+
+
+
+
+$bobot = 1 / 8;
+
+$ab = $ambang_batas_likuiditas['al_per_ta'];
+if ($p1 < $ab) {
+    $hsl1 = 0;
+} else {
+    $hsl1 = 1;
+}
+
+//par1a
+$aba = $ambang_batas_likuiditas['ta_al_per_td_al'];
+$ab2a = $ambang_batas_likuiditas['rr_ta_al_per_td_al'];
+$ab3a = $ambang_batas_likuiditas['rrr_ta_al_per_td_al'];
+$ab4a = $ambang_batas_likuiditas['rrrr_ta_al_per_td_al'];
+if ($p1a >= $aba) {
+    $hsl1a = 1;
+} else if ($p1a < $aba && $p1a >= $ab2a) {
+    $hsl1a = 2;
+} else if ($p1a < $ab2a && $p1a >= $ab3a) {
+    $hsl1a = 3;
+} elseif ($p1a < $ab3a && $p1a >= $ab4a) {
+    $hsl1a = 4;
+} else {
+    $hsl1a = 5;
+}
+
+
+$nilai1a = $hsl1a * $bobot;
+
+
+
+
+
+
+if ($hsl1a < $hsl1) {
+    $nilai = $hsl1;
+}
+else if ($hsl1 == 0) {
+    $nilai = $hsl1a;
+} else {
+    $nilai = ($hsl1a + $hsl1) / 2;
+}
+
+
+
+
+
+
+//pil2
+
+
+
+$para2_ab = $ambang_batas_likuiditas['al_per_kl'];
+if ($p2 <= $para2_ab) {
+    $hsl2 = 0;
+} else {
+    $hsl2 = 1;
+}
+
+//par2a
+$para2_aba = $ambang_batas_likuiditas['tal_per_pjp'];
+$para2_ab2a = $ambang_batas_likuiditas['rr_tal_per_pjp'];
+$para2_ab3a = $ambang_batas_likuiditas['rrr_tal_per_pjp'];
+$para2_ab4a = $ambang_batas_likuiditas['rrrr_tal_per_pjp'];
+if ($p2a <= $para2_aba) {
+    $hsl2a = 1;
+} else if ($p2a > $para2_aba && $p2a <= $para2_ab2a) {
+    $hsl2a = 2;
+} else if ($p2a > $para2_ab2a && $p2a <= $para2_ab3a) {
+    $hsl2a = 3;
+} elseif ($p2a > $para2_ab3a && $p2a <= $para2_ab4a) {
+    $hsl2a = 4;
+} else {
+    $hsl2a = 5;
+}
+
+
+$nilai2a = $hsl2a * $bobot2_1;
+
+//par2b
+$para2_abb = $ambang_batas_likuiditas['al_per_kjp'];
+$para2_ab2b = $ambang_batas_likuiditas['rr_al_per_kjp'];
+$para2_ab3b = $ambang_batas_likuiditas['rrr_al_per_kjp'];
+$para2_ab4b = $ambang_batas_likuiditas['rrrr_al_per_kjp'];
+if ($p2b >= $para2_abb) {
+    $hsl2b = 1;
+} else if ($p2b < $para2_abb && $p2b >= $para2_ab2b) {
+    $hsl2b = 2;
+} else if ($p2b < $para2_ab2b && $p2b >= $para2_ab3b) {
+    $hsl2b = 3;
+} elseif ($p2b < $para2_ab3b && $p2b >= $para2_ab4b) {
+    $hsl2b = 4;
+} else {
+    $hsl2b = 5;
+}
+
+
+$nilai2b = $hsl2b * $bobot2_2;
+
+//par2c
+$para2_abc = $ambang_batas_likuiditas['akn_per_tdpk'];
+$para2_ab2c = $ambang_batas_likuiditas['rr_akn_per_tdpk'];
+$para2_ab3c = $ambang_batas_likuiditas['rrr_akn_per_tdpk'];
+$para2_ab4c = $ambang_batas_likuiditas['rrrr_akn_per_tdpk'];
+if ($p2c >= $para2_abc) {
+    $hsl2c = 1;
+} else if ($p2c < $para2_abc && $p2c >= $para2_ab2c) {
+    $hsl2c = 2;
+} else if ($p2c < $para2_ab2c && $p2c >= $para2_ab3c) {
+    $hsl2c = 3;
+} elseif ($p2c <= 0) {
+    $hsl2c = 4;
+} else {
+    $hsl2c = 5;
+}
+
+
+$nilai2c = $hsl2c * $bobot2_3;
+
+
+
+//par2d
+$para2_abd = $ambang_batas_likuiditas['tabungan_per_tdpk'];
+$para2_ab2d = $ambang_batas_likuiditas['rr_tabungan_per_tdpk'];
+$para2_ab3d = $ambang_batas_likuiditas['rrr_tabungan_per_tdpk'];
+$para2_ab4d = $ambang_batas_likuiditas['rrrr_tabungan_per_tdpk'];
+if ($p2d <= $para2_abd) {
+    $hsl2d = 1;
+} else if ($p2d > $para2_abd && $p2d <= $para2_ab2d) {
+    $hsl2d = 2;
+} else if ($p2d > $para2_ab2d && $p2d <= $para2_ab3d) {
+    $hsl2d = 3;
+} elseif ($p2d > $para2_ab3d && $p2d <= $para2_ab4d) {
+    $hsl2d = 4;
+} else {
+    $hsl2d = 5;
+}
+
+
+$nilai2d = $hsl2d * $bobot2_4;
+
+
+//par2e
+$para2_abe = $ambang_batas_likuiditas['djw3bln_per_tdpk'];
+$para2_ab2e = $ambang_batas_likuiditas['rr_djw3bln_per_tdpk'];
+$para2_ab3e = $ambang_batas_likuiditas['rrr_djw3bln_per_tdpk'];
+$para2_ab4e = $ambang_batas_likuiditas['rrrr_djw3bln_per_tdpk'];
+if ($p2e <= $para2_abe) {
+    $hsl2e = 1;
+} else if ($p2e > $para2_abe && $p2e <= $para2_ab2e) {
+    $hsl2e = 2;
+} else if ($p2e > $para2_ab2e && $p2e <= $para2_ab3e) {
+    $hsl2e = 3;
+} elseif ($p2e > $para2_ab3e && $p2e <= $para2_ab4e) {
+    $hsl2e = 4;
+} else {
+    $hsl2e = 5;
+}
+
+
+$nilai2e = $hsl2e * $bobot2_5;
+
+
+
+//par2f
+$para2_abf = $ambang_batas_likuiditas['djw6bln_per_tdpk'];
+$para2_ab2f = $ambang_batas_likuiditas['rr_djw6bln_per_tdpk'];
+$para2_ab3f = $ambang_batas_likuiditas['rrr_djw6bln_per_tdpk'];
+$para2_ab4f = $ambang_batas_likuiditas['rrrr_djw6bln_per_tdpk'];
+if ($p2f >= $para2_abf) {
+    $hsl2f = 1;
+} else if ($p2f < $para2_abf && $p2f >= $para2_ab2f) {
+    $hsl2f = 2;
+} else if ($p2f < $para2_ab2f && $p2f >= $para2_ab3f) {
+    $hsl2f = 3;
+} elseif ($p2f < $para2_ab3f && $p2f >= $para2_ab4f) {
+    $hsl2f = 4;
+} else {
+    $hsl2f = 5;
+}
+
+$nilai2f = $hsl2f * $bobot2_6;
+
+
+
+//par2g
+$para2_abg = $ambang_batas_likuiditas['djw12bln_per_tdpk'];
+$para2_ab2g = $ambang_batas_likuiditas['rr_djw12bln_per_tdpk'];
+$para2_ab3g = $ambang_batas_likuiditas['rrr_djw12bln_per_tdpk'];
+$para2_ab4g = $ambang_batas_likuiditas['rrrr_djw12bln_per_tdpk'];
+if ($p2g <= $para2_abg) {
+    $hsl2g = 1;
+} else if ($p2g > $para2_abg && $p2g <= $para2_ab2g) {
+    $hsl2g = 2;
+} else if ($p2g > $para2_ab2g && $p2g <= $para2_ab3g) {
+    $hsl2g = 3;
+} elseif ($p2g > $para2_ab3g && $p2g <= $para2_ab4g) {
+    $hsl2g = 4;
+} else {
+    $hsl2g = 5;
+}
+
+$nilai2g = $hsl2g * $bobot2_7;
+
+
+//par2h
+$para2_abh = $ambang_batas_likuiditas['md_per_tdpk'];
+$para2_ab2h = $ambang_batas_likuiditas['rr_md_per_tdpk'];
+$para2_ab3h = $ambang_batas_likuiditas['rrr_md_per_tdpk'];
+$para2_ab4h = $ambang_batas_likuiditas['rrrr_md_per_tdpk'];
+if ($p2h >= $para2_abh) {
+    $hsl2h = 1;
+} else if ($p2h < $para2_abh && $p2h >= $para2_ab2h) {
+    $hsl2h = 2;
+} else if ($p2h < $para2_ab2h && $p2h >= $para2_ab3h) {
+    $hsl2h = 3;
+} elseif ($p2h < $para2_ab3h && $p2h >= $para2_ab4h) {
+    $hsl2h = 4;
+} else {
+    $hsl2h = 5;
+}
+
+$nilai2h = $hsl2h * $bobot2_8;
+
+
+//par2i
+$para2_abi = $ambang_batas_likuiditas['pin_per_tdpk'];
+$para2_ab2i = $ambang_batas_likuiditas['rr_pin_per_tdpk'];
+$para2_ab3i = $ambang_batas_likuiditas['rrr_pin_per_tdpk'];
+$para2_ab4i = $ambang_batas_likuiditas['rrrr_pin_per_tdpk'];
+if ($p2i <= $para2_abi) {
+    $hsl2i = 1;
+} else if ($p2i > $para2_abi && $p2i <= $para2_ab2i) {
+    $hsl2i = 2;
+} else if ($p2i > $para2_ab2i && $p2i <= $para2_ab3i) {
+    $hsl2i = 3;
+} elseif ($p2i > $para2_ab3i && $p2i <= $para2_ab4i) {
+    $hsl2i = 4;
+} else {
+    $hsl2i = 5;
+}
+
+$nilai2i = $hsl2i * $bobot2_9;
+
+
+
+
+
+
+$koreksi2 = $nilai2a + $nilai2b + $nilai2c + $nilai2d + $nilai2e + $nilai2f + $nilai2g + $nilai2h + $nilai2i;
+
+
+if ($koreksi2 < $hsl2) {
+    $nilai2 = $hsl2;
+} else {
+    $nilai2 = ($hsl2 + $koreksi2) / 2;
+}
+
+
+
+
+
+
+//par 3
+
+
+$para3_ab = $ambang_batas_likuiditas['kyd_per_tdpkbk'];
+if ($p3 > $para3_ab) {
+    $hsl3 = 0;
+} else {
+    $hsl3 = 1;
+}
+
+
+//par3a
+$para3_aba = $ambang_batas_likuiditas['dpkydlps_per_dpk'];
+$para3_ab2a = $ambang_batas_likuiditas['rr_dpkydlps_per_dpk'];
+$para3_ab3a = $ambang_batas_likuiditas['rrr_dpkydlps_per_dpk'];
+$para3_ab4a = $ambang_batas_likuiditas['rrrr_dpkydlps_per_dpk'];
+if ($p3a <= $para3_aba) {
+    $hsl3a = 1;
+} else if ($p3a > $para3_aba && $p3a <= $para3_ab2a) {
+    $hsl3a = 2;
+} else if ($p3a > $para3_ab2a && $p3a <= $para3_ab3a) {
+    $hsl3a = 3;
+} elseif ($p3a > $para3_ab3a && $p3a <= $para3_ab4a) {
+    $hsl3a = 4;
+} else {
+    $hsl3a = 5;
+}
+
+
+$nilai3a = $hsl3a * $bobot3_1;
+
+//par3b
+$para3_abb = $ambang_batas_likuiditas['alkl_per_dpk3'];
+$para3_ab2b = $ambang_batas_likuiditas['rr_alkl_per_dpk3'];
+$para3_ab3b = $ambang_batas_likuiditas['rrr_alkl_per_dpk3'];
+$para3_ab4b = $ambang_batas_likuiditas['rrrr_alkl_per_dpk3'];
+if ($p3b >= $para3_abb) {
+    $hsl3b = 1;
+} else if ($p3b < $para3_abb && $p3b >= $para3_ab2b) {
+    $hsl3b = 2;
+} else if ($p3b < $para3_ab2b && $p3b >= $para3_ab3b) {
+    $hsl3b = 3;
+} elseif ($p3b < $para3_ab3b && $p3b >= $para3_ab4b) {
+    $hsl3b = 4;
+} else {
+    $hsl3b = 5;
+}
+
+
+$nilai3b = $hsl3b * $bobot3_2;
+
+//par3c
+$para3_abc = $ambang_batas_likuiditas['dtsd6bln_per_al'];
+$para3_ab2c = $ambang_batas_likuiditas['rr_dtsd6bln_per_al'];
+$para3_ab3c = $ambang_batas_likuiditas['rrr_dtsd6bln_per_al'];
+$para3_ab4c = $ambang_batas_likuiditas['rrrr_dtsd6bln_per_al'];
+if ($p3c >= $para3_abc) {
+    $hsl3c = 1;
+} else if ($p3c < $para3_abc && $p3c >= $para3_ab2c) {
+    $hsl3c = 2;
+} else if ($p3c < $para3_ab2c && $p3c >= $para3_ab3c) {
+    $hsl3c = 3;
+} elseif ($p3c < $para3_ab3c && $p3c >= $para3_ab4c)  {
+    $hsl3c = 4;
+} else {
+    $hsl3c = 5;
+}
+
+
+$nilai3c = $hsl3c * $bobot3_3;
+
+
+
+//par3d
+$para3_abd = $ambang_batas_likuiditas['pk_per_ps'];
+$para3_ab2d = $ambang_batas_likuiditas['rr_pk_per_ps'];
+$para3_ab3d = $ambang_batas_likuiditas['rrr_pk_per_ps'];
+$para3_ab4d = $ambang_batas_likuiditas['rrrr_pk_per_ps'];
+if ($p3d <= $para3_abd) {
+    $hsl3d = 1;
+} else if ($p3d > $para3_abd && $p3d <= $para3_ab2d) {
+    $hsl3d = 2;
+} else if ($p3d > $para3_ab2d && $p3d <= $para3_ab3d) {
+    $hsl3d = 3;
+} elseif ($p3d > $para3_ab3d && $p3d <= $para3_ab4d) {
+    $hsl3d = 4;
+} else {
+    $hsl3d = 5;
+}
+
+
+$nilai3d = $hsl3d * $bobot3_4;
+
+$koreksi3 = $nilai3a + $nilai3b + $nilai3c + $nilai3d;
+
+
+if ($koreksi3 < $hsl3) {
+    $nilai3 = $hsl3;
+} else {
+    $nilai3 = ($hsl3 + $koreksi3) / 2;
+}
+
+
+
+//par 4
+$para4_ab = $ambang_batas_likuiditas['ddpt25_per_tdpk'];
+if ($p4 > $para4_ab) {
+    $hsl4 = 4;
+} else {
+    $hsl4 = 1;
+}
+
+
+
+
+
+
+//par 5
+
+$para5_ab = $ambang_batas_likuiditas['pni_per_tp'];
+if ($p5 > $para5_ab) {
+    $hsl5 = 4;
+} else {
+    $hsl5 = 1;
+}
+
+
+//par5a
+$para5_aba = $ambang_batas_likuiditas['pnial_per_taal'];
+$para5_ab2a = $ambang_batas_likuiditas['rr_pnial_per_taal'];
+$para5_ab3a = $ambang_batas_likuiditas['rrr_pnial_per_taal'];
+$para5_ab4a = $ambang_batas_likuiditas['rrrr_pnial_per_taal'];
+if ($p5a <= $para5_aba) {
+    $hsl5a = 1;
+} else if ($p5a > $para5_aba && $p5a <= $para5_ab2a) {
+    $hsl5a = 2;
+} else if ($p5a > $para5_ab2a && $p5a <= $para5_ab3a) {
+    $hsl5a = 3;
+} elseif ($p5a > $para5_ab3a && $p5a <= $para5_ab4a) {
+    $hsl5a = 4;
+} else {
+    $hsl5a = 5;
+}
+
+
+$nilai5a = $hsl5a * $bobot4_1;
+
+//par3b
+$para5_abb = $ambang_batas_likuiditas['drs_per_al'];
+$para5_ab2b = $ambang_batas_likuiditas['rr_drs_per_al'];
+$para5_ab3b = $ambang_batas_likuiditas['rrr_drs_per_al'];
+$para5_ab4b = $ambang_batas_likuiditas['rrrr_drs_per_al'];
+if ($p5b <= $para5_abb) {
+    $hsl5b = 1;
+} else if ($p5b > $para5_abb && $p5b <= $para5_ab2b) {
+    $hsl5b = 2;
+} else if ($p5b > $para5_ab2b && $p5b <= $para5_ab3b) {
+    $hsl5b = 3;
+} elseif ($p5b > $para5_ab3b && $p5b <= $para5_ab4b) {
+    $hsl5b = 4;
+} else {
+    $hsl5b = 5;
+}
+
+
+$nilai5b = $hsl5b * $bobot4_2;
+
+//par5c
+$para5_abc = $ambang_batas_likuiditas['al_per_pni'];
+$para5_ab2c = $ambang_batas_likuiditas['rr_al_per_pni'];
+$para5_ab3c = $ambang_batas_likuiditas['rrr_al_per_pni'];
+$para5_ab4c = $ambang_batas_likuiditas['rrrr_al_per_pni'];
+if ($p5c >= $para5_abc) {
+    $hsl5c = 1;
+} else if ($p5c < $para5_abc && $p5c >= $para5_ab2c) {
+    $hsl5c = 2;
+} else if ($p5c < $para5_ab2c && $p5c >= $para5_ab3c) {
+    $hsl5c = 3;
+} elseif ($p5c < $para5_ab3c && $p5c >= $para5_ab4c)  {
+    $hsl5c = 4;
+} else {
+    $hsl5c = 5;
+}
+
+
+$nilai5c = $hsl5c * $bobot4_3;
+
+
+
+//par5d
+$para5_abd = $ambang_batas_likuiditas['di_per_tdpk'];
+$para5_ab2d = $ambang_batas_likuiditas['rr_di_per_tdpk'];
+$para5_ab3d = $ambang_batas_likuiditas['rrr_di_per_tdpk'];
+$para5_ab4d = $ambang_batas_likuiditas['rrrr_di_per_tdpk'];
+if ($p5d <= $para5_abd) {
+    $hsl5d = 1;
+} else if ($p5d > $para5_abd && $p5d <= $para5_ab2d) {
+    $hsl5d = 2;
+} else if ($p5d > $para5_ab2d && $p5d <= $para5_ab3d) {
+    $hsl5d = 3;
+} elseif ($p5d > $para5_ab3d && $p5d <= $para5_ab4d) {
+    $hsl5d = 4;
+} else {
+    $hsl5d = 5;
+}
+
+
+$nilai5d = $hsl5d * $bobot4_4;
+
+$koreksi5 = $nilai5a + $nilai5b + $nilai5c + $nilai5d;
+
+
+
+if ($koreksi5 < $hsl5) {
+    $nilai5 = $hsl5;
+} else {
+    $nilai5 = ($hsl5 + $koreksi5) / 2;
+}
+
+
+$bobot_pil2_1 = 1/3;
+
+$bobot_pil3_1 = 1/6;
+
+
+
+if (isset($_POST['submit'])) {
+    include "../conn/conn.php";
+
+
+
+//p1
+    $hasil_pil1_par1 = $nilai;
+    $hasil_pil1_par2 = $nilai2;
+    $hasil_pil1_par2a = $nilai2a;
+    $hasil_pil1_par2b = $nilai2b;
+    $hasil_pil1_par2c = $nilai2c;
+    $hasil_pil1_par2d = $nilai2d;
+    $hasil_pil1_par2e = $nilai2e;
+    $hasil_pil1_par2f = $nilai2f;
+    $hasil_pil1_par2g = $nilai2g;
+    $hasil_pil1_par2h = $nilai2h;
+    $hasil_pil1_par2i = $nilai2i;
+    $hasil_pil1_par3 = $nilai3;
+    $hasil_pil1_par3a = $nilai3a;
+    $hasil_pil1_par3b = $nilai3b;
+    $hasil_pil1_par3c = $nilai3c;
+    $hasil_pil1_par3d = $nilai3d;
+    $pilar1_4 = $_POST['sektor_terbesar3'];
+    $hasil_pil1_par4 = $_POST['nilaippl1_par4'];
+    $hasil_pil1_par5 = $nilai5;
+    $hasil_pil1_par5a = $nilai5a;
+    $hasil_pil1_par5b = $nilai5b;
+    $hasil_pil1_par5c = $nilai5c;
+    $hasil_pil1_par5d = $nilai5d;
+
+
+    //p2
+    $hasil_pil2_par1 = $_POST['hasil_pil2_par1'];
+    $pil2_par1a = $_POST['pilar2_1a'];
+    $hasil_pil2_par1a = $_POST['nilaippl2_par1a'];
+    $pil2_par1b = $_POST['pilar2_1b'];
+    $hasil_pil2_par1b = $_POST['nilaippl2_par1b'];
+    $pil2_par1c = $_POST['pilar2_1c'];
+    $hasil_pil2_par1c = $_POST['nilaippl2_par1c'];
+    $pil2_par2 = $_POST['pilar2_2'];
+    $hasil_pil2_par2 = $_POST['nilaippl2_par2'];
+
+    //p3
+    $hasil_pil3_par1 = $_POST['hasil_pil3_par1'];
+    $pil3_par1a = $_POST['pilar3_1a'];
+    $hasil_pil3_par1a = $_POST['nilaippl3_par1a'];
+    $pil3_par1b = $_POST['pilar3_1b'];
+    $hasil_pil3_par1b = $_POST['nilaippl3_par1b'];
+    $pil3_par1c = $_POST['pilar3_1c'];
+    $hasil_pil3_par1c = $_POST['nilaippl3_par1c'];
+    $pil3_par1d = $_POST['pilar3_1d'];
+    $hasil_pil3_par1d = $_POST['nilaippl3_par1d'];
+    $pil3_par1e = $_POST['pilar3_1e'];
+    $hasil_pil3_par1e = $_POST['nilaippl3_par1e'];
+    $pil3_par1f = $_POST['pilar3_1f'];
+    $hasil_pil3_par1f = $_POST['nilaippl3_par1f'];
+
+
+
+
+//hasil
+    $pil1_tertinggi = $_POST['tertinggi_pil1'];
+    $pil1_terendah = $_POST['terendah_pil1'];
+    $pil1_rata_rata = $_POST['rata_rata_pil1'];
+    $pil1_risiko_ditetapkan = $set_pil1;
+    $pil1_tingkat_risiko = $_POST['risiko_pil1'];
+    $pil2_tertinggi = $_POST['tertinggi_pil2'];
+    $pil2_terendah = $_POST['terendah_pil2'];
+    $pil2_rata_rata = $_POST['rata_rata_pil3'];
+    $pil2_risiko_ditetapkan = $set_pil2;
+    $pil2_tingkat_risiko = $_POST['risiko_pil2'];
+    $pil3_tertinggi = $_POST['tertinggi_pil3'];
+    $pil3_terendah = $_POST['terendah_pil3'];
+    $pil3_rata_rata = $_POST['rata_rata_pil3'];
+    $pil3_risiko_ditetapkan = $set_pil3;
+    $pil3_tingkat_risiko = $_POST['risiko_pil3'];
+    $hasil_inheren_tertinggi = $_POST['tertinggi_inheren'];
+    $hasil_inheren_terendah = $_POST['terendah_inheren'];
+    $hasil_inheren_rata_rata = $_POST['rata_rata_inheren'];
+    $hasil_risiko_ditetapkan = $set_tingkat_risiko;
+    $hasil_tingkat_risiko = $_POST['risiko_inheren'];
+    $hasil_peringkat = $_POST['peringkat_inheren'];
+
+    //ket
+    $ket_pil1_1 = $_POST['ket_pil1_1'];
+    $ket_pil1_2 = $_POST['ket_pil1_2'];
+    $ket_pil1_3 = $_POST['ket_pil1_3'];
+    $ket_pil1_4 = $_POST['ket_pil1_4'];
+    $ket_pil1_5 = $_POST['ket_pil1_5'];
+    $ket_pil1 = $_POST['ket_pil1'];
+    $ket_pil2_1 = $_POST['ket_pil2_1'];
+    $ket_pil2_2 = $_POST['ket_pil2_2'];
+    $ket_pil2_3 = $_POST['ket_pil2_3'];
+    $ket_pil2 = $_POST['ket_pil2'];
+    $ket_pil3_1 = $_POST['ket_pil3_1'];
+    $ket_pil3 = $_POST['ket_pil3'];
+    $ket_pil4_1 = $_POST['ket_pil4_1'];
+    $ket_pil4 = $_POST['ket_pil4'];
+    $ket_pil5_1 = $_POST['ket_pil5_1'];
+    $ket_pil5 = $_POST['ket_pil5'];
+    $ket_inheren = $_POST['ket_inheren'];
+
+
+
+
+    mysqli_query($conn, "UPDATE inheren_likuiditas_pilar1 SET 
+        hasil_pil1_par1 ='$hasil_pil1_par1',
+        hasil_pil1_par2 ='$hasil_pil1_par2',
+        hasil_pil1_par2a ='$hasil_pil1_par2a',
+        hasil_pil1_par2b ='$hasil_pil1_par2b',
+        hasil_pil1_par2c ='$hasil_pil1_par2c',
+        hasil_pil1_par2d ='$hasil_pil1_par2d',
+        hasil_pil1_par2e ='$hasil_pil1_par2e',
+        hasil_pil1_par2f ='$hasil_pil1_par2f',
+        hasil_pil1_par2g ='$hasil_pil1_par2g',
+        hasil_pil1_par2h ='$hasil_pil1_par2h',
+        hasil_pil1_par2i ='$hasil_pil1_par2i',
+        hasil_pil1_par3 ='$hasil_pil1_par3',
+        hasil_pil1_par3a ='$hasil_pil1_par3a',
+        hasil_pil1_par3b ='$hasil_pil1_par3b',
+        hasil_pil1_par3c ='$hasil_pil1_par3c',
+        hasil_pil1_par3d ='$hasil_pil1_par3d',
+        hasil_pil1_par5 ='$hasil_pil1_par5',
+        hasil_pil1_par5a ='$hasil_pil1_par5a',
+        hasil_pil1_par5b ='$hasil_pil1_par5b',
+        hasil_pil1_par5c ='$hasil_pil1_par5c',
+        hasil_pil1_par5d ='$hasil_pil1_par5d',
+        
+        pilar1_4 ='$pilar1_4',
+        hasil_pil1_par4 ='$hasil_pil1_par4'
+    WHERE id_profil_risiko ='$id'");
+
+
+
+    mysqli_query($conn, "UPDATE inheren_likuiditas_pilar2 SET 
+    hasil_pil2_par1 = '$hasil_pil2_par1',
+    pil2_par1a = '$pil2_par1a',
+    hasil_pil2_par1a = '$hasil_pil2_par1a',
+    pil2_par1b = '$pil2_par1b',
+    hasil_pil2_par1b = '$hasil_pil2_par1b',
+    pil2_par1c = '$pil2_par1c',
+    hasil_pil2_par1c = '$hasil_pil2_par1c',
+    pil2_par2 = '$pil2_par2',
+    hasil_pil2_par2 = '$hasil_pil2_par2'
+    WHERE id_profil_risiko = '$id'");
+
+
+    mysqli_query($conn, "UPDATE inheren_likuiditas_lainnya SET 
+    hasil_pil3_par1 = '$hasil_pil3_par1',
+    pil3_par1a = '$pil3_par1a',
+    hasil_pil3_par1a = '$hasil_pil3_par1a',
+    pil3_par1b = '$pil3_par1b',
+    hasil_pil3_par1b = '$hasil_pil3_par1b',
+    pil3_par1c = '$pil3_par1c',
+    hasil_pil3_par1c = '$hasil_pil3_par1c',
+    pil3_par1d = '$pil3_par1d',
+    hasil_pil3_par1d = '$hasil_pil3_par1d',
+    pil3_par1e = '$pil3_par1e',
+    hasil_pil3_par1e = '$hasil_pil3_par1e',
+    pil3_par1f = '$pil3_par1f',
+    hasil_pil3_par1f = '$hasil_pil3_par1f'
+    WHERE id_profil_risiko = '$id'");
+
+
+
+
+    mysqli_query($conn, "UPDATE hasil_inheren_likuiditas SET 
+        pil1_tertinggi = '$pil1_tertinggi',
+        pil1_terendah = '$pil1_terendah',
+        pil1_rata_rata = '$pil1_rata_rata',
+        pil1_risiko_ditetapkan = '$pil1_risiko_ditetapkan',
+        pil1_tingkat_risiko = '$pil1_tingkat_risiko',
+        pil2_tertinggi = '$pil2_tertinggi',
+        pil2_terendah = '$pil2_terendah',
+        pil2_rata_rata = '$pil2_rata_rata',
+        pil2_risiko_ditetapkan = '$pil2_risiko_ditetapkan',
+        pil2_tingkat_risiko = '$pil2_tingkat_risiko',
+        pil3_tertinggi = '$pil3_tertinggi',
+        pil3_terendah = '$pil3_terendah',
+        pil3_rata_rata = '$pil3_rata_rata',
+        pil3_risiko_ditetapkan = '$pil3_risiko_ditetapkan',
+        pil3_tingkat_risiko = '$pil3_tingkat_risiko',
+        hasil_inheren_tertinggi = '$hasil_inheren_tertinggi',
+        hasil_inheren_terendah = '$hasil_inheren_terendah',
+        hasil_inheren_rata_rata = '$hasil_inheren_rata_rata',
+        hasil_risiko_ditetapkan = '$hasil_risiko_ditetapkan',
+        hasil_tingkat_risiko = '$hasil_tingkat_risiko',
+        hasil_peringkat = '$hasil_peringkat'
+    WHERE id_profil_risiko = '$id'");
+
+
+    mysqli_query($conn, "UPDATE keterangan_inheren_likuiditas SET 
+        ket_pil1_1 ='$ket_pil1_1',
+        ket_pil1_2 ='$ket_pil1_2',
+        ket_pil1_3 ='$ket_pil1_3',
+        ket_pil1_4 ='$ket_pil1_4',
+        ket_pil1_5 ='$ket_pil1_5',
+        ket_pil1 ='$ket_pil1',
+        ket_pil2_1 ='$ket_pil2_1',
+        ket_pil2_2 ='$ket_pil2_2',
+        ket_pil2 ='$ket_pil2',
+        ket_pil3_1 ='$ket_pil3_1',
+        ket_pil3 ='$ket_pil3',
+        ket_inheren ='$ket_inheren'
+    WHERE id_profil_risiko = '$id'");
+
+    echo '
+        <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
+        ';
+
+    header("Location: index.php?page=lik_inhern&id=$id");
+    exit();
+}
+
+?>
+
+
+
+
+
+
+
+
+
+
+                                    <script type="text/javascript">
+                                        $(document).ready(function() {
+
+                                           
+
+                                            
+                                            $('#sektor_terbesar3').change(function() {
+                                                var val = this.value;
+                                                $("#koreksippl1_par4").val(val);
+
+                                                var hsl4 = <?php echo json_encode($hsl4); ?>;
+
+                                                if (hsl4 == 0) {
+                                                    var nilai = val;
+                                                } else {
+                                                    var nilai = (parseFloat(hsl4) + parseFloat(val)) / 2;
+                                                    nilai = nilai.toFixed(2);
+                                                }
+                                                $("#nilaippl1_par4").val(nilai);
+                                            });
+
+                                            $("#sektor_terbesar3").change(function() {
+                                                var pilar1_par1 = <?php echo $nilai; ?>;
+                                                var pilar1_par2 = <?php echo $nilai2; ?>;
+                                                var pilar1_par3 = <?php echo $nilai3; ?>;
+                                                var pilar1_par4 = $("#nilaippl1_par4").val();
+                                                var pilar1_par5 = <?php echo $nilai5; ?>;
+
+
+                                                const max = [pilar1_par1, pilar1_par2, pilar1_par3, pilar1_par4, pilar1_par5];
+                                                const maxValue = Math.max(...max);
+                                                tertinggi_pil1 = maxValue.toFixed(2);
+
+                                                $("#tertinggi_pil1").val(tertinggi_pil1);
+                                    
+
+                                                const min = [pilar1_par1, pilar1_par2, pilar1_par3, pilar1_par4, pilar1_par5];
+                                                const minValue = Math.min(...min);
+                                                terendah_pil1 = minValue.toFixed(2);
+
+                                                $("#terendah_pil1").val(terendah_pil1);
+
+                                                var total_rata_rata = parseFloat(pilar1_par1) + parseFloat(pilar1_par2) + parseFloat(pilar1_par3) + parseFloat(pilar1_par4) + parseFloat(pilar1_par5);
+                                                
+                                                var rata_rata_pil1 = parseFloat(total_rata_rata) / 5;
+                                                rata_rata_pil1 = rata_rata_pil1.toFixed(2);
+
+                                                rr1 = rata_rata_pil1;
+
+                                                $("#rata_rata_pil1").val(rata_rata_pil1);
+                                            });
+
+                                            $("#sektor_terbesar3").change(function() {
+                                                var set_pil1 = <?php echo $set_pil1; ?>;
+                                                if (set_pil1 == 1) {
+                                                    var risiko_pil1 = tertinggi_pil1;
+                                                } else if (set_pil1 == 2) {
+                                                    var risiko_pil1 = terendah_pil1;
+                                                } else if (set_pil1 == 3) {
+                                                    var risiko_pil1 = rr1;
+                                                } else {
+                                                    var risiko_pil1 = 0;
+                                                }
+
+                                                $("#risiko_pil1").val(risiko_pil1);
+                                                $("#hasil_risiko_pil1").val(risiko_pil1);
+                                            });
+
+
+                                            
+
+
+
+//=-=-=-=-=-=
+                                            $('#pilar2_1a').change(function() {
+                                                var pilar2_1a = $("#pilar2_1a").val();
+
+                                                var bobot5_1 = <?php echo json_encode($bobot5_1); ?>;
+                                                
+                                                var nilai = parseFloat(pilar2_1a) * parseFloat(bobot5_1);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl2_par1a").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar2_1a) * parseFloat(bobot5_1);
+                                                $("#nilaippl2_p1a").val(nilai2);
+                                            });
+
+                                            
+                                            $('#pilar2_1b').change(function() {
+                                                var pilar2_1b = $("#pilar2_1b").val();
+
+                                                var bobot5_2 = <?php echo json_encode($bobot5_2); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar2_1b) * parseFloat(bobot5_2);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl2_par1b").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar2_1b) * parseFloat(bobot5_2);
+                                                $("#nilaippl2_p1b").val(nilai2);
+                                            });
+                                            
+                                            $('#pilar2_1c').change(function() {
+                                                var pilar2_1c = $("#pilar2_1c").val();
+
+                                                var bobot5_3 = <?php echo json_encode($bobot5_3); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar2_1c) * parseFloat(bobot5_3);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl2_par1c").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar2_1c) * parseFloat(bobot5_3);
+                                                $("#nilaippl2_p1c").val(nilai2);
+                                            });
+
+                                           
+
+                                            $("#pilar2_1a, #pilar2_1b, #pilar2_1c").change(function() {
+                                                var pilar2_1a = $("#pilar2_1a").val();
+                                                var pilar2_1b = $("#pilar2_1b").val();
+                                                var pilar2_1c = $("#pilar2_1c").val();
+                                                var bobot5_1 = <?php echo json_encode($bobot5_1); ?>;
+                                                var bobot5_2 = <?php echo json_encode($bobot5_2); ?>;
+                                                var bobot5_3 = <?php echo json_encode($bobot5_3); ?>;
+
+
+                                                var pilar2_par1 = parseFloat(pilar2_1a) * parseFloat(bobot5_1);
+                                                pilar2_par1 = pilar2_par1.toFixed(2);
+
+                                                var pilar2_par2 = parseFloat(pilar2_1b) * parseFloat(bobot5_2);
+                                                pilar2_par2 = pilar2_par2.toFixed(2);
+
+                                                var pilar2_par3 = parseFloat(pilar2_1c) * parseFloat(bobot5_3);
+                                                pilar2_par3 = pilar2_par3.toFixed(2);
+
+
+
+                                                var total_rata_rata = parseFloat(pilar2_par1) + parseFloat(pilar2_par2) + parseFloat(pilar2_par3);
+                                            
+                                                total_rata_rata = total_rata_rata.toFixed(2);
+
+                                                $("#hasil_pil2_par1").val(total_rata_rata);
+                                            });
+
+                                            $('#pilar2_2').change(function() {
+                                                var pilar2_2 = $("#pilar2_2").val();
+                                                
+                                                $("#nilaippl2_par2").val(pilar2_2);
+                                            });
+
+
+
+
+
+
+                                            $("#pilar2_1a, #pilar2_1b, #pilar2_1c, #pilar2_2").change(function() {
+                                                var pilar2_1a = $("#pilar2_1a").val();
+                                                var pilar2_1b = $("#pilar2_1b").val();
+                                                var pilar2_1c = $("#pilar2_1c").val();
+                                                var bobot5_1 = <?php echo json_encode($bobot5_1); ?>;
+                                                var bobot5_2 = <?php echo json_encode($bobot5_2); ?>;
+                                                var bobot5_3 = <?php echo json_encode($bobot5_3); ?>;
+                                                var pilar2_2 = $("#pilar2_2").val();
+
+
+                                                var pilar2_par1 = parseFloat(pilar2_1a) * parseFloat(bobot5_1);
+                                                
+
+                                                var pilar2_par2 = parseFloat(pilar2_1b) * parseFloat(bobot5_2);
+                                                
+
+                                                var pilar2_par3 = parseFloat(pilar2_1c) * parseFloat(bobot5_3);
+                                                
+
+
+                                                var total_Pil2 = parseFloat(pilar2_par1) + parseFloat(pilar2_par2) + parseFloat(pilar2_par3);
+                                            
+                                                
+
+
+                                                const max = [total_Pil2, pilar2_2];
+                                                const maxValue = Math.max(...max);
+                                                tertinggi_pil2 = maxValue.toFixed(2);
+
+                                                $("#tertinggi_pil2").val(tertinggi_pil2);
+                                    
+
+                                                const min = [total_Pil2, pilar2_2];
+                                                const minValue = Math.min(...min);
+                                                terendah_pil2 = minValue.toFixed(2);
+
+                                                $("#terendah_pil2").val(terendah_pil2);
+
+                                                var total_rata_rata = parseFloat(total_Pil2) + parseFloat(pilar2_2);
+                                                
+                                                var rata_rata_pil2 = parseFloat(total_rata_rata) / 2;
+                                                rata_rata_pil2 = rata_rata_pil2.toFixed(2);
+
+                                                rr2 = rata_rata_pil2;
+                                                $("#rata_rata_pil2").val(rata_rata_pil2);
+                                            });
+                                            $("#pilar2_1a, #pilar2_1b, #pilar2_1c, #pilar2_2").change(function() {
+                                                var set_pil2 = <?php echo $set_pil2; ?>;
+                                                if (set_pil2 == 1) {
+                                                    var risiko_pil2 = tertinggi_pil2;
+                                                } else if (set_pil2 == 2) {
+                                                    var risiko_pil2 = terendah_pil2;
+                                                } else if (set_pil2 == 3) {
+                                                    var risiko_pil2 = rr2;
+                                                } else {
+                                                    var risiko_pil2 = 0;
+                                                }
+
+                                                $("#risiko_pil2").val(risiko_pil2);
+                                                $("#hasil_risiko_pil2").val(risiko_pil2);
+                                            });
+
+
+
+                                        
+                                            $('#pilar3_1a').change(function() {
+                                                var pilar3_1a = $("#pilar3_1a").val();
+
+                                                var bobot6_1 = <?php echo json_encode($bobot6_1); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar3_1a) * parseFloat(bobot6_1);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl3_par1a").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar3_1a) * parseFloat(bobot6_1);
+                                                $("#nilaippl3_p1a").val(nilai2);
+                                            });
+
+                                            
+                                            $('#pilar3_1b').change(function() {
+                                                var pilar3_1b = $("#pilar3_1b").val();
+
+                                                var bobot6_2 = <?php echo json_encode($bobot6_2); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar3_1b) * parseFloat(bobot6_2);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl3_par1b").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar3_1b) * parseFloat(bobot6_2);
+                                                $("#nilaippl3_p1b").val(nilai2);
+                                            });
+                                            
+                                            $('#pilar3_1c').change(function() {
+                                                var pilar3_1c = $("#pilar3_1c").val();
+
+                                                var bobot6_3 = <?php echo json_encode($bobot6_3); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar3_1c) * parseFloat(bobot6_3);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl3_par1c").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar3_1c) * parseFloat(bobot6_3);
+                                                $("#nilaippl3_p1c").val(nilai2);
+                                            });
+
+                                            $('#pilar3_1d').change(function() {
+                                                var pilar3_1d = $("#pilar3_1d").val();
+
+                                                var bobot6_4 = <?php echo json_encode($bobot6_4); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar3_1d) * parseFloat(bobot6_4);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl3_par1d").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar3_1d) * parseFloat(bobot6_4);
+                                                $("#nilaippl3_p1d").val(nilai2);
+                                            });
+
+                                            $('#pilar3_1e').change(function() {
+                                                var pilar3_1e = $("#pilar3_1e").val();
+
+                                                var bobot6_5 = <?php echo json_encode($bobot6_5); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar3_1e) * parseFloat(bobot6_5);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl3_par1e").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar3_1e) * parseFloat(bobot6_5);
+                                                $("#nilaippl3_p1e").val(nilai2);
+                                            });
+
+                                            $('#pilar3_1f').change(function() {
+                                                var pilar3_1f = $("#pilar3_1f").val();
+
+                                                var bobot6_6 = <?php echo json_encode($bobot6_6); ?>;
+
+                                                
+                                                var nilai = parseFloat(pilar3_1f) * parseFloat(bobot6_6);
+                                                nilai = nilai.toFixed(2);
+                                                $("#nilaippl3_par1f").val(nilai);
+
+                                                var nilai2 = parseFloat(pilar3_1f) * parseFloat(bobot6_6);
+                                                $("#nilaippl3_p1f").val(nilai2);
+                                            });
+
+
+                                            
+
+                                            $("#pilar3_1a, #pilar3_1b, #pilar3_1c, #pilar3_1d, #pilar3_1e, #pilar3_1f").change(function() {
+                                                var pilar3_1a = $("#pilar3_1a").val();
+                                                var pilar3_1b = $("#pilar3_1b").val();
+                                                var pilar3_1c = $("#pilar3_1c").val();
+                                                var pilar3_1d = $("#pilar3_1d").val();
+                                                var pilar3_1e = $("#pilar3_1e").val();
+                                                var pilar3_1f = $("#pilar3_1f").val();
+                                                var bobot6_1 = <?php echo json_encode($bobot6_1); ?>;
+                                                var bobot6_2 = <?php echo json_encode($bobot6_2); ?>;
+                                                var bobot6_3 = <?php echo json_encode($bobot6_3); ?>;
+                                                var bobot6_4 = <?php echo json_encode($bobot6_4); ?>;
+                                                var bobot6_5 = <?php echo json_encode($bobot6_5); ?>;
+                                                var bobot6_6 = <?php echo json_encode($bobot6_6); ?>;
+
+
+                                                var pilar3_par1 = parseFloat(pilar3_1a) * parseFloat(bobot6_1);
+                                                
+                                                var pilar3_par2 = parseFloat(pilar3_1b) * parseFloat(bobot6_2);
+                                               
+                                                var pilar3_par3 = parseFloat(pilar3_1c) * parseFloat(bobot6_3);
+                                                
+                                                var pilar3_par4 = parseFloat(pilar3_1d) * parseFloat(bobot6_4);
+                                                
+                                                var pilar3_par5 = parseFloat(pilar3_1e) * parseFloat(bobot6_5);
+                                                
+                                                var pilar3_par6 = parseFloat(pilar3_1f) * parseFloat(bobot6_6);
+                                                
+
+
+
+                                                var total_pil3 = parseFloat(pilar3_par1) + parseFloat(pilar3_par2) + parseFloat(pilar3_par3) + parseFloat(pilar3_par4) + parseFloat(pilar3_par5) + parseFloat(pilar3_par6);
+                                            
+                                                total_pil3 = total_pil3.toFixed(2);
+                                                $("#hasil_pil3_par1").val(total_pil3);
+                                                
+
+                                                const max = [total_pil3];
+                                                const maxValue = Math.max(...max);
+                                                tertinggi_pil3 = maxValue.toFixed(2);
+
+                                                $("#tertinggi_pil3").val(tertinggi_pil3);
+                                    
+
+                                                const min = [total_pil3];
+                                                const minValue = Math.min(...min);
+                                                terendah_pil3 = minValue.toFixed(2);
+
+                                                $("#terendah_pil3").val(terendah_pil3);
+
+                                                var total_rata_rata = parseFloat(total_pil3);
+                                                
+                                                var rata_rata_pil3 = parseFloat(total_rata_rata) / 1;
+                                                rata_rata_pil3 = rata_rata_pil3.toFixed(2);
+
+                                                rr3 = rata_rata_pil3;
+                                                $("#rata_rata_pil3").val(rata_rata_pil3);
+                                            });
+                                            $("#pilar3_1a, #pilar3_1b, #pilar3_1c, #pilar3_1d, #pilar3_1e, #pilar3_1f").change(function() {
+                                                var set_pil3 = <?php echo $set_pil3; ?>;
+                                                if (set_pil3 == 1) {
+                                                    var risiko_pil3 = tertinggi_pil3;
+                                                } else if (set_pil3 == 2) {
+                                                    var risiko_pil3 = terendah_pil32;
+                                                } else if (set_pil3 == 3) {
+                                                    var risiko_pil3 = rr3;
+                                                } else {
+                                                    var risiko_pil3 = 0;
+                                                }
+
+                                                $("#risiko_pil3").val(risiko_pil3);
+                                                $("#hasil_risiko_pil3").val(risiko_pil3);
+                                            });
+
+                                            
+
+
+
+                                    
+
+
+
+                                            $("#sektor_terbesar3, #pilar2_1a, #pilar2_1b, #pilar2_1c, #pilar2_2, #pilar3_1a, #pilar3_1b, #pilar3_1c, #pilar3_1d, #pilar3_1e, #pilar3_1f").change(function() {
+                                                var val = this.value;
+                                                var pilar1_par1 = <?php echo $nilai; ?>;
+                                                var pilar1_par2 = <?php echo $nilai2; ?>;
+                                                var pilar1_par3 = <?php echo $nilai3; ?>;
+                                                var pilar1_par4 = $("#nilaippl1_par4").val();
+                                                var pilar1_par5 = <?php echo $nilai5; ?>;
+
+                                                var pilar2_par1 = $("#hasil_pil2_par1").val();
+                                                var pilar2_par2 = $("#pilar2_2").val();
+                                                var total_pil3 = $("#hasil_risiko_pil3").val();
+
+                                                const max = [pilar1_par1,pilar1_par2,pilar1_par3,pilar1_par3,pilar1_par4,pilar1_par5,pilar2_par1,pilar2_par2,total_pil3];
+                                                const maxValue = Math.max(...max);
+                                                tertinggi_inheren = maxValue.toFixed(2);
+                                                $("#tertinggi_inheren").val(tertinggi_inheren);
+                                
+                                                const min = [pilar1_par1,pilar1_par2,pilar1_par3,pilar1_par3,pilar1_par4,pilar1_par5,pilar2_par1,pilar2_par2,total_pil3];
+                                                const minValue = Math.min(...min);
+                                                terendah_inheren = minValue.toFixed(2);
+                                                $("#terendah_inheren").val(terendah_inheren);
+                                        
+                                                var total_rata_rata = parseFloat(pilar1_par1) + parseFloat(pilar1_par2) + parseFloat(pilar1_par3) + parseFloat(pilar1_par4) + parseFloat(pilar1_par5) + parseFloat(pilar2_par1) + parseFloat(pilar2_par2) + parseFloat(total_pil3);
+                                                var rata_rata_inheren = parseFloat(total_rata_rata) / 8;
+                                                rata_rata_inheren = rata_rata_inheren.toFixed(2);
+                                                rr_inheren = rata_rata_inheren;
+
+                                                $("#rata_rata_inheren").val(rata_rata_inheren);
+                                            });
+                                            $("#sektor_terbesar3, #pilar2_1a, #pilar2_1b, #pilar2_1c, #pilar2_2, #pilar3_1a, #pilar3_1b, #pilar3_1c, #pilar3_1d, #pilar3_1e, #pilar3_1f").change(function() {
+                                                var set_tingkat_risiko = <?php echo json_encode($set_tingkat_risiko); ?>;
+                                                
+                                            
+                                                if (set_tingkat_risiko == 1) {
+                                                    var risiko_inheren = tertinggi_inheren;
+                                                } else if (set_tingkat_risiko == 2) {
+                                                    var risiko_inheren = terendah_inheren;
+                                                } else if (set_tingkat_risiko == 3) {
+                                                    var risiko_inheren = rr_inheren;
+                                                } else {
+                                                    var risiko_inheren = 0;
+                                                }
+
+                                                $("#risiko_inheren").val(risiko_inheren);
+                                                nilai_risiko_inheren = risiko_inheren;
+
+                                                if (nilai_risiko_inheren < 1.00) {
+                                                    var peringkat_inheren = " ";
+                                                } else if (nilai_risiko_inheren >= 1.00 && nilai_risiko_inheren <= 1.25) {
+                                                    var peringkat_inheren = "Sangat Rendah";
+                                                } else if (nilai_risiko_inheren > 1.25 && nilai_risiko_inheren <= 2.25) {
+                                                    var peringkat_inheren = "Rendah";
+                                                } else if (nilai_risiko_inheren > 2.25 && nilai_risiko_inheren <= 3.25) {
+                                                    var peringkat_inheren = "Sedang";
+                                                } else if (nilai_risiko_inheren > 3.25 && nilai_risiko_inheren <= 4.25) {
+                                                    var peringkat_inheren = "Tinggi";
+                                                } else if (nilai_risiko_inheren > 4.25 && nilai_risiko_inheren <= 5.00) {
+                                                    var peringkat_inheren = "Sangat Tinggi";
+                                                } else {
+                                                    var peringkat_inheren = " ";
+                                                }
+
+                                                $("#peringkat_inheren").val(peringkat_inheren);
+                                            });
+
+
+                                           
+
+                                        });
+                                    </script>
+
+
+
+
+
+
+<div class="content-page">
+    <div class="content">
+
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+
+                        <h4 class="page-title">Risiko Likuiditas Inhern</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+            <form action="" method="POST" enctype="multipart/form-data" id="my_form"></form>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+
+                        <div class="card-body">
+                            <h4 class="header-title">Isian Kertas Kerja Risiko Inheren Profil Risiko Likuiditas</h4>
+
+                            <hr>
+                            </hr>
+
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="col-lg-1 ">
+                                        <button class="btn btn-primary" form="my_form" type="submit" name="submit">Simpan</button>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                            </br>
+
+
+                            <!-- likuiditas-->
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-centered mb-0">
+                                    <thead class="table-d" bgcolor="#74c7ff">
+                                        <tr style="color: #050505;">
+
+                                            <th colspan="9">
+                                                <h4>
+                                                    <center><b>RISIKO LIKUIDITAS INHEREN</b></center>
+                                                </h4>
+                                            </th>
+
+                                        </tr>
+                                        <tr style="color: #050505;">
+                                            <th width="2%">
+                                                <center>NO</center>
+                                            </th>
+                                            <th class=" text-center" width="20%">
+                                                PARAMETER
+                                            </th>
+
+                                            <th class="text-center" width="13%">
+                                                NOMINAL
+                                            </th>
+                                            <th class="text-center" width="13%">
+                                                RASIO
+                                            </th>
+                                            <th class="text-center" width="10%">
+                                                AMBANG BATAS
+                                            </th>
+                                            <th class="text-center" width="5%">
+                                                RUMUS
+                                            </th>
+                                            <th class="text-center" width="5%">
+                                                KOREKSI
+                                            </th>
+                                            <th class="text-center" width="8%">
+                                                NILAI
+                                            </th>
+                                            <th class="text-center" width="25%">
+                                                KETERANGAN
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                       
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>1</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center>Aset Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total Aset</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['aset_likuid']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_aset']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p1 ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['al_per_ta'] ?></td>
+
+                                            <td>
+                                                <center><?= $hsl1 ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center><?= $hsl1a ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai, 2) ?></center>
+                                            </td>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil1_1" form="my_form" name="ket_pil1_1" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil1_1'] ?></textarea>
+                                            </td>
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                a.<center>Total Aset-Aset Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK-Aset Likuid</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($p1a_atas) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($p1a_bawah) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p1a ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['ta_al_per_td_al'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl1a ?></center>
+                                            </td>
+
+                                            <td>
+                                                
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+
+                                        </tr>
+
+
+
+
+                                        
+
+
+
+
+
+
+
+
+
+
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>2</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center>Aset Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Kewajiban Lancar</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['aset_likuid']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['kewajiban_lancar']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2 ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['al_per_kl'] ?></td>
+
+                                            <td>
+                                                <center><?= $hsl2 ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center><?= round($koreksi2, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2, 2) ?></center>
+                                            </td>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil1_2" form="my_form" name="ket_pil1_2" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil1_2'] ?></textarea>
+                                            </td>
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                a.<center>Total Aset Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Pendanaan jangka Pendek</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['aset_likuid']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['pendanaan_jangka_pendek']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2a ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['tal_per_pjp'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2a ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_1, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2a, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                b.<center>Aset Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Kewajiban Jangka Pendek</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['aset_likuid']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['kewajiban_jangka_pendek']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2b ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['al_per_kjp'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2b ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_2, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2b, 2) ?></center>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                c.<center>Arus Kas Netto</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['arus_kas_netto']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="text" form="my_form" name="aba" value="<?= $p2c ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['akn_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2c ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_3, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2c, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                d.<center>Tabungan</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['tabungan']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2d ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['tabungan_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2d ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_4, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2d, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                e.<center>Deposito Jangka Waktu 3 bln</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposito_3bln']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2e ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['djw3bln_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2e ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_5, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2e, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                    
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                f.<center>Deposito Jangka Waktu 6 bln</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposito_6bln']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2f ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['djw6bln_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2f ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_6, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2f, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                g.<center>Deposito Jangka Waktu 12 bln</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposito_12bln']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2g ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['djw12bln_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2g ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_7, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2g, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                h.<center>Modal Disetor</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['modal_disetor']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2h ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['md_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2h ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_8, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2h, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                i.<center>Pinjaman</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['pinjaman']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p2i ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['pin_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl2i ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot2_9, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai2i, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>3</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center>Kredit Yang Diberikan</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total Dana Pihak Ketiga Bukan Bank</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_kredit_P1['kyd']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= number_format($p3 ,2) ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['kyd_per_tdpkbk'] ?></td>
+
+                                            <td>
+                                                <center><?= $hsl3 ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center><?= number_format($koreksi3, 2) ?></center>
+                                            </td>
+                                            <td>
+
+                                                <center><?= number_format($nilai3, 2) ?></center>
+
+                                            </td>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil1_3" form="my_form" name="ket_pil1_3" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil1_3'] ?></textarea>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                a.<center>DPK Yang Dijamin LPS</center>
+                                                <hr>
+                                                </hr>
+                                                <center>DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['aset_likuid']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['pendanaan_jangka_pendek']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p3a ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['dpkydlps_per_dpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl3a ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot3_1, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai3a, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                b.<center>Alat Likuid - Kredit Lancar</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Dana Pihak Ke 3</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($p3a_atas) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p3b ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['alkl_per_dpk3'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl3b ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot3_2, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai3b, 2) ?></center>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                c.<center>Deposito Tenor Sampai Dengan 6 bln</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Alat Likuid</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposito_6bln']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['alat_likuid']) ?></center>
+                                            </th>
+                                            <td><input type="text" form="my_form" name="aba" value="<?= $p3c ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['dtsd6bln_per_al'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl3c ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot3_3, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai3c, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                d.<center>Pertumbuhan Kredit</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Pertumbuhan Simpanan</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= number_format($p3d_atas,2) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= number_format($p3d_bawah,2) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p3d ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['pk_per_ps'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl3d ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot3_4, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai3d, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>4</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center>20 Deposan dan Penabung Terbesar</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposan_tabungan_terbesar25']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= number_format($p4 ,2) ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['ddpt25_per_tdpk'] ?></td>
+
+                                            <td>
+                                                <center><?= $hsl4 ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center><input type="number" form="my_form" name="koreksippl1_par4" value="<?= $pil1['pilar1_4'] ?>" class="form-control" id="koreksippl1_par4" readonly></center>
+                                            </td>
+                                            <td>
+
+                                                <center><input type="text" form="my_form" name="nilaippl1_par4" value="<?= $pil1['hasil_pil1_par4'] ?>" class="form-control" id="nilaippl1_par4" readonly></center>
+
+                                            </td>
+
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil1_4" form="my_form" name="ket_pil1_4" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil1_4'] ?></textarea>
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <center></center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <label for="example-select" class="form-label">Komposisi 50 deposan dan penabung </br> terbesar tersebut adalah :</label>
+                                                <select class="form-select" form="my_form" name="sektor_terbesar3" id="sektor_terbesar3">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil1['pilar1_4'] == "1" ? "selected" : "" ?>>1 = seluruhnya nasabah lama dengan saldo terjaga lama</option>
+                                                    <option value="2" <?= $pil1['pilar1_4'] == "2" ? "selected" : "" ?>>2 = seluruhnya nasabah lama</option>
+                                                    <option value="3" <?= $pil1['pilar1_4'] == "3" ? "selected" : "" ?>>3 = sebagian besar adalah nasabah lama</option>
+                                                    <option value="4" <?= $pil1['pilar1_4'] == "4" ? "selected" : "" ?>>4 = sebagian besar adalah nasabah baru</option>
+                                                    <option value="5" <?= $pil1['pilar1_4'] == "5" ? "selected" : "" ?>>5 = seluruhnya nasaba baru</option>
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil1['pilar1_4'] ?></center>
+                                            </th>
+                                            <th colspan="6"></th>
+                                        </tr>
+
+
+
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>5</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center>Pendanaan Non Inti</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total Pendanaan</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['pendanaan_non_inti']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= number_format($p5 ,2) ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['pni_per_tp'] ?></td>
+
+                                            <td>
+                                                <center><?= $hsl5 ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center><?= number_format($koreksi5, 2) ?></center>
+                                            </td>
+                                            <td>
+
+                                                <center><?= number_format($nilai5, 2) ?></center>
+
+                                            </td>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil1_5" form="my_form" name="ket_pil1_5" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil1_5'] ?></textarea>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                a.<center>Pendanaan Non Inti-Alat Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total Aset-Aset Likuid</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($p5a_atas) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($p5a_bawah) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p5a ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['pnial_per_taal'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl5a ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot4_1, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai5a, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                b.<center>Deposito Rate Spesial</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Alat Likuid</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposito_rs']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['alat_likuid']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p5b ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['drs_per_al'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl5b ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot4_2, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai5b, 2) ?></center>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                c.<center>Aset Likuid</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Pendanaan Non Inti</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['aset_likuid']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['pendanaan_non_inti']) ?></center>
+                                            </th>
+                                            <td><input type="text" form="my_form" name="aba" value="<?= $p5c ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                >= <?= $ambang_batas_likuiditas['al_per_pni'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl5c ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot4_3, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai5c, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                d.<center>Deposito Inti (100 Deposan)</center>
+                                                <hr>
+                                                </hr>
+                                                <center>Total DPK</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <center><?= rupiah($master_likuiditas_P1['deposito_inti']) ?></center>
+                                                <hr>
+                                                </hr>
+                                                <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>
+                                            </th>
+                                            <td><input type="number" form="my_form" name="aba" value="<?= $p5d ?>" class="form-control" id="rupiah" readonly></td>
+                                            <td>
+                                                <= <?= $ambang_batas_likuiditas['di_per_tdpk'] ?> </td>
+
+                                            <td>
+                                                <center><?= $hsl5d ?></center>
+                                            </td>
+
+                                            <td>
+                                                <center>Bobot</center>
+                                                <center><?= number_format($bobot4_4, 2) ?></center>
+                                            </td>
+                                            <td>
+                                                <center><?= number_format($nilai5d, 2) ?></center>
+                                            </td>
+
+                                        </tr>
+
+
+
+
+
+                                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--pilar2--->
+
+
+
+
+
+
+
+                                        
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>6</center>
+                                            </th>
+                                            <th  colspan="2">
+                                            Penilaian kebutuhan pendanaan BPR pada situasi normal maupun krisis, dan kemampuan BPR untuk memenuhi kebutuhan pendanaan
+                                            </th>
+                                            <td>
+                                                
+                                            </td>
+                                            <td colspan="3">
+                                            Hasil Penilaian dari Parameter Tambahan :
+                                            </td>
+                                            
+                                            <td>
+                                                <center><input type="number" form="my_form" name="hasil_pil2_par1" value="<?= $pil2['hasil_pil2_par1'] ?>" class="form-control" id="hasil_pil2_par1" readonly></center>
+                                            </td>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil2_1" form="my_form" name="ket_pil2_1" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil2_1'] ?></textarea>
+                                            </td>
+
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                a. Sumber Pendanaan Untuk Memenuhi Kebutuhan</br> Likuiditas
+                                                <select class="form-select" form="my_form" name="pilar2_1a" id="pilar2_1a">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil2['pil2_par1a'] == "1" ? "selected" : "" ?>>1 = Terdapat > 2 (Dua) Jenis Sumber Pendanaan untuk Pemenuhan Likuiditas</option>
+                                                    <option value="2" <?= $pil2['pil2_par1a'] == "2" ? "selected" : "" ?>>2 = Terdapat 2 (Dua) Jenis Sumber Pendanaan untuk Pemenuhan Likuiditas</option>
+                                                    <option value="3" <?= $pil2['pil2_par1a'] == "3" ? "selected" : "" ?>>3 = Terdapat 1 (Satu) Jenis Sumber Pendanaan untuk Pemenuhan Likuiditas</option>
+                                                    <option value="4" <?= $pil2['pil2_par1a'] == "4" ? "selected" : "" ?>>4 = Terdapat 1 (Satu) Jenis Sumber Pendanaan untuk Pemenuhan Likuiditas yang Terbatas</option>
+                                                    <option value="5" <?= $pil2['pil2_par1a'] == "5" ? "selected" : "" ?>>5 = Tidak Terdapat Sumber Pendanaan untuk Pemenuhan Likuiditas</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil2['pil2_par1a'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                    
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl2_par1a" value="<?= number_format($bobot5_1, 2) ?>" class="form-control" id="koreksippl2_par1a" readonly>
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl2_par1a" value="<?= $pil2['hasil_pil2_par1a'] ?>" class="form-control" id="nilaippl2_par1a" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                b. Identifikasi Terhadap Produk Kredit dan Simpanan 
+                                                <select class="form-select" form="my_form" name="pilar2_1b" id="pilar2_1b">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil2['pil2_par1b'] == "1" ? "selected" : "" ?>>1 = Identifikasi Produk Dilakukan lebih dari Sekali dalam Setahun sekali</option>
+                                                    <option value="2" <?= $pil2['pil2_par1b'] == "2" ? "selected" : "" ?>>2 = Identifikasi Produk Dilakukan Setahun Sekali</option>
+                                                    <option value="3" <?= $pil2['pil2_par1b'] == "3" ? "selected" : "" ?>>3 = Identifikasi Produk Dilakukan 1,5Tahun Sekali</option>
+                                                    <option value="4" <?= $pil2['pil2_par1b'] == "4" ? "selected" : "" ?>>4 = Identifikasi Produk Dilakukan 2 Tahun Sekali</option>
+                                                    <option value="5" <?= $pil2['pil2_par1b'] == "5" ? "selected" : "" ?>>5 = Identifikasi Produk Dilakukan > 2 Tahun Sekali</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil2['pil2_par1b'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                           
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl2_par1b" value="<?= number_format($bobot5_2, 2) ?>" class="form-control" id="koreksippl2_par1b" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl2_par1b" value="<?= $pil2['hasil_pil2_par1b'] ?>" class="form-control" id="nilaippl2_par1b" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                c. Identifikasi Sumber Pendanaan Non Inti
+                                                <select class="form-select" form="my_form" name="pilar2_1c" id="pilar2_1c">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil2['pil2_par1c'] == "1" ? "selected" : "" ?>>1 = Identifikasi Sumber Pendanaan Non Inti Setiap 1 (Satu) Bulan</option>
+                                                    <option value="2" <?= $pil2['pil2_par1c'] == "2" ? "selected" : "" ?>>2 = Identifikasi Sumber Pendanaan Non Inti Setiap 2 (Dua) Bulan</option>
+                                                    <option value="3" <?= $pil2['pil2_par1c'] == "3" ? "selected" : "" ?>>3 = Identifikasi Sumber Pendanaan Non Inti Setiap 3 (Tiga) Bulan</option>
+                                                    <option value="4" <?= $pil2['pil2_par1c'] == "4" ? "selected" : "" ?>>4 = Identifikasi Sumber Pendanaan Non Inti Semester</option>
+                                                    <option value="5" <?= $pil2['pil2_par1c'] == "5" ? "selected" : "" ?>>5 = Identifikasi Sumber Pendanaan Non Inti Tidak Pernah Dilakukan</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil2['pil2_par1c'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                            
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl2_par1c" value="<?= number_format($bobot5_3, 2) ?>" class="form-control" id="koreksippl2_par1c" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl2_par1c" value="<?= $pil2['hasil_pil2_par1c'] ?>" class="form-control" id="nilaippl2_par1c" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+
+
+
+
+
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>7</center>
+                                            </th>
+                                            <th colspan="2">
+                                            Penilaian terhadap seberapa luas atau seberapa besar BPR memiliki komitmen pendanaan yang dapat digunakan jika dibutuhkan
+                                            </th>
+                                            <td></td>
+                                            <td>
+                                               
+
+                                            <td>
+                                               
+                                            </td>
+
+                                            <td>
+                                                
+                                            </td>
+                                            <td>
+                                            <center><input type="number" form="my_form" name="nilaippl2_par2" value="<?= $pil2['hasil_pil2_par2'] ?>" class="form-control" id="nilaippl2_par2" readonly>
+                                            </td>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil2_2" form="my_form" name="ket_pil2_2" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil2_2'] ?></textarea>
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                <select class="form-select" form="my_form" name="pilar2_2" id="pilar2_2">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil2['pil2_par2'] == "1" ? "selected" : "" ?>> 1 = sangat memadai</option>
+                                                    <option value="2" <?= $pil2['pil2_par2'] == "2" ? "selected" : "" ?>> 2 = memadai</option>
+                                                    <option value="3" <?= $pil2['pil2_par2'] == "3" ? "selected" : "" ?>> 3 = cukup memadai</option>
+                                                    <option value="4" <?= $pil2['pil2_par2'] == "4" ? "selected" : "" ?>> 4 = kurang memadai</option>
+                                                    <option value="5" <?= $pil2['pil2_par2'] == "5" ? "selected" : "" ?>> 5 = tidak memadais</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil2['pil2_par2'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                    
+
+                                            <th colspan="2">
+                                                
+                                            </th>
+                                            <th>
+                                               
+
+                                            </th>
+
+                                        </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--pilar3--->
+
+
+
+
+
+
+                                        <tr bgcolor="#edebe8">
+                                            <th>
+                                                <center>8</center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                Faktor Lainnya
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                            </th>
+                                            <td></td>
+                                            <td>
+                                            <td>
+                                            </td>
+
+                                            <th>
+                                             
+                                            </th>
+                                            <th>
+                                            <center><input type="number" form="my_form" name="hasil_pil3_par1" value="<?= $pil3['hasil_pil3_par1'] ?>" class="form-control" id="hasil_pil3_par1" readonly></center>
+                                            </th>
+                                            <td>
+                                            <textarea class="form-control" id="ket_pil3_1" form="my_form" name="ket_pil3_1" cols="40" rows="5"><?= $ket_inhern_likuiditas['ket_pil3_1'] ?></textarea>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <center></center>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                        
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                            
+                                            </th>
+                                            <th colspan="2">
+                                               
+                                        
+                                            </th>
+                                            <th colspan="4">
+
+                                            </th>
+
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                a. Penyusunan Profil Maturitas
+                                                <select class="form-select" form="my_form" name="pilar3_1a" id="pilar3_1a">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil3['pil3_par1a'] == "1" ? "selected" : "" ?>>1 = Dilakukan Setiap Mingguan</option>
+                                                    <option value="2" <?= $pil3['pil3_par1a'] == "2" ? "selected" : "" ?>>2 = Dilakukan Setiap Bulan</option>
+                                                    <option value="3" <?= $pil3['pil3_par1a'] == "3" ? "selected" : "" ?>>3 = Dilakukan Setiap 2 (Dua) Bulan</option>
+                                                    <option value="4" <?= $pil3['pil3_par1a'] == "4" ? "selected" : "" ?>>4 = Dilakukan Setiap 3 (Tiga) Bulan</option>
+                                                    <option value="5" <?= $pil3['pil3_par1a'] == "5" ? "selected" : "" ?>>5 = Tidak Pernah Dilakukan</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil3['pil3_par1a'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                         
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl3_par1a" value="<?= number_format($bobot6_1, 2) ?>" class="form-control" id="koreksippl3_par1a" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl3_par1a" value="<?= $pil3['hasil_pil3_par1a'] ?>" class="form-control" id="nilaippl3_par1a" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                b. Penyusunan Proyeksi Arus Kas
+                                                <select class="form-select" form="my_form" name="pilar3_1b" id="pilar3_1b">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil3['pil3_par1b'] == "1" ? "selected" : "" ?>>1 = Dilakukan Setiap Mingguan</option>
+                                                    <option value="2" <?= $pil3['pil3_par1b'] == "2" ? "selected" : "" ?>>2 = Dilakukan Setiap Bulan</option>
+                                                    <option value="3" <?= $pil3['pil3_par1b'] == "3" ? "selected" : "" ?>>3 = Dilakukan Setiap 2 (Dua) Bulan</option>
+                                                    <option value="4" <?= $pil3['pil3_par1b'] == "4" ? "selected" : "" ?>>4 = Dilakukan Setiap 3 (Tiga) Bulan</option>
+                                                    <option value="5" <?= $pil3['pil3_par1b'] == "5" ? "selected" : "" ?>>5 = Tidak Pernah Dilakukan</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil3['pil3_par1b'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                           
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl3_par1b" value="<?= number_format($bobot6_2, 2) ?>" class="form-control" id="koreksippl3_par1b" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl3_par1b" value="<?= $pil3['hasil_pil3_par1b'] ?>" class="form-control" id="nilaippl3_par1b" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                c. Penyusunan Stress Testing Kemampuan Likuiditas
+                                                <select class="form-select" form="my_form" name="pilar3_1c" id="pilar3_1c">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil3['pil3_par1c'] == "1" ? "selected" : "" ?>>1 = Dilakukan Setiap Bulan</option>
+                                                    <option value="2" <?= $pil3['pil3_par1c'] == "2" ? "selected" : "" ?>>2 = Dilakukan Setiap 3 (Tiga) Bulan</option>
+                                                    <option value="3" <?= $pil3['pil3_par1c'] == "3" ? "selected" : "" ?>>3 = Dilakukan Setiap 6 (Enam) Bulan</option>
+                                                    <option value="4" <?= $pil3['pil3_par1c'] == "4" ? "selected" : "" ?>>4 = Dilakukan Setiap Tahun</option>
+                                                    <option value="5" <?= $pil3['pil3_par1c'] == "5" ? "selected" : "" ?>>5 = Tidak Pernah Dilakukan</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil3['pil3_par1c'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                            
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl3_par1c" value="<?= number_format($bobot6_3, 2) ?>" class="form-control" id="koreksippl3_par1c" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl3_par1c" value="<?= $pil3['hasil_pil3_par1c'] ?>" class="form-control" id="nilaippl3_par1c" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                d. Identifikasi Risk Events yang Mempengaruhi </br> Kemampuan Likuiditas yang Bersumber dari Eksternal
+                                                <select class="form-select" form="my_form" name="pilar3_1d" id="pilar3_1d">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil3['pil3_par1d'] == "1" ? "selected" : "" ?>>1 = Identifikasi Risk Events Dilakukan Setiap Bulan</option>
+                                                    <option value="2" <?= $pil3['pil3_par1d'] == "2" ? "selected" : "" ?>>2 = Identifikasi Risk Events Dilakukan Setiap 3 (Tiga) bulan</option>
+                                                    <option value="3" <?= $pil3['pil3_par1d'] == "3" ? "selected" : "" ?>>3 = Identifikasi Risk Events Dilakukan Setiap 6 (Enam) Bulan</option>
+                                                    <option value="4" <?= $pil3['pil3_par1d'] == "4" ? "selected" : "" ?>>4 = Identifikasi Risk Events Dilakukan Setiap Tahun</option>
+                                                    <option value="5" <?= $pil3['pil3_par1d'] == "5" ? "selected" : "" ?>>5 = Identifikasi Risk Events Tidak Pernah Dilakukan</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil3['pil3_par1d'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                        
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl3_par1d" value="<?= number_format($bobot6_4, 2) ?>" class="form-control" id="koreksippl3_par1d" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl3_par1d" value="<?= $pil3['hasil_pil3_par1d'] ?>" class="form-control" id="nilaippl3_par1d" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                e. Identifikasi dan Evaluasi terhadap Jenis </br> Risiko lain yang meningkatkan risiko likuiditas
+                                                <select class="form-select" form="my_form" name="pilar3_1e" id="pilar3_1e">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil3['pil3_par1e'] == "1" ? "selected" : "" ?>>1 = Identifikasi Risk Events Dilakukan Setiap Bulan</option>
+                                                    <option value="2" <?= $pil3['pil3_par1e'] == "2" ? "selected" : "" ?>>2 = Identifikasi Risk Events Dilakukan Setiap 3 (Tiga) bulan</option>
+                                                    <option value="3" <?= $pil3['pil3_par1e'] == "3" ? "selected" : "" ?>>3 = Identifikasi Risk Events Dilakukan Setiap 6 (Enam) Bulan</option>
+                                                    <option value="4" <?= $pil3['pil3_par1e'] == "4" ? "selected" : "" ?>>4 = Identifikasi Risk Events Dilakukan Setiap Tahun</option>
+                                                    <option value="5" <?= $pil3['pil3_par1e'] == "5" ? "selected" : "" ?>>5 = Identifikasi Risk Events Tidak Pernah Dilakukan</option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil3['pil3_par1e'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                            
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl3_par1e" value="<?= number_format($bobot6_5 ,2) ?>" class="form-control" id="koreksippl3_par1e" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl3_par1e" value="<?= $pil3['hasil_pil3_par1e'] ?>" class="form-control" id="nilaippl3_par1e" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                            </th>
+                                            <th class="text-nowrap" scope="row">
+                                                f. Monitoring Tingkat Suku Bunga Pasar
+                                                <select class="form-select" form="my_form" name="pilar3_1f" id="pilar3_1f">
+                                                    <option selected> </option>
+                                                    <option value="1" <?= $pil3['pil3_par1f'] == "1" ? "selected" : "" ?>>1 = Dilakukan Setiap Hari</option>
+                                                    <option value="2" <?= $pil3['pil3_par1f'] == "2" ? "selected" : "" ?>>2 = Dilakukan Setiap 1 (Satu) Minggu</option>
+                                                    <option value="3" <?= $pil3['pil3_par1f'] == "3" ? "selected" : "" ?>>3 = Dilakukan Setiap 1 (Satu) Bulan</option>
+                                                    <option value="4" <?= $pil3['pil3_par1f'] == "4" ? "selected" : "" ?>>4 = Dilakukan Setiap sd 6 (Satu) Bulan</option>
+                                                    <option value="5" <?= $pil3['pil3_par1f'] == "5" ? "selected" : "" ?>>5 = Tidak Pernah Dilakukan </option>
+
+                                                </select>
+                                            </th>
+                                            <th>
+                                            <center>Periode Sebelumnya</center>
+                                            <center><?= $pembanding_pil3['pil3_par1f'] ?></center>
+                                            </th>
+                                            <td> </td>
+                                            <td> </td>
+
+                                            
+
+                                            <td colspan="2">
+                                                <center>Bobot<input type="number" form="my_form" name="koreksippl3_par1f" value="<?= number_format($bobot6_6 ,2) ?>" class="form-control" id="koreksippl3_par1f" readonly>
+
+                                            </td>
+                                            <th>
+                                                <center><input type="number" form="my_form" name="nilaippl3_par1f" value="<?= $pil3['hasil_pil3_par1f'] ?>" class="form-control" id="nilaippl3_par1f" readonly>
+
+                                            </th>
+
+                                        </tr>
+
+
+
+
+
+
+
+
+                                        
+
+
+
+
+
+
+
+
+
+    
+
+                                       
+
+
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive-->
+
+<br></br>
+<br></br>
+
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-centered mb-0">
+                                    <thead class="table-d" bgcolor="#74c7ff">
+                                        <tr style="color: #050505;">
+
+                                            <th colspan="9">
+                                                <center>REKAP PENILAIAN INHEREN LIKUIDITAS</center>
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+
+                                    
+                                    <tbody>
+                                        <tr class="table" bgcolor="#74c7ff">
+                                            <th scope="row" colspan="4">
+                                            Hasil Penilaian Inheren
+                                            </th>
+                                            <td width="8%">
+                                            <center>Tertinggi</center>
+                                            <input type="number" id="tertinggi_inheren" form="my_form" value="<?= $hasil['hasil_inheren_tertinggi'] ?>" name="tertinggi_inheren" class="form-control"  readonly="">
+                                            </td>
+                                            <td width="8%">
+                                            <center>Terendah</center>
+                                            <input type="number" id="terendah_inheren" form="my_form" value="<?= $hasil['hasil_inheren_terendah'] ?>" name="terendah_inheren" class="form-control"  readonly="">
+                                            </td>
+                                            <td width="8%">
+                                            <center>Rata-rata</center>
+                                            <input type="number" id="rata_rata_inheren" form="my_form" value="<?= $hasil['hasil_inheren_rata_rata'] ?>" name="rata_rata_inheren" class="form-control"  readonly="">
+                                            </td>
+                                            <td>
+                                                <center>Nilai diambil</center>
+                                                <select class="form-select" id="opsi_inheren" disabled>
+                                                    <option value="1" <?= $inheren['inheren_lik_set_tingkat_risiko'] == "1" ? "selected" : "" ?>>Tertiggi</option>
+                                                    <option value="2" <?= $inheren['inheren_lik_set_tingkat_risiko'] == "2" ? "selected" : "" ?>>Terendah</option>
+                                                    <option value="3" <?= $inheren['inheren_lik_set_tingkat_risiko'] == "3" ? "selected" : "" ?>>Rata-rata</option>
+                                                </select>
+                                            </td>
+                                            <td width="15%">
+                                            <center>Tingkat risiko</center>
+                                            <input type="number" id="risiko_inheren" form="my_form" value="<?= $hasil['hasil_tingkat_risiko'] ?>" name="risiko_inheren" class="form-control"  readonly="">
+                                            <center>Peringkat</center>
+                                            <input type="text" id="peringkat_inheren" form="my_form" value="<?= $hasil['hasil_peringkat'] ?>" name="peringkat_inheren" class="form-control"  readonly="">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <thead class="table-primary">
+                                        <tr>
+
+                                            <th colspan="9">
+                                                <center>Uraian Untuk Risiko Inheren likuiditas</center>
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-primary">
+                                        <tr>
+                                            <th colspan="9">
+                                            <textarea class="form-control" id="ket_inheren" form="my_form" name="ket_inheren" cols="60" rows="10"><?= $ket_inhern_likuiditas['ket_inheren'] ?></textarea>
+                                            </th>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            <hr>
+                            </hr>
+
+                            <br></br>
+
+
+
+
+
+
+
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+            </div>
+
+
+            <!-- end row -->
+
+
+            <!-- end row -->
+
+
+
+            <!-- end row -->
+
+        </div>
+        <!-- container -->
+
+    </div>
+    <!-- content -->
+
+
+
+</div>
+
+
