@@ -2399,8 +2399,8 @@ function exportCetakProfilExcel() {
             return '<Worksheet ss:Name="' + xmlClean(sh.name) + '"><Table>' + cols + rows.join('') + '</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><DisplayGridlines/></WorksheetOptions></Worksheet>';
         }
 
-        var workbookXml = '<?xml version="1.0"?>' +
-            '<?mso-application progid="Excel.Sheet"?>' +
+        var workbookXml = '\x3c?xml version="1.0"?>' +
+            '\x3c?mso-application progid="Excel.Sheet"?>' +
             '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" ' +
             'xmlns:o="urn:schemas-microsoft-com:office:office" ' +
             'xmlns:x="urn:schemas-microsoft-com:office:excel" ' +
