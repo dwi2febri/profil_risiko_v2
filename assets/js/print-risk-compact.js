@@ -1,4 +1,26 @@
 /* Shared cleanup applies only to cloned print documents. */
+/* Chromium underestimates fragmented rowspans. In the print-only copy, each
+   parameter group is one ordinary row; its parameter/subparameter grid is nested. */
+window.prepareRiskPrintGroups=function(){
+    document.querySelectorAll('.clean-page table[data-compact-risk-score="1"]').forEach(function(source){
+        if(source.classList.contains('print-group-source'))return;
+        var table=source.cloneNode(true);table.removeAttribute('data-compact-risk-print');table.removeAttribute('data-compact-risk-score');table.removeAttribute('data-compact-inheren-score');table.removeAttribute('data-compact-kpmr-score');table.classList.add('print-grouped-assessment');
+        table.querySelectorAll('colgroup').forEach(function(group){group.remove();});var group=document.createElement('colgroup');['5%','45%','12%','38%'].forEach(function(width){var col=document.createElement('col');col.style.width=width;group.appendChild(col);});table.prepend(group);
+        Array.from(table.tBodies).forEach(function(body){Array.from(body.rows).forEach(function(row){
+            var note=row.querySelector(':scope > .kpmr-keterangan-merged');if(!note)return;
+            var number=row.cells[0],span=note.rowSpan||1,rows=[row],next=row.nextElementSibling;
+            for(var i=1;i<span&&next;i++){rows.push(next);next=next.nextElementSibling;}
+            var details=document.createElement('td');details.colSpan=2;details.className='print-group-details';var inner=document.createElement('table');inner.className='print-parameter-grid';inner.innerHTML='<colgroup><col style="width:7.0175%"><col style="width:71.9298%"><col style="width:21.0527%"></colgroup><tbody></tbody>';
+            rows.forEach(function(part,index){var line=inner.tBodies[0].insertRow();var cells=Array.from(part.cells);(index===0?cells.slice(1,-1):cells).forEach(function(cell){line.appendChild(cell.cloneNode(true));});});
+            details.appendChild(inner);number.rowSpan=1;note.rowSpan=1;row.replaceChildren(number,details,note);rows.slice(1).forEach(function(part){part.remove();});row.classList.add('print-parameter-group');
+        });});
+        Array.from(table.rows).filter(function(row){return row.closest('table')===table;}).forEach(function(row){Array.from(row.cells).forEach(function(cell){if(cell.colSpan===5)cell.colSpan=4;else if(cell.colSpan===3)cell.colSpan=2;else if(row.parentElement===table.tHead&&cell.colSpan===2)cell.colSpan=1;});});
+        source.classList.add('print-group-source');source.after(table);table.style.setProperty('display','table','important');
+        table.querySelectorAll('.print-parameter-grid').forEach(function(inner){inner.style.setProperty('height',Math.max(0,Math.ceil(inner.closest('.print-parameter-group').getBoundingClientRect().height)-2)+'px','important');});
+    });
+};
+window.addEventListener('beforeprint',window.prepareRiskPrintGroups);
+window.addEventListener('afterprint',function(){document.querySelectorAll('.print-grouped-assessment').forEach(function(table){table.remove();});document.querySelectorAll('.print-group-source').forEach(function(table){table.classList.remove('print-group-source');});});
 window.removePrintEditorHeadings = function(root) {
     root.querySelectorAll('h1,h2,h3,h4,h5,h6,.card-header').forEach(function(el) {
         if (!el.closest('table') && !el.querySelector('table') && /^(Risiko\s|Profil\sRisiko|Isian\sKertas\sKerja)/i.test(el.textContent.trim())) el.remove();
@@ -96,9 +118,13 @@ window.alignKpmrPrintPillarSummaries=function(root){
 };
 window.alignRiskPrintParameters=function(root){
     root.querySelectorAll('table[data-compact-risk-print="1"]').forEach(function(table){var title=table.tHead&&table.tHead.rows[0]?table.tHead.rows[0].textContent:'';if(table.dataset.compactKpmrScore!=='1'&&!/(operasional|kepatuhan|reputasi|stratejik|strategik)[\s\S]*inheren\s*2\b/i.test(title))return;
+        if(/kepatuhan[\s\S]*inheren/i.test(title))table.querySelectorAll('.kpmr-number-merged').forEach(function(cell){[cell].concat(Array.from(cell.querySelectorAll('*'))).forEach(function(el){el.style.setProperty('font-weight','700','important');});});
         function align(c){if(!c)return;[c].concat(Array.from(c.querySelectorAll('*'))).forEach(function(el){el.style.setProperty('vertical-align','top','important');el.style.setProperty('text-align','left','important');el.style.setProperty('text-align-last','left','important');});c.classList.add('print-parameter-top-left');}
         Array.from(table.rows).forEach(function(row){if(row.matches('.row-param')||(row.cells.length>=3&&/^\d+[.)]?$/.test(row.cells[0].textContent.trim()))){var name=row.querySelector('.op2-param-name,.kp2-param-name');align(name?name.closest('th,td'):row.cells[1]);}
             if(row.matches('.row-param,.row-pilar,.row-summary'))return;var letter=Array.from(row.cells).find(function(c){return c.matches('.sub-col-op2')||/^[a-z]+[.)]$/i.test(c.textContent.trim());});if(!letter)return;[letter].concat(Array.from(letter.querySelectorAll('*'))).forEach(function(el){el.style.setProperty('vertical-align','top','important');});letter.classList.add('print-subletter-top');align(letter.nextElementSibling);
+            if(/kepatuhan[\s\S]*inheren/i.test(title) && letter.nextElementSibling){
+                [letter,letter.nextElementSibling].concat(Array.from(letter.querySelectorAll('*')),Array.from(letter.nextElementSibling.querySelectorAll('*'))).forEach(function(el){el.style.setProperty('font-weight','700','important');});
+            }
         });
     });
 };
@@ -122,6 +148,16 @@ window.formatRiskPrintRecaps=function(root){
     });
 };
 window.closeRiskPrintPageCuts=function(root){root.querySelectorAll('table[data-compact-risk-print="1"]').forEach(function(table){if(table.tFoot)return;var cols=table.querySelector('colgroup');if(!cols||!cols.children.length)return;var footer=table.createTFoot();footer.className='print-page-grid-footer';footer.setAttribute('aria-hidden','true');footer.insertRow().insertCell().colSpan=cols.children.length;});};
+window.normalizeRiskPrintPillarTitles=function(root){
+    root.querySelectorAll('tr').forEach(function(row){
+        var cell=row.cells[0];if(!cell)return;
+        var text=cell.textContent,match=text.match(/^(\s*(?:Hasil\s+Penilaian\s+)?Pilar\s*\d+\s*[:\-\u2013\u2014]\s*)(?:Pilar\s*(?:\d+\s*)?[:\-\u2013\u2014]?\s*)+/i);
+        if(!match)return;
+        // Delete only the repeated prefix; retain bold markup and other content.
+        var start=match[1].length,end=match[0].length,offset=0,walker=document.createTreeWalker(cell,4),node;
+        while((node=walker.nextNode())){var length=node.nodeValue.length,from=Math.max(0,start-offset),to=Math.min(length,end-offset);if(to>from)node.nodeValue=node.nodeValue.slice(0,from)+node.nodeValue.slice(to);offset+=length;if(offset>=end)break;}
+    });
+};
 window.compactRiskPrintColumns=function(root,expectedTitle){
     if(!root)return;removePrintEditorHeadings(root);removePrintSaveIndicators(root);removePrintCharacterCounts(root);
     root.querySelectorAll('table').forEach(function(table){
@@ -135,7 +171,7 @@ window.compactRiskPrintColumns=function(root,expectedTitle){
         table.querySelectorAll('.inheren-keterangan-merged').forEach(function(cell){['width','min-width','max-width'].forEach(function(prop){cell.style.setProperty(prop,'36%','important');});});
         if(isCreditLiquidity){compactInherenPrintRecaps(table);mergeInherenPrintNumbers(table);}if(table.dataset.compactRiskScore==='1')mergeKpmrPrintNotes(table);table.dataset.compactRiskPrint='1';
     });
-    justifyRiskPrintText(root);alignKpmrPrintPillarSummaries(root);formatRiskPrintRecaps(root);alignRiskPrintParameters(root);centerInherenPrintScores(root);closeRiskPrintPageCuts(root);
+    justifyRiskPrintText(root);alignKpmrPrintPillarSummaries(root);formatRiskPrintRecaps(root);alignRiskPrintParameters(root);centerInherenPrintScores(root);closeRiskPrintPageCuts(root);normalizeRiskPrintPillarTitles(root);
     root.querySelectorAll('thead').forEach(function(header) {
         var walker = document.createTreeWalker(header, 4), node;
         while ((node = walker.nextNode())) node.nodeValue = node.nodeValue.replace(/\b(KPMR|INHEREN)\s+2\b/gi, '$1');

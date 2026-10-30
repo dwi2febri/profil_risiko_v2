@@ -95,7 +95,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
         }
       }
       console.log('PASS authenticated record ID injection rejection');
-      const unauth=await securityFetch(base+'admin/user/delete_user.php?id=1',{redirect:'manual'});assert(unauth.status===302 || unauth.status===401 || unauth.status===500,'Unexpected endpoint status');
+      const unauth=await securityFetch(base+'admin/user/delete_user.php?id=0',{redirect:'manual'});assert.equal(unauth.status,302,'Unauthenticated database endpoint was not blocked');assert.equal(unauth.headers.get('location'),'/profil_risiko_v2/');
       console.log('PASS unauthenticated direct endpoint protection');
       await cmd('Page.navigate',{url:base+'admin/dashboard'});await waitFor(`document.readyState==='complete' && document.querySelector('.side-nav')`,30000);
       const logout=await securityFetch(base+'admin/logout.php',{headers,redirect:'manual'});assert.equal(logout.status,302);assert.equal(logout.headers.get('location'),'/profil_risiko_v2/?alert=logout');
@@ -187,6 +187,15 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     }
     console.log('PASS previous-period columns removed from four Inheren 2 and six KPMR 2 print layouts');
 
+    for(const file of printFiles){
+      const code=fs.readFileSync(file,'utf8');
+      const inlineHelper=code.slice(code.indexOf('    function restoreInlineKeteranganToRightColumn('),code.indexOf('    function removeDropdownArtifacts('));
+      const widthHelper=code.slice(code.indexOf('    function fixKpmrDanInherenLainWidth('),code.indexOf('    function removeFaktorLainnyaEmptyRows('));
+      const result=await evaluate(`(()=>{document.body.innerHTML='<main><table><thead><tr><th colspan="8">RISIKO REPUTASI INHEREN 2</th></tr><tr><th>NO</th><th colspan="2">PARAMETER</th><th colspan="2">PERINGKAT RISIKO</th><th>KETERANGAN</th><th colspan="2">PERIODE SEBELUMNYA</th></tr></thead><tbody><tr class="row-pilar"><td colspan="8">PILAR 1</td></tr><tr class="row-param"><th>1</th><th colspan="2">Parameter reputasi</th><td></td><td>1.25</td><td><div class="print-note">Penilaian skala risiko berdasarkan kondisi bank. Keterangan tetap di kanan.</div></td><td></td><td>2.75</td></tr><tr><th></th><th>a.</th><th>Subparameter reputasi</th><td>1.00</td><td colspan="2"></td><td>2.75</td><td></td></tr></tbody></table></main>';${inlineHelper}\n${widthHelper}\nconst root=document.querySelector('main');restoreInlineKeteranganToRightColumn(root);fixKpmrDanInherenLainWidth(root);restoreInlineKeteranganToRightColumn(root);compactRiskPrintColumns(root,'Risiko Reputasi - Inheren 2');const table=root.querySelector('table'),occupied=[],widths=[];[...table.rows].forEach((row,r)=>{let col=0;[...row.cells].forEach(cell=>{while((occupied[col]||0)>r)col++;for(let j=0;j<cell.colSpan;j++)occupied[col+j]=r+cell.rowSpan;col+=cell.colSpan;});widths.push(occupied.filter(until=>until>r).length);});return {widths,columns:table.querySelector('colgroup').children.length,note:table.querySelector('.row-param').lastElementChild.textContent,old:table.textContent.includes('2.75')};})()`);
+      assert(result.columns===5 && result.widths.every(n=>n===5) && result.note.includes('Keterangan tetap di kanan.') && !result.old,'Narrative text changed reputation columns: '+file+' '+JSON.stringify(result));
+    }
+    console.log('PASS reputation notes mentioning skala risiko do not create trailing columns for all '+printFiles.length+' roles');
+
 
     await cmd('Page.navigate',{url:base+'admin/index.php?page=dashboard'});
     await waitFor(`document.readyState==='complete' && document.querySelector('.leftside-menu')`);
@@ -205,9 +214,14 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     }
     console.log('PASS actual consolidated and branch print sections: Inheren 2 and KPMR 2 selection');
     liveHtml=liveHtml.replace('<head>','<head><base href="'+base+'admin/laporan/cetak_laporan_profil_risiko.php">');
-    const summaries=process.argv.includes('--summaries');
+    const reputation=process.argv.includes('--reputation');
+    if(reputation) {
+      liveHtml=await (await fetch(base+'admin/laporan/cetak_laporan_profil_risiko.php?id=556',{headers})).text();
+      liveHtml=liveHtml.replace('<head>','<head><base href="'+base+'admin/laporan/cetak_laporan_profil_risiko.php">');
+    }
+    const summaries=process.argv.includes('--summaries') || reputation;
     const profiles=process.argv.includes('--profiles');
-    const pattern=profiles ? '- Profil$' : summaries ? '(?:Inheren 2|KPMR 2)$' : 'Risiko (Kredit|Likuiditas) - Inheren';
+    const pattern=reputation ? 'Risiko Reputasi - Inheren 2$' : profiles ? '- Profil$' : summaries ? '(?:Inheren 2|KPMR 2)$' : 'Risiko (Kredit|Likuiditas) - Inheren';
     liveHtml=liveHtml.replace("const sections = Array.from(document.querySelectorAll('.print-section'));", "document.querySelectorAll('.print-section').forEach(el=>{if(!new RegExp("+JSON.stringify(pattern)+").test(el.dataset.title))el.remove();});const sections = Array.from(document.querySelectorAll('.print-section'));");
     const tree=await cmd('Page.getFrameTree');
     await cmd('Page.setDocumentContent',{frameId:tree.frameTree.frame.id,html:liveHtml});
@@ -222,7 +236,24 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
       console.log('PASS all six risk profiles: current and previous scores above grades in separate bordered rows');
       await send('Browser.close');return;
     }
-    await waitFor(`document.querySelectorAll('.section-content table[data-compact-risk-print="1"]').length>=${summaries?10:2} && !document.querySelector('.section-content.loading')`,60000);
+    await waitFor(`document.querySelectorAll('.section-content table[data-compact-risk-print="1"]').length>=${reputation?1:summaries?10:2} && !document.querySelector('.section-content.loading')`,60000);
+    if(reputation) {
+      const grid=await evaluate(`(()=>{const t=document.querySelector('table[data-compact-inheren-score="1"]');return {title:t.tHead.rows[0].cells[0].colSpan,headers:[...t.tHead.rows[1].cells].map(c=>c.colSpan),pillars:[...t.querySelectorAll('.row-pilar')].map(r=>r.cells[0].colSpan),parameters:t.querySelectorAll('.row-param').length,width:t.getBoundingClientRect().width,headWidth:t.tHead.rows[0].cells[0].getBoundingClientRect().width,html:t.outerHTML};})()`);
+      fs.writeFileSync(path.join(artifacts,'reputation-grid.json'),JSON.stringify(grid,null,2));
+      const pdf=await cmd('Page.printToPDF',{printBackground:true,preferCSSPageSize:true});fs.writeFileSync(path.join(artifacts,'reputation-print.pdf'),Buffer.from(pdf.data,'base64'));
+      await evaluate(`(()=>{const note=document.querySelector('table[data-compact-inheren-score="1"] .kpmr-keterangan-merged');const text=note.textContent.trim();note.replaceChildren();for(let i=0;i<35;i++){const p=document.createElement('p');p.textContent='Uji uraian panjang '+(i+1)+'. '+text;note.appendChild(p);}})()`);
+      const longPdf=await cmd('Page.printToPDF',{printBackground:true,preferCSSPageSize:true});fs.writeFileSync(path.join(artifacts,'reputation-long-note-print.pdf'),Buffer.from(longPdf.data,'base64'));
+      const pagination=JSON.parse(execFileSync('python',['-c',
+        "import fitz,json,sys,re; results=[]\nfor filename in sys.argv[1:]:\n d=fitz.open(filename); texts=[p.get_text() for p in d]; fragments=[t.split('KETERANGAN',1)[1].strip() for t in texts if 'RISIKO REPUTASI INHEREN' in t and 'KETERANGAN' in t]; results.append({'fragments':len(fragments),'empty':sum(len(t)<100 for t in fragments),'markers':len(set(re.findall(r'Uji uraian panjang (\\d+)\\.', ' '.join(texts))))})\nprint(json.dumps(results))",
+        path.join(artifacts,'reputation-print.pdf'),path.join(artifacts,'reputation-long-note-print.pdf')],{encoding:'utf8'}));
+      assert(pagination.every(p=>p.fragments>0 && p.empty===0),'Reputation PDF contains header-only/empty table fragments: '+JSON.stringify(pagination));
+      assert.equal(pagination[1].markers,35,'Long merged reputation narrative was cut off');
+      assert(grid.parameters>0,'Reputation parameters missing');
+      assert(grid.title===5 && grid.headers.reduce((a,b)=>a+b,0)===5 && grid.pillars.every(n=>n===5),'Reputation print grid has inconsistent columns: '+JSON.stringify({...grid,html:undefined}));
+      assert(Math.abs(grid.width-grid.headWidth)<2,'Reputation header does not fill the table');
+      console.log('PASS actual reputation print: full-width grid, parameters and all long-note text without header-only/empty PDF pages');
+      await send('Browser.close');return;
+    }
     const live=await evaluate(`[...document.querySelectorAll('table[data-compact-risk-print="1"]')].map(table=>({headers:[...table.querySelectorAll('thead th')].filter(th=>th.colSpan===1).map(th=>th.textContent.trim().replace(/\\s+/g,' ')),cols:table.querySelector('colgroup').children.length,kpmr:table.dataset.compactKpmrScore==='1',notes:table.querySelectorAll('.inheren-keterangan-merged').length}))`);
     assert(live.every(table=>table.cols===(summaries?5:6) && (summaries || table.notes>0) && !table.headers.some(label=>summaries ? /PERIODE SEBELUMNYA/.test(label) : /^(AMBANG BATAS|RUMUS|KOREKSI)$/.test(label))),'Actual source did not compact correctly: '+JSON.stringify(live));
     if(summaries) {

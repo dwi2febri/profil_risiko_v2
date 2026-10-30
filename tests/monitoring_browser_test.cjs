@@ -82,6 +82,10 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     const waitFor = async (expression, limit = 20000) => {
       const start = Date.now();
       while (Date.now() - start < limit) { if (await evaluate(expression)) return; await delay(200); }
+      if(expression.includes('datatable-buttons1')) {
+        console.error('Report browser state:',JSON.stringify(await evaluate(`({url:location.href,jquery:!!window.jQuery,datatable:!!(window.jQuery && jQuery.fn.dataTable),rows:document.querySelectorAll('#datatable-buttons1 tbody tr').length,scripts:document.scripts.length,tail:document.body.textContent.slice(-250)})`)));
+        console.error('Report script errors:',JSON.stringify(runtimeErrors.map(error=>({url:error.url,line:error.lineNumber,detail:error.exception?.description?.slice(0,350)||error.text}))));
+      }
       throw new Error('Browser condition timed out: ' + expression);
     };
     await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');

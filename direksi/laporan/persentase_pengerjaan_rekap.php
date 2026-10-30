@@ -1646,7 +1646,7 @@ $kpmr_operasional = round((($ko_pilar1_ops + $ko_pilar2_ops + $ko_pilar3_ops + $
 
 //profil operasional
 $keterangan_profil_operasional_ops = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
-  	id_profil_risiko,
+  	MIN(id_profil_risiko) AS id_profil_risiko,
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_risiko IS NOT NULL AND TRIM(ket_profil_risiko) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_inheren IS NOT NULL AND TRIM(ket_profil_inheren) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_kpmr IS NOT NULL AND TRIM(ket_profil_kpmr) <> '' THEN 1 ELSE 0 END) AS jumlah
@@ -2078,7 +2078,7 @@ $kpmr_operasional = round((($ko_pilar1_sdm + $ko_pilar2_sdm + $ko_pilar3_sdm + $
 
 //profil operasional
 $keterangan_profil_operasional_sdm = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
-  	id_profil_risiko,
+  	MIN(id_profil_risiko) AS id_profil_risiko,
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_risiko IS NOT NULL AND TRIM(ket_profil_risiko) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_inheren IS NOT NULL AND TRIM(ket_profil_inheren) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_kpmr IS NOT NULL AND TRIM(ket_profil_kpmr) <> '' THEN 1 ELSE 0 END) AS jumlah
@@ -3208,7 +3208,7 @@ $kpmr_operasional = round((($ko_pilar1_skk + $ko_pilar2_skk + $ko_pilar3_skk + $
 
 //profil operasional
 $keterangan_profil_operasional_skk = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
-  	id_profil_risiko,
+  	MIN(id_profil_risiko) AS id_profil_risiko,
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_risiko IS NOT NULL AND TRIM(ket_profil_risiko) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_inheren IS NOT NULL AND TRIM(ket_profil_inheren) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_kpmr IS NOT NULL AND TRIM(ket_profil_kpmr) <> '' THEN 1 ELSE 0 END) AS jumlah
@@ -4213,7 +4213,7 @@ WHERE frame_laporan_profil_risiko.dibuat_by = 137 AND frame_laporan_profil_risik
 $kstra_ru3_lit = $respon_unit_kerja_stratejik_pil3_lit['jumlah'];
 
 $respon_unit_kerja_stratejik_pil4_lit = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
-  	id_profil_risiko,
+  	MIN(id_profil_risiko) AS id_profil_risiko,
     SUM(CASE WHEN respon_pil4_1a IS NOT NULL AND TRIM(respon_pil4_1a) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN respon_pil4_1b IS NOT NULL AND TRIM(respon_pil4_1b) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN respon_pil4_1c IS NOT NULL AND TRIM(respon_pil4_1c) <> '' THEN 1 ELSE 0 END) +
@@ -5201,7 +5201,7 @@ $kpmr_operasional = round((($ko_pilar1_skai + $ko_pilar2_skai + $ko_pilar3_skai 
 
 //profil operasional
 $keterangan_profil_operasional_skai = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
-  	id_profil_risiko,
+  	MIN(id_profil_risiko) AS id_profil_risiko,
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_risiko IS NOT NULL AND TRIM(ket_profil_risiko) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_inheren IS NOT NULL AND TRIM(ket_profil_inheren) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN keterangan_profil_operasional.ket_profil_kpmr IS NOT NULL AND TRIM(ket_profil_kpmr) <> '' THEN 1 ELSE 0 END) AS jumlah
@@ -6093,7 +6093,7 @@ WHERE frame_laporan_profil_risiko.dibuat_by = 143 AND frame_laporan_profil_risik
 $kstra_ru3_skai = $respon_unit_kerja_stratejik_pil3_skai['jumlah'];
 
 $respon_unit_kerja_stratejik_pil4_skai = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
-  	id_profil_risiko,
+  	MIN(id_profil_risiko) AS id_profil_risiko,
     SUM(CASE WHEN respon_pil4_1a IS NOT NULL AND TRIM(respon_pil4_1a) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN respon_pil4_1b IS NOT NULL AND TRIM(respon_pil4_1b) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN respon_pil4_1c IS NOT NULL AND TRIM(respon_pil4_1c) <> '' THEN 1 ELSE 0 END) +

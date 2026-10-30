@@ -2185,7 +2185,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
     <?php endif; ?>
 </div>
 
-<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261030-03"></script>
+<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261030-07"></script>
 <script>
 (function(){
     window.setPrintOrientation = function(mode){
@@ -2288,7 +2288,8 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
 
         function tableNeedKetFix(tbl){
             if (!tbl) return false;
-            const raw = (((tbl.textContent || '') + ' ' + (tbl.tHead ? tbl.tHead.textContent : '')).toUpperCase());
+            // Detect the table format from its headers, never from narrative content.
+            const raw = (tbl.tHead ? tbl.tHead.textContent : '').toUpperCase();
             const hasSkala = raw.indexOf('SKALA RISIKO') >= 0;
             const hasKet = raw.indexOf('KETERANGAN') >= 0 || tbl.querySelector('.ket-toggle-wrap,.row-ket-detail,.ket-dropdown-row,[class*="ket-"]');
             const isRiskTable = raw.indexOf('KPMR') >= 0 || raw.indexOf('INHEREN') >= 0;
@@ -2890,7 +2891,8 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
     function fixKpmrDanInherenLainWidth(root){
         if (!root) return;
         root.querySelectorAll('table').forEach(function(tbl){
-            const raw = ((tbl.textContent || '') + ' ' + (tbl.tHead ? tbl.tHead.textContent : '')).toUpperCase();
+            // Detect the table format from its headers, never from narrative content.
+            const raw = (tbl.tHead ? tbl.tHead.textContent : '').toUpperCase();
             if (raw.indexOf('KETERANGAN') < 0) return;
 
             const isKpmr = raw.indexOf('KPMR') >= 0 && raw.indexOf('SKALA RISIKO') >= 0;

@@ -10,8 +10,13 @@ security_check(simpro_validate_record_ids(['id'=>'545','id_parameter'=>'23','tab
 security_check(simpro_validate_record_ids(['id'=>['1','2']], true), 'Valid bulk identifiers rejected');
 security_check(!simpro_validate_record_ids(['id'=>['1','2 OR 1=1']], true), 'Unsafe bulk identifier accepted');
 security_check(mysqli_character_set_name($conn) === 'utf8mb4', 'Connection charset is ambiguous');
+$markers=simpro_db_query($conn, "SELECT '?' AS literal_value,?AS bound_value WHERE ?=?AND ?=?", ['kept?',1,1,2,2]);
+$markerRow=mysqli_fetch_assoc($markers);
+security_check($markerRow['literal_value']==='?' && $markerRow['bound_value']==='kept?', 'Placeholder formatting changed SQL literals or adjacent keywords');
+$commentResult=simpro_db_query($conn, "SELECT '?' AS literal_value /* don't change ? */,?AS bound_value", ['kept']);
+security_check(mysqli_fetch_assoc($commentResult)['bound_value']==='kept', 'SQL comment changed placeholder parsing');
 $payloads = ["' OR 1=1 -- ", "x'); DROP TABLE user; --", "O'Brien \\ notes", 'normal assessment text'];
-mysqli_query($conn, 'CREATE TEMPORARY TABLE simpro_security_probe (id INT PRIMARY KEY, note VARCHAR(512))');
+mysqli_query($conn, 'CREATE TEMPORARY TABLE simpro_security_probe (id INT AUTO_INCREMENT PRIMARY KEY, note VARCHAR(512))');
 try {
     foreach ($payloads as $index=>$payload) {
         $id=$index+1;
@@ -22,6 +27,9 @@ try {
     }
     security_check((int)mysqli_fetch_row(mysqli_query($conn,'SELECT COUNT(*) FROM simpro_security_probe'))[0] === count($payloads), 'Injection altered rows');
     security_check(simpro_db_query($conn, 'DELETE FROM simpro_security_probe WHERE id=?', [1]) === true, 'Bound delete failed');
+    security_check(mysqli_affected_rows($conn) === 1, 'Prepared helper lost affected-row information');
+    simpro_db_query($conn, 'INSERT INTO simpro_security_probe (note) VALUES (?)', ['auto id']);
+    security_check(mysqli_insert_id($conn) > count($payloads), 'Prepared helper lost generated insert id');
 } finally { mysqli_query($conn,'DROP TEMPORARY TABLE simpro_security_probe'); }
 $user=mysqli_fetch_assoc(simpro_db_query($conn, 'SELECT username,password,user_id FROM user WHERE tipe=? LIMIT 1', ['admin']));
 security_check($user && simpro_authenticate($conn,$user['username'],$user['password'])['user_id'] == $user['user_id'], 'Existing account cannot login');

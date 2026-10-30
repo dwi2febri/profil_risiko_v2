@@ -46,7 +46,8 @@ date_default_timezone_set('Asia/Jakarta');
     <link rel="shortcut icon" type="image/png" href="../assets/images/11.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- Load local jQuery/Bootstrap before page initializers. -->
+    <script src="../assets/js/vendor.min.js"></script>
     <!-- third party css -->
     <link href="../assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css">
     <link href="../assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
@@ -1368,7 +1369,7 @@ body{font-family:'Poppins',Arial,sans-serif!important;}
 
 
         <!-- bundle -->
-        <script src="../assets/js/vendor.min.js"></script>
+        
         <script src="../assets/js/app.min.js"></script>
 
         <!-- third party js -->
@@ -1409,8 +1410,6 @@ body{font-family:'Poppins',Arial,sans-serif!important;}
 
         <!-- Data Table JS -->
          <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
     <!-- App css -->
 
 
