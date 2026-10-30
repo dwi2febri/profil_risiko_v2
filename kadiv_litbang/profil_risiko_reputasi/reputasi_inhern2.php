@@ -816,7 +816,7 @@ $directAction = basename(__FILE__).'?id='.(int)$id;
 
 <div class="table-responsive">
 <table class="table table-bordered table-centered mb-0 tbl-op2">
-<thead class="table-d" bgcolor="#74c7ff"><tr style="color:#050505;"><th colspan="9"><center>REKAP PENILAIAN INHEREN OPERASIONAL</center></th></tr></thead>
+<thead class="table-d" bgcolor="#74c7ff"><tr style="color:#050505;"><th colspan="9"><center>REKAP PENILAIAN INHEREN REPUTASI</center></th></tr></thead>
 <tbody>
 <?php foreach($results as $pilar){ ?>
 <tr class="row-summary">

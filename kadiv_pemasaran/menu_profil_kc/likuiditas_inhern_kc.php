@@ -86,7 +86,7 @@ $ket_inhern_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM k
 
 
 $ambang_batas_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = '$tahun'"));
-$bobot_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = '$id'"));
+// Bobot likuiditas menggunakan setting aktif bobot_likuiditas_per_parameter.
 
 
 

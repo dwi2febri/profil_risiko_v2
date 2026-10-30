@@ -28,7 +28,7 @@ function tgl_indo($tanggal)
     return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 }
 
-$id = $_SESSION['user_id'];
+$id = $_SESSION['user_id'] ?? null;
 $get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
 
 WHERE user_id = '$id'"));
@@ -39,15 +39,15 @@ WHERE user_id = '$id'"));
 <!--jamu-->
 <?php
 
-$kode_kantor = $_GET['kode_kantor'];
-$tahun = $_GET['tahun'];
-$periode = $_GET['periode'];
+$kode_kantor = (int)($_GET['kode_kantor'] ?? 0);
+$tahun = (int)($_GET['tahun'] ?? 0);
+$periode = (int)($_GET['periode'] ?? 0);
 
 $frame = mysqli_fetch_array(mysqli_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE kantor_cabang = '$kode_kantor' AND tahun ='$tahun' AND periode ='$periode'"));
 
 
-$id_pro = $frame['id_profil_risiko'];
-$dp = $frame['data_pembanding'];
+$id_pro = $frame['id_profil_risiko'] ?? 0;
+$dp = $frame['data_pembanding'] ?? 0;
 
 
 
@@ -62,13 +62,13 @@ $tren5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_pro
 $tren6 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 6 AND user =3 AND status_korwil =1 AND status_skmr =1 ORDER BY periode DESC LIMIT 1"));
 $tren7 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 7 AND user =3 AND status_korwil =1 AND status_skmr =1 ORDER BY periode DESC LIMIT 1"));
 
-$perper1 = $tren1['periode'];
-$perper2 = $tren2['periode'];
-$perper3 = $tren3['periode'];
-$perper4 = $tren4['periode'];
-$perper5 = $tren5['periode'];
-$perper6 = $tren6['periode'];
-$perper7 = $tren7['periode'];
+$perper1 = $tren1['periode'] ?? null;
+$perper2 = $tren2['periode'] ?? null;
+$perper3 = $tren3['periode'] ?? null;
+$perper4 = $tren4['periode'] ?? null;
+$perper5 = $tren5['periode'] ?? null;
+$perper6 = $tren6['periode'] ?? null;
+$perper7 = $tren7['periode'] ?? null;
 
 $nilai_per1 = $perper1 - 1;
 $nilai_per2 = $perper2 - 1;
@@ -86,23 +86,23 @@ $tren2_5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_p
 $tren2_6 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 6 AND user =3 AND status_korwil =1 AND status_skmr =1 AND periode = '$nilai_per6'"));
 $tren2_7 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 7 AND user =3 AND status_korwil =1 AND status_skmr =1 AND periode = '$nilai_per7'"));
 
-$tr1 = $tren1['total_nilai'];
-$tr2 = $tren2['total_nilai'];
-$tr3 = $tren3['total_nilai'];
-$tr4 = $tren4['total_nilai'];
-$tr5 = $tren5['total_nilai'];
-$tr6 = $tren6['total_nilai'];
-$tr7 = $tren7['total_nilai'];
+$tr1 = $tren1['total_nilai'] ?? null;
+$tr2 = $tren2['total_nilai'] ?? null;
+$tr3 = $tren3['total_nilai'] ?? null;
+$tr4 = $tren4['total_nilai'] ?? null;
+$tr5 = $tren5['total_nilai'] ?? null;
+$tr6 = $tren6['total_nilai'] ?? null;
+$tr7 = $tren7['total_nilai'] ?? null;
 
 
 
-$tr2_1 = $tren2_1['total_nilai'];
-$tr2_2 = $tren2_2['total_nilai'];
-$tr2_3 = $tren2_3['total_nilai'];
-$tr2_4 = $tren2_4['total_nilai'];
-$tr2_5 = $tren2_5['total_nilai'];
-$tr2_6 = $tren2_6['total_nilai'];
-$tr2_7 = $tren2_7['total_nilai'];
+$tr2_1 = $tren2_1['total_nilai'] ?? null;
+$tr2_2 = $tren2_2['total_nilai'] ?? null;
+$tr2_3 = $tren2_3['total_nilai'] ?? null;
+$tr2_4 = $tren2_4['total_nilai'] ?? null;
+$tr2_5 = $tren2_5['total_nilai'] ?? null;
+$tr2_6 = $tren2_6['total_nilai'] ?? null;
+$tr2_7 = $tren2_7['total_nilai'] ?? null;
 
 $nilai_tr1 = ($tr1+$tr2+$tr3+$tr4+$tr5+$tr6+$tr7)/7;
 $nilai_tr2 = ($tr2_1+$tr2_2+$tr2_3+$tr2_4+$tr2_5+$tr2_6+$tr2_7)/7;
@@ -178,9 +178,9 @@ $get_data = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risik
 $get_data2 = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risiko) AS total FROM frame_laporan_profil_risiko WHERE user =3 AND Kantor_cabang IN(1,2,3,4,5,6,7) AND status_korwil = 1 AND status_skmr =1"));
 
 if (isset($_POST['submit'])) {
-    $kode_kantor = $_POST['kode_kantor'];
-    $tahun = $_POST['tahun'];
-    $periode = $_POST['periode'];
+    $kode_kantor = (int)($_POST['kode_kantor'] ?? 0);
+    $tahun = (int)($_POST['tahun'] ?? 0);
+    $periode = (int)($_POST['periode'] ?? 0);
         header("Location: index.php?page=dashboard&kode_kantor=$kode_kantor&tahun=$tahun&periode=$periode");
         exit();
 }
@@ -222,7 +222,7 @@ if (isset($_POST['submit'])) {
                                                 <div class="card shadow-none m-0">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-download" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $get_data['total'] ?></span></h3>
+                                                        <h3><span><?= $get_data['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Profil Risiko</p>
                                                     </div>
                                                 </div>
@@ -232,7 +232,7 @@ if (isset($_POST['submit'])) {
                                                 <div class="card shadow-none m-0 border-start">
                                                     <div class="card-body text-center">
                                                         <i class=" uil-fast-mail" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $get_data2['total']?></span></h3>
+                                                        <h3><span><?= $get_data2['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Diterima Kantor Pusat</p>
                                                     </div>
                                                 </div>
@@ -303,7 +303,7 @@ if (isset($_POST['submit'])) {
                                                             include "../conn/conn.php";
                                                             $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang WHERE id_cabang IN(1,2,3,4,5,6,7)");
                                                             while ($data = mysqli_fetch_array($query_cabang)) { ?>
-                                                                <option value="<?= $data['id_cabang'] ?>" <?= $data['id_cabang'] == $kode_kantor ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>
+                                                                <option value="<?= $data['id_cabang'] ?? '' ?>" <?= $data['id_cabang'] == $kode_kantor ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>
                                                             <?php
                                                             };
                                                             ?>
@@ -337,7 +337,7 @@ if (isset($_POST['submit'])) {
                                                                     include "../conn/conn.php";
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
-                                                                        <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                        <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                     <?php
                                                                     };
                                                                     ?>
@@ -440,7 +440,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kredit
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket1['inheren_kredit'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket1['inheren_kredit'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -450,7 +450,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko operasional
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket2['inheren_operasional'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket2['inheren_operasional'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -460,7 +460,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kepatuhan
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket3['inheren_kepatuhan'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket3['inheren_kepatuhan'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -470,7 +470,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko likuiditas
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket4['inheren_likuiditas'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket4['inheren_likuiditas'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -480,7 +480,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko reputasi
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket5['inheren_reputasi'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket5['inheren_reputasi'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -490,7 +490,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko stratejik
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket6['inheren_stratejik'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket6['inheren_stratejik'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -500,9 +500,9 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 
-                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -541,7 +541,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kredit
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket1['inheren_kredit'] ?></b></center>
+                                                                                <center><b><?= $ket1['inheren_kredit'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -551,7 +551,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko operasional
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket2['inheren_operasional'] ?></b></center>
+                                                                                <center><b><?= $ket2['inheren_operasional'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -561,7 +561,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kepatuhan
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket3['inheren_kepatuhan'] ?></b></center>
+                                                                                <center><b><?= $ket3['inheren_kepatuhan'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -571,7 +571,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko likuiditas
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket4['inheren_likuiditas'] ?></b></center>
+                                                                                <center><b><?= $ket4['inheren_likuiditas'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -581,7 +581,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko reputasi
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket5['inheren_reputasi'] ?></b></center>
+                                                                                <center><b><?= $ket5['inheren_reputasi'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -591,7 +591,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko stratejik
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket6['inheren_stratejik'] ?></b></center>
+                                                                                <center><b><?= $ket6['inheren_stratejik'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -602,9 +602,9 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 
-                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -648,7 +648,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko kredit
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren1['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren1['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -658,7 +658,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko operasional
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren2['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren2['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -668,7 +668,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko kepatuhan
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren3['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren3['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -678,7 +678,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko likuiditas
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren4['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren4['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                            
                                                                         </tr>
@@ -688,7 +688,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko reputasi
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren5['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren5['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                            
                                                                         </tr>
@@ -698,7 +698,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko stratejik
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren6['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren6['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                            
                                                                         </tr>
@@ -709,9 +709,9 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 
-                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -751,7 +751,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko kredit
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren1['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren1['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -761,7 +761,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko operasional
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren2['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren2['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -771,7 +771,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko kepatuhan
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren3['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren3['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -781,7 +781,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko likuiditas
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren4['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren4['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             
                                                                         </tr>
@@ -791,7 +791,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko reputasi
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren5['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren5['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                            
                                                                         </tr>
@@ -801,7 +801,7 @@ if (isset($_POST['submit'])) {
                                                                                 Risiko stratejik
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren6['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren6['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                           
                                                                         </tr>
@@ -811,9 +811,9 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 
-                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
                                                                         
@@ -867,19 +867,19 @@ if (isset($_POST['submit'])) {
                                         data: [
                                                 <?php
                                                 $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-                                                echo $triwulan1_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
                                                 $triwulan2_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-                                                echo $triwulan2_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan2_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
                                                 $triwulan3_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-                                                echo $triwulan3_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan3_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
                                                 $triwulan4_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
-                                                echo $triwulan4_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan4_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
                                         type: 'line',
@@ -896,19 +896,19 @@ if (isset($_POST['submit'])) {
                                         data: [
                                                 <?php
                                                 $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-                                                echo $triwulan1_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan1_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-                                                echo $triwulan2_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan2_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                <?php
                                                 $triwulan3_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-                                                echo $triwulan3_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan3_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
-                                                echo $triwulan4_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan4_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                                 ],
 
@@ -923,19 +923,19 @@ if (isset($_POST['submit'])) {
                                         data: [
                                             <?php
                                                 $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-                                                echo $triwulan1_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-                                                echo $triwulan2_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan2_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-                                                echo $triwulan3_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan3_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
-                                                echo $triwulan4_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan4_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -950,19 +950,19 @@ if (isset($_POST['submit'])) {
                                         data: [
                                             <?php
                                                 $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-                                                echo $triwulan1_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan1_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-                                                echo $triwulan2_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan2_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-                                                echo $triwulan3_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan3_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
-                                                echo $triwulan4_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan4_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -977,19 +977,19 @@ if (isset($_POST['submit'])) {
                                         data: [
                                             <?php
                                                 $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-                                                echo $triwulan1_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan1_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-                                                echo $triwulan2_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan2_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-                                                echo $triwulan3_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan3_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
-                                                echo $triwulan4_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan4_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -1004,19 +1004,19 @@ if (isset($_POST['submit'])) {
                                         data: [
                                                 <?php
                                                 $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-                                                echo $triwulan1_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan1_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-                                                echo $triwulan2_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan2_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-                                                echo $triwulan3_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan3_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
-                                                echo $triwulan4_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan4_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -1069,27 +1069,27 @@ if (isset($_POST['submit'])) {
                                         data: [
                                                 <?php
                                                 $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  inheren_kredit from keterangan_profil_kredit WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_kredit['inheren_kredit'];
+                                                echo json_encode($triwulan1_kredit['inheren_kredit'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_operasional from keterangan_profil_operasional WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_operasional['inheren_operasional'];
+                                                echo json_encode($triwulan1_operasional['inheren_operasional'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_kepatuhan from keterangan_profil_kepatuhan WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_kepatuhan['inheren_kepatuhan'];
+                                                echo json_encode($triwulan1_kepatuhan['inheren_kepatuhan'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_likuiditas from keterangan_profil_likuiditas WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_likuiditas['inheren_likuiditas'];
+                                                echo json_encode($triwulan1_likuiditas['inheren_likuiditas'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_reputasi from keterangan_profil_reputasi WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_reputasi['inheren_reputasi'];
+                                                echo json_encode($triwulan1_reputasi['inheren_reputasi'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_stratejik from keterangan_profil_stratejik WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_stratejik['inheren_stratejik'];
+                                                echo json_encode($triwulan1_stratejik['inheren_stratejik'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
                                         type: 'bar',
@@ -1106,27 +1106,27 @@ if (isset($_POST['submit'])) {
                                         data: [
                                                 <?php
                                                 $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  inheren_kredit from keterangan_profil_kredit WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_kredit['inheren_kredit'];
+                                                echo json_encode($triwulan1_kredit['inheren_kredit'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_operasional from keterangan_profil_operasional WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_operasional['inheren_operasional'];
+                                                echo json_encode($triwulan1_operasional['inheren_operasional'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_kepatuhan from keterangan_profil_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_kepatuhan['inheren_kepatuhan'];
+                                                echo json_encode($triwulan1_kepatuhan['inheren_kepatuhan'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_likuiditas from keterangan_profil_likuiditas WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_likuiditas['inheren_likuiditas'];
+                                                echo json_encode($triwulan1_likuiditas['inheren_likuiditas'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_reputasi from keterangan_profil_reputasi WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_reputasi['inheren_reputasi'];
+                                                echo json_encode($triwulan1_reputasi['inheren_reputasi'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_stratejik from keterangan_profil_stratejik WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_stratejik['inheren_stratejik'];
+                                                echo json_encode($triwulan1_stratejik['inheren_stratejik'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
                                         type: 'bar',

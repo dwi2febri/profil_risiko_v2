@@ -1,0 +1,18 @@
+/* Reserve space for the saved profile narrative on the opening F4 page. */
+.cover, body.modal-view .cover { padding: 7mm 13mm 0 !important; }
+.cover .cover-title { margin: 0 0 3mm !important; min-height: 14mm !important; }
+.cover .cover-logo { max-width: 14mm !important; max-height: 14mm !important; }
+.cover h1 { font-size: 16px !important; line-height: 1.25 !important; margin: 0 0 3px !important; }
+.cover > table { margin-top: 3mm !important; }
+.cover > table td { font-size: 12px !important; line-height: 1.2 !important; padding: 4px 6px !important; }
+.cover .cover-summary { margin-top: 3mm !important; }
+.cover .cover-summary-title { font-size: 12px !important; padding: 5px !important; }
+.cover .cover-summary table { font-size: 12px !important; }
+.cover .cover-summary th, .cover .cover-summary td { font-size: 12px !important; line-height: 1.2 !important; padding: 5px 6px !important; }
+.cover .cover-summary .quality { font-size: 11px !important; line-height: 1.2 !important; }
+.cover .cover-narrative { margin-top: 3mm; break-inside: avoid; page-break-inside: avoid; }
+.cover .cover-narrative h2 { margin: 0; border: 1px solid #111; padding: 5px; background: #e6e6e6; font-size: 12px !important; text-align: center; }
+.cover .cover-narrative-text { border: 1px solid #111; border-top: 0; padding: 7px; font-size: 12px !important; font-weight: 400 !important; line-height: 1.35 !important; white-space: pre-wrap; text-align: justify; text-align-last: left; overflow-wrap: break-word; }
+@media print {
+    .cover, body.modal-view .cover { padding: 0 3mm !important; }
+}

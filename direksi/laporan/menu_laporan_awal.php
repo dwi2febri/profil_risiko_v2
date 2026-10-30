@@ -1370,7 +1370,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var activeTab = document.querySelector('a[data-bs-toggle="tab"].active');
     syncTambahLaporanButton(activeTab ? activeTab.getAttribute('href') : '#tab-profil-risiko-konsol');
 
-    var params = new URLSearchParams(window.location.search);
+    var params = window.simproRouteParams ? window.simproRouteParams() : new URLSearchParams(window.location.search);
     var tabFromUrl = params.get('tab');
 
     if (tabFromUrl === 'cabang' || tabFromUrl === 'divisi' || window.location.hash === '#tab-profil-risiko-cabang' || window.location.hash === '#tab-profil-risiko-divisi') {

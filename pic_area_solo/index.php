@@ -1,3 +1,4 @@
+<?php require_once dirname(__DIR__) . '/fungsi/pretty_routes.php'; $simproRouteConfig = simpro_routes_bootstrap(); ?>
 <?php error_reporting(E_ERROR | E_PARSE); ?>
 
 <?php
@@ -33,6 +34,9 @@ date_default_timezone_set('Asia/Jakarta');
 <html lang="en">
 
 <head>
+    <base href="<?= htmlspecialchars($simproRouteConfig['roleBase'], ENT_QUOTES, 'UTF-8') ?>">
+    <script>window.simproRouteConfig = <?= json_encode($simproRouteConfig, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;</script>
+    <script src="<?= htmlspecialchars($simproRouteConfig['projectBase'], ENT_QUOTES, 'UTF-8') ?>assets/js/pretty-routes.js?v=20261030-02"></script>
     <meta charset="utf-8">
     <title>Profil Risiko BKK Jateng</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1464,7 +1468,7 @@ document.addEventListener('DOMContentLoaded', function(){
     --oai-side-text:#1f2937;
     --oai-side-muted:#64748b;
     --oai-side-hover:#eef4ff;
-    --oai-side-active:#e8f1ff;
+    --oai-side-active:#f0f6ff;
     --oai-side-active-line:#2563eb;
     --oai-side-shadow:0 14px 38px rgba(15,23,42,.10);
 }
@@ -1512,8 +1516,8 @@ body.oai-modern-sidebar .side-nav-second-level a,
 body.oai-modern-sidebar .side-nav-third-level a,
 body.oai-modern-sidebar .side-nav-forth-level a{
     color:var(--oai-side-text) !important;
-    border-radius:12px !important;
-    transition:background .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease !important;
+    border-radius:10px !important;
+    transition:background .16s ease, color .16s ease !important;
     position:relative;
 }
 body.oai-modern-sidebar .side-nav-link{
@@ -1570,7 +1574,7 @@ body.oai-modern-sidebar .side-nav-link.oai-open-parent,
 body.oai-modern-sidebar .side-nav a.oai-active-menu{
     background:var(--oai-side-active) !important;
     color:#0f172a !important;
-    box-shadow:inset 3px 0 0 var(--oai-side-active-line) !important;
+    box-shadow:none !important;
 }
 body.oai-modern-sidebar .side-nav-link[aria-expanded="true"] span,
 body.oai-modern-sidebar .side-nav-link.oai-open-parent span,
@@ -1579,17 +1583,15 @@ body.oai-modern-sidebar .side-nav a.oai-active-menu p{
     color:#0f172a !important;
     font-weight:700 !important;
 }
+body.oai-modern-sidebar .side-nav a.oai-active-menu{
+    background:#edf5ff !important;
+    border-left:0 !important;
+    border-radius:10px !important;
+    color:#1746a2 !important;
+    font-weight:700 !important;
+}
 body.oai-modern-sidebar .side-nav a.oai-active-menu::after{
-    content:'';
-    position:absolute;
-    right:10px;
-    top:50%;
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:#2563eb;
-    transform:translateY(-50%);
-    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    display:none !important;
 }
 body.oai-modern-sidebar .menu-arrow{
     transition:transform .18s ease !important;
@@ -1691,20 +1693,21 @@ body.oai-modern-sidebar .simplebar-content-wrapper{
             var tools = document.createElement('div');
             tools.className = 'oai-sidebar-tools';
             tools.innerHTML = '<div class="oai-sidebar-search-wrap"><i class="mdi mdi-magnify"></i><input type="text" id="oaiSidebarSearch" autocomplete="off" placeholder="Cari menu..."></div><div class="oai-sidebar-empty" id="oaiSidebarEmpty">Menu tidak ditemukan</div>';
-            container.insertBefore(tools, sideNav);
+            sideNav.parentNode.insertBefore(tools, sideNav);
         }
 
         var currentUrl = window.location.href;
-        var currentPage = new URLSearchParams(window.location.search).get('page') || '';
+        var currentPage = window.simproRoutePage ? window.simproRoutePage() : (new URLSearchParams(window.location.search).get('page') || '');
         var activeLink = null;
         var links = Array.prototype.slice.call(sideNav.querySelectorAll('a[href]'));
 
         links.forEach(function(a){
             var href = a.getAttribute('href') || '';
-            if(!href || href === '#') return;
+            if(!href || href.charAt(0) === '#' || /^javascript:/i.test(href)) return;
             try{
-                var u = new URL(href, window.location.href);
-                var p = u.searchParams.get('page') || '';
+                var u = new URL(href, document.baseURI);
+                if(u.origin !== window.location.origin || u.pathname.indexOf(window.simproRouteConfig.roleBase) !== 0) return;
+                var p = window.simproRoutePage ? window.simproRoutePage(u.href) : (u.searchParams.get('page') || '');
                 if(currentPage && p === currentPage && !activeLink){
                     activeLink = a;
                 }else if(!currentPage && currentUrl.indexOf(href) !== -1 && !activeLink){
@@ -1715,6 +1718,7 @@ body.oai-modern-sidebar .simplebar-content-wrapper{
 
         if(activeLink){
             activeLink.classList.add('oai-active-menu');
+            activeLink.setAttribute('aria-current', 'page');
             var parent = activeLink.parentElement;
             while(parent && parent !== sideNav){
                 if(parent.classList && parent.classList.contains('collapse')){

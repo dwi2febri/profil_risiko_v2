@@ -95,7 +95,7 @@ if ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) {
     ");
     $ambang_batas_likuiditas = ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) ? mysqli_fetch_array($q_amb_lik) : [];
 }
-$bobot_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = '$id'"));
+// Bobot likuiditas menggunakan setting aktif bobot_likuiditas_per_parameter.
 
 $info_kuantitatif_likuiditas = [];
 $cek_info_kuantitatif_likuiditas = mysqli_query($conn, "SHOW TABLES LIKE 'info_kuantitatif_inheren'");
@@ -360,7 +360,7 @@ $arus_kas_netto_hitung = $arus_kas_netto;
 if (((float)$kas_besar_debet != 0) || ((float)$kas_besar_kredit != 0)) {
     $arus_kas_netto_hitung = ((float)$kas_besar_kredit - (float)$kas_besar_debet);
 }
-$p2c = round(($arus_kas_netto_hitung / $total_dpk) * 100, 2);
+$p2c = round(($arus_kas_netto / $total_dpk) * 100, 2);
 $p2d = round(($tabungan / $total_dpk) * 100, 2);
 $p2e = round(($deposito_3bln / $total_dpk) * 100, 2);
 $p2f = round(($deposito_6bln / $total_dpk) * 100, 2);
@@ -2034,7 +2034,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                                 <center>Total DPK</center>
                                             </th>
                                             <th >
-                                                <center><?= rupiah($arus_kas_netto_hitung) ?></center>
+                                                <center><?= rupiah($arus_kas_netto) ?></center>
                                                 <hr>
                                                 </hr>
                                                 <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>

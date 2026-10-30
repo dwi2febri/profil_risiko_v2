@@ -2453,21 +2453,28 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
                                             $('#penyaluran_kredit3').change(function() {
-                                              
-                                                var val = this.value;
-                                                $("#koreksippl3_par1b").val(val);
-                                                var koreksippl3_par1b = $("#koreksippl3_par1b").val();
-                                                var hsl_pil3_par1b = <?php echo json_encode($hsl_pil3_par1b); ?>;
 
-                                                if (hsl_pil3_par1b > koreksippl3_par1b) {
-                                                    var nilai = hsl_pil3_par1b.toFixed(2);
-                                                } else if (hsl_pil3_par1b == koreksippl3_par1b) {
-                                                    var nilai = hsl_pil3_par1b.toFixed(2);
-                                                } else {
-                                                    var nilai = (parseFloat(hsl_pil3_par1b) + parseFloat(koreksippl3_par1b)) / 2;
-                                                    nilai = nilai.toFixed(2);
-                                                }
-                                                $("#nilaippl3_par1b").val(nilai);
+                                            // Nilai koreksi dari dropdown
+                                            var koreksi = parseFloat(this.value);
+
+                                            // Nilai rumus dari PHP
+                                            var rumus = parseFloat(<?php echo json_encode($hsl_pil3_par1b); ?>);
+
+                                            // Masukkan nilai koreksi
+                                            $("#koreksippl3_par1b").val(this.value);
+
+                                            // Validasi nilai
+                                            if (!Number.isFinite(rumus) || !Number.isFinite(koreksi)) {
+                                                $("#nilaippl3_par1b").val('');
+                                                return;
+                                            }
+
+                                            // Hitung rata-rata rumus dan koreksi
+                                            var nilai = (rumus + koreksi) / 2;
+
+                                            // Tampilkan hasil 2 angka desimal
+                                            $("#nilaippl3_par1b").val(nilai.toFixed(2));
+
                                             });
 
                                             $('#penyaluran_kredit3_5').change(function() {
@@ -4168,7 +4175,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                             </th>
                                             <td><input type="text" form="my_form" name="aba" value="<?= fmt2($pilar2_p2c) ?>" class="form-control" id="rupiah" readonly></td>
                                             <td>
-                                                >= <?= $ambang_batas_kredit['nkdpapht_prt_tkyd'] ?> </td>
+                                                <= <?= $ambang_batas_kredit['nkdpapht_prt_tkyd'] ?> </td>
 
                                             <td>
                                                 <center><?= $hsl_pil2_par2c ?></center>
@@ -4271,7 +4278,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                             </th>
                                             <td><input type="text" form="my_form" name="aba" value="<?= fmt2($pilar2_p2f) ?>" class="form-control" id="rupiah" readonly></td>
                                             <td>
-                                                >= <?= $ambang_batas_kredit['kmsjt_per_tkyd'] ?> </td>
+                                                <= <?= $ambang_batas_kredit['kmsjt_per_tkyd'] ?> </td>
 
                                             <td>
                                                 <center><?= $hsl_pil2_par2f ?></center>

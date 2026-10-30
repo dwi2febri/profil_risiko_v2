@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__DIR__, 3) . '/fungsi/rasio_inheren.php';
+
 // FIX AUTOSAVE: buffer output agar response AJAX bersih JSON, bukan tercampur HTML/modal.
 if (!ob_get_level()) { ob_start(); }
 
@@ -95,7 +97,7 @@ if ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) {
     ");
     $ambang_batas_likuiditas = ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) ? mysqli_fetch_array($q_amb_lik) : [];
 }
-$bobot_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = '$id'"));
+// Bobot likuiditas menggunakan setting aktif bobot_likuiditas_per_parameter.
 
 $info_kuantitatif_likuiditas = [];
 $cek_info_kuantitatif_likuiditas = mysqli_query($conn, "SHOW TABLES LIKE 'info_kuantitatif_inheren'");
@@ -345,57 +347,57 @@ $deposito_inti = $master_likuiditas_P1['deposito_inti'];
 
 
 // menghitung rumus
-$p1 = ($aset_likuid / $total_aset) * 100;
+$p1 = inheren_safe_ratio($aset_likuid, $total_aset, 100, null);
 $p1a_atas =($total_aset - $aset_likuid);
 $p1a_bawah =($total_dpk - $aset_likuid);
-$p1a = round(($p1a_atas/$p1a_bawah) * 100, 2);
+$p1a = inheren_safe_ratio($p1a_atas, $p1a_bawah, 100);
 
-$p2 = round(($aset_likuid / $kewajiban_lancar) * 100, 2);
+$p2 = inheren_safe_ratio($aset_likuid, $kewajiban_lancar, 100);
 
-$p2a = round(($aset_likuid / $pendanaan_jangka_pendek) * 100, 2);
-$p2b = round(($aset_likuid / $kewajiban_jangka_pendek) * 100, 2);
+$p2a = inheren_safe_ratio($aset_likuid, $pendanaan_jangka_pendek, 100);
+$p2b = inheren_safe_ratio($aset_likuid, $kewajiban_jangka_pendek, 100);
 // FIX EXCEL: Arus Kas Netto dihitung dari Kas Besar Kredit - Kas Besar Debet jika datanya tersedia.
 // Pada Excel nilai arus kas netto bisa negatif, sehingga tidak boleh hanya mengambil field arus_kas_netto yang sudah jadi.
 $arus_kas_netto_hitung = $arus_kas_netto;
 if (((float)$kas_besar_debet != 0) || ((float)$kas_besar_kredit != 0)) {
     $arus_kas_netto_hitung = ((float)$kas_besar_kredit - (float)$kas_besar_debet);
 }
-$p2c = round(($arus_kas_netto_hitung / $total_dpk) * 100, 2);
-$p2d = round(($tabungan / $total_dpk) * 100, 2);
-$p2e = round(($deposito_3bln / $total_dpk) * 100, 2);
-$p2f = round(($deposito_6bln / $total_dpk) * 100, 2);
-$p2g = round(($deposito_12bln / $total_dpk) * 100, 2);
-$p2h = round(($modal_disetor / $total_dpk) * 100, 2);
-$p2i = round(($pinjaman / $total_dpk) * 100, 2);
+$p2c = inheren_safe_ratio($arus_kas_netto, $total_dpk, 100);
+$p2d = inheren_safe_ratio($tabungan, $total_dpk, 100);
+$p2e = inheren_safe_ratio($deposito_3bln, $total_dpk, 100);
+$p2f = inheren_safe_ratio($deposito_6bln, $total_dpk, 100);
+$p2g = inheren_safe_ratio($deposito_12bln, $total_dpk, 100);
+$p2h = inheren_safe_ratio($modal_disetor, $total_dpk, 100);
+$p2i = inheren_safe_ratio($pinjaman, $total_dpk, 100);
 
 
-$p3 = round((100 * $kyd) / $total_dpk, 2);
-$p3a = round(($dpk_dijamin_lps / $total_dpk) * 100, 2);
+$p3 = inheren_safe_ratio($kyd, $total_dpk, 100);
+$p3a = inheren_safe_ratio($dpk_dijamin_lps, $total_dpk, 100);
 
 $p3b_atas = ($alat_likuid+$kredit_kolek_lancar);
-$p3b = round(($p3b_atas / $total_dpk) * 100, 2);
-$p3c = round(($deposito_6bln / $alat_likuid) * 100, 2);
+$p3b = inheren_safe_ratio($p3b_atas, $total_dpk, 100);
+$p3c = inheren_safe_ratio($deposito_6bln, $alat_likuid, 100);
 
-$p3d_atas = (($kyd-$kredit_des_thn_sebelum)/$kredit_des_thn_sebelum) * 100;
-$p3d_bawah = (($total_dpk-$dpk_des_thn_sebelum)/$dpk_des_thn_sebelum) * 100;
-$p3d = round(($p3d_atas / $p3d_bawah) * 100, 2);
+$p3d_atas = inheren_safe_ratio($kyd - $kredit_des_thn_sebelum, $kredit_des_thn_sebelum, 100, null);
+$p3d_bawah = inheren_safe_ratio($total_dpk - $dpk_des_thn_sebelum, $dpk_des_thn_sebelum, 100, null);
+$p3d = inheren_safe_ratio($p3d_atas, $p3d_bawah, 100);
 
-$p4 = round(($deposan_tabungan_terbesar25/ $total_dpk) *100, 2);
+$p4 = inheren_safe_ratio($deposan_tabungan_terbesar25, $total_dpk, 100);
 
 if ($pendanaan_non_inti == 0) {
     $p5 = 0;
 } else {
-    $p5 = round((100 * $pendanaan_non_inti) / $total_dpk, 2);
+    $p5 = inheren_safe_ratio($pendanaan_non_inti, $total_dpk, 100);
 }
 
 $p5a_atas = ($pendanaan_non_inti-$alat_likuid);
 $p5a_bawah = ($total_aset-$aset_likuid);
-$p5a = round($p5a_atas / $p5a_bawah , 2);
+$p5a = inheren_safe_ratio($p5a_atas, $p5a_bawah);
 
-$p5b = round(($deposito_rs / $alat_likuid) * 100, 2);
-$p5c = round(($aset_likuid / $pendanaan_non_inti) * 100, 2);
+$p5b = inheren_safe_ratio($deposito_rs, $alat_likuid, 100);
+$p5c = inheren_safe_ratio($aset_likuid, $pendanaan_non_inti, 100);
 
-$p5d = round(($deposito_inti / $total_dpk) * 100, 2);
+$p5d = inheren_safe_ratio($deposito_inti, $total_dpk, 100);
 
 
 
@@ -2034,7 +2036,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                                 <center>Total DPK</center>
                                             </th>
                                             <th >
-                                                <center><?= rupiah($arus_kas_netto_hitung) ?></center>
+                                                <center><?= rupiah($arus_kas_netto) ?></center>
                                                 <hr>
                                                 </hr>
                                                 <center><?= rupiah($master_likuiditas_P1['total_dpk']) ?></center>

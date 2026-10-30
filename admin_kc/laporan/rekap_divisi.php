@@ -26,7 +26,7 @@ function tgl_indo($tanggal)
     return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 }
 
-$id = $_SESSION['user_id'];
+$id = $_SESSION['user_id'] ?? null;
 $get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
 
 WHERE user_id = '$id'"));
@@ -36,14 +36,14 @@ WHERE user_id = '$id'"));
 
 <!--jamu-->
 <?php
-$tahun = $_GET['tahun'];
-$periode = $_GET['periode'];
+$tahun = (int)($_GET['tahun'] ?? 0);
+$periode = (int)($_GET['periode'] ?? 0);
 
 $frame = mysqli_fetch_array(mysqli_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE tahun ='$tahun' AND periode ='$periode'"));
 
 
-$id_pro = $frame['id_profil_risiko'];
-$dp = $frame['data_pembanding'];
+$id_pro = $frame['id_profil_risiko'] ?? 0;
+$dp = $frame['data_pembanding'] ?? 0;
 
 //kredit
 $kredit1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$tahun' AND periode = '$periode' AND user =2 AND status_skmr =1 AND frame_laporan_profil_risiko.dibuat_by = 132"));
@@ -131,9 +131,9 @@ $tingkat_ris8 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_lapo
 $semarang_cnt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risiko) AS total FROM frame_laporan_profil_risiko WHERE tahun ='$tahun' AND periode ='$periode' AND user =2 AND status_skmr =1 AND dibuat_by IN(132,142,133,134,136,137,135,143)"));
 
 if (isset($_POST['submit'])) {
-    $kode_kantor = $_POST['kode_kantor'];
-    $tahun = $_POST['tahun'];
-    $periode = $_POST['periode'];
+    $kode_kantor = (int)($_POST['kode_kantor'] ?? 0);
+    $tahun = (int)($_POST['tahun'] ?? 0);
+    $periode = (int)($_POST['periode'] ?? 0);
         header("Location: index.php?page=rekap_dvs&tahun=$tahun&periode=$periode");
         exit();
 }
@@ -208,7 +208,7 @@ if (isset($_POST['submit'])) {
                                                                     include "../conn/conn.php";
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
-                                                                        <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                        <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                     <?php
                                                                     };
                                                                     ?>
@@ -234,7 +234,7 @@ if (isset($_POST['submit'])) {
                                             <div class="col-lg-12">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-open" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $semarang_cnt['total'] ?></span></h3>
+                                                        <h3><span><?= $semarang_cnt['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Divisi</p>
                                                         
                                                     </div>
@@ -318,53 +318,53 @@ if (isset($_POST['submit'])) {
                                                                     <tr>
                                                                             <td><center>1</center></td>
                                                                             <td>Divisi Pemasaran</td>
-                                                                            <td><center><?= $kredit1['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $kredit1['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $likuiditas1['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $likuiditas1['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $tingkat_ris1['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris1['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $tingkat_ris1['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris1['ket_total_nilai'] ?? '-' ?></center></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td><center>2</center></td>
                                                                             <td>Divisi Penyelesaian Kredit</td>
-                                                                            <td><center><?= $kredit2['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $kredit2['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $tingkat_ris2['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris2['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $tingkat_ris2['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris2['ket_total_nilai'] ?? '-' ?></center></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td><center>3</center></td>
                                                                             <td>Divisi Operasional</td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $operasional3['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $operasional3['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $tingkat_ris3['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris3['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $tingkat_ris3['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris3['ket_total_nilai'] ?? '-' ?></center></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td><center>4</center></td>
                                                                             <td>Divisi SDM</td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $operasional4['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $operasional4['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $tingkat_ris4['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris4['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $tingkat_ris4['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris4['ket_total_nilai'] ?? '-' ?></center></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
@@ -372,12 +372,12 @@ if (isset($_POST['submit'])) {
                                                                             <td>Divisi Sekper</td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $kepatuhan5['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $kepatuhan5['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $reputasi5['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $reputasi5['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $tingkat_ris5['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris5['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $tingkat_ris5['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris5['ket_total_nilai'] ?? '-' ?></center></td>
                                                                           
                                                                         </tr>
                                                                         <tr>
@@ -388,35 +388,35 @@ if (isset($_POST['submit'])) {
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $stratejik6['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris6['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris6['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $stratejik6['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris6['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris6['ket_total_nilai'] ?? '-' ?></center></td>
                                                                          
                                                                         </tr>
                                                                         <tr>
                                                                             <td><center>7</center></td>
                                                                             <td>Satuan Kerja Kepatuhan</td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $operasional7['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $kepatuhan7['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $operasional7['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $kepatuhan7['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $reputasi7['tingkat_risiko'] ?></center></td>
+                                                                            <td><center><?= $reputasi7['tingkat_risiko'] ?? '-' ?></center></td>
                                                                             <td><center>-</center></td>
-                                                                            <td><center><?= $tingkat_ris7['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris7['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $tingkat_ris7['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris7['ket_total_nilai'] ?? '-' ?></center></td>
                                                                           
                                                                         </tr>
                                                                         <tr>
                                                                             <td><center>8</center></td>
                                                                             <td>Satuan Kerja Audit Internal</td>
-                                                                            <td><center><?= $kredit8['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $operasional8['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $kepatuhan8['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $likuiditas8['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $reputasi8['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $stratejik8['tingkat_risiko'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris8['total_nilai'] ?></center></td>
-                                                                            <td><center><?= $tingkat_ris8['ket_total_nilai'] ?></center></td>
+                                                                            <td><center><?= $kredit8['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $operasional8['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $kepatuhan8['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $likuiditas8['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $reputasi8['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $stratejik8['tingkat_risiko'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris8['total_nilai'] ?? '-' ?></center></td>
+                                                                            <td><center><?= $tingkat_ris8['ket_total_nilai'] ?? '-' ?></center></td>
                                                                           
                                                                         </tr>
                                                                     </tbody>
@@ -466,14 +466,14 @@ if (isset($_POST['submit'])) {
                         datasets: [
                                 {
                                         label: 'Tingkat Risiko',
-                                        data: [<?= $tingkat_ris1['total_nilai'] ?>,
-                                        <?= $tingkat_ris2['total_nilai'] ?>,
-                                        <?= $tingkat_ris3['total_nilai'] ?>,
-                                        <?= $tingkat_ris4['total_nilai'] ?>,
-                                        <?= $tingkat_ris5['total_nilai'] ?>,
-                                        <?= $tingkat_ris6['total_nilai'] ?>,
-                                        <?= $tingkat_ris7['total_nilai'] ?>,
-                                        <?= $tingkat_ris8['total_nilai'] ?>
+                                        data: [<?= json_encode($tingkat_ris1['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris2['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris3['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris4['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris5['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris6['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris7['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>,
+                                        <?= json_encode($tingkat_ris8['total_nilai'] ?? null, JSON_NUMERIC_CHECK) ?>
                                         ],
                                         type: 'bar',
                                         fill: true,

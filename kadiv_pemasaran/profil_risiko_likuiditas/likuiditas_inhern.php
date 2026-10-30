@@ -95,7 +95,7 @@ if ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) {
     ");
     $ambang_batas_likuiditas = ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) ? mysqli_fetch_array($q_amb_lik) : [];
 }
-$bobot_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = '$id'"));
+// Bobot likuiditas menggunakan setting aktif bobot_likuiditas_per_parameter.
 
 $info_kuantitatif_likuiditas = [];
 $cek_info_kuantitatif_likuiditas = mysqli_query($conn, "SHOW TABLES LIKE 'info_kuantitatif_inheren'");

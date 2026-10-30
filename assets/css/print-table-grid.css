@@ -1,0 +1,45 @@
+/* A single collapsed grid prevents doubled edges beside rowspan cells. */
+html body .report-wrap :is(.clean-page, .cover, .pernyataan-page)
+    :is(table, table.print-close-page-cut, table.inheren-keterangan-rowspan) {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    border-width: 1px !important;
+    box-shadow: none !important;
+}
+html body .report-wrap :is(.clean-page, .cover, .pernyataan-page)
+    :is(table, table.print-close-page-cut, table.inheren-keterangan-rowspan) :is(th, td) {
+    border-width: 1px !important;
+    border-color: #111 !important;
+    box-shadow: none !important;
+}
+
+/* Chromium repeats this thin rule below each table fragment, including rowspans. */
+html body .report-wrap .clean-page table tfoot.print-page-grid-footer {
+    display: table-footer-group !important;
+    break-inside: avoid !important;
+}
+html body .report-wrap .clean-page table tfoot.print-page-grid-footer tr,
+html body .report-wrap .clean-page table tfoot.print-page-grid-footer td {
+    height: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+}
+html body .report-wrap .clean-page table tfoot.print-page-grid-footer td {
+    border: 0 !important;
+    border-top: 1px solid #111 !important;
+}
+
+/* The uppercase section heading leads the smaller table title. */
+html body .report-wrap .print-section > .section-title {
+    font-size: 16px !important;
+    text-transform: uppercase !important;
+}
+html body .report-wrap .clean-page table[data-compact-risk-print="1"] > thead > tr:first-child > th:only-child,
+html body .report-wrap .clean-page table[data-compact-risk-print="1"] > thead > tr:first-child > th:only-child *,
+html body .report-wrap .clean-page .profile-risk-title th,
+html body .report-wrap .clean-page.profil-risk-direct > h4 {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+}

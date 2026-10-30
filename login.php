@@ -101,7 +101,7 @@
           <div class="card">
             <!-- Logo -->
             <div class="card-header pt-4 pb-4 text-center bg-secondary">
-              <a href="index.html">
+              <a href="index.php">
                 <span>
                   <img src="assets/images/SIMPRO_2gd.png"
                        alt="SIMPRO"
@@ -118,7 +118,7 @@
                 <h4 class="text-uppercase text-danger mt-3">Silahkan Login Ulang</h4>
                 <p class="text-muted mt-3">Kamu tersesat ....</p>
 
-                <a class="btn btn-info mt-3" href="https://appesemar.bkkjateng.co.id:9926/profil_risiko_v2">
+                <a class="btn btn-info mt-3" href="index.php">
                   <i class="mdi mdi-reply"></i> Home
                 </a>
               </div>

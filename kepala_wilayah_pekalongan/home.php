@@ -27,7 +27,7 @@ function tgl_indo($tanggal)
     return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 }
 
-$id = $_SESSION['user_id'];
+$id = $_SESSION['user_id'] ?? null;
 $get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
 
 WHERE user_id = '$id'"));
@@ -38,9 +38,9 @@ WHERE user_id = '$id'"));
 <!--jamu-->
 <?php
 
-$kode_kantor = $_GET['kode_kantor'];
-$tahun = $_GET['tahun'];
-$periode = $_GET['periode'];
+$kode_kantor = (int)($_GET['kode_kantor'] ?? 0);
+$tahun = (int)($_GET['tahun'] ?? 0);
+$periode = (int)($_GET['periode'] ?? 0);
 $periode_sebelum = $periode-1;
 if ($periode == 1) {
     $prevtriwulan = 4;
@@ -52,8 +52,8 @@ if ($periode == 1) {
 $frame = mysqli_fetch_array(mysqli_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE kantor_cabang = '$kode_kantor' AND tahun ='$tahun' AND periode ='$periode'"));
 
 
-$id_pro = $frame['id_profil_risiko'];
-$dp = $frame['data_pembanding'];
+$id_pro = $frame['id_profil_risiko'] ?? 0;
+$dp = $frame['data_pembanding'] ?? 0;
 
 
 
@@ -69,13 +69,13 @@ $tren5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_pro
 $tren6 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 27 AND user =3 AND status_korwil =1 AND status_skmr =1 ORDER BY periode DESC LIMIT 1"));
 $tren7 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 28 AND user =3 AND status_korwil =1 AND status_skmr =1 ORDER BY periode DESC LIMIT 1"));
 
-$perper1 = $tren1['periode'];
-$perper2 = $tren2['periode'];
-$perper3 = $tren3['periode'];
-$perper4 = $tren4['periode'];
-$perper5 = $tren5['periode'];
-$perper6 = $tren6['periode'];
-$perper7 = $tren7['periode'];
+$perper1 = $tren1['periode'] ?? null;
+$perper2 = $tren2['periode'] ?? null;
+$perper3 = $tren3['periode'] ?? null;
+$perper4 = $tren4['periode'] ?? null;
+$perper5 = $tren5['periode'] ?? null;
+$perper6 = $tren6['periode'] ?? null;
+$perper7 = $tren7['periode'] ?? null;
 
 $nilai_per1 = $perper1 - 1;
 $nilai_per2 = $perper2 - 1;
@@ -93,23 +93,23 @@ $tren2_5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_p
 $tren2_6 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 27 AND user =3 AND status_korwil =1 AND status_skmr =1 AND periode = '$nilai_per6'"));
 $tren2_7 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 28 AND user =3 AND status_korwil =1 AND status_skmr =1 AND periode = '$nilai_per7'"));
 
-$tr1 = $tren1['total_nilai'];
-$tr2 = $tren2['total_nilai'];
-$tr3 = $tren3['total_nilai'];
-$tr4 = $tren4['total_nilai'];
-$tr5 = $tren5['total_nilai'];
-$tr6 = $tren6['total_nilai'];
-$tr7 = $tren7['total_nilai'];
+$tr1 = $tren1['total_nilai'] ?? null;
+$tr2 = $tren2['total_nilai'] ?? null;
+$tr3 = $tren3['total_nilai'] ?? null;
+$tr4 = $tren4['total_nilai'] ?? null;
+$tr5 = $tren5['total_nilai'] ?? null;
+$tr6 = $tren6['total_nilai'] ?? null;
+$tr7 = $tren7['total_nilai'] ?? null;
 
 
 
-$tr2_1 = $tren2_1['total_nilai'];
-$tr2_2 = $tren2_2['total_nilai'];
-$tr2_3 = $tren2_3['total_nilai'];
-$tr2_4 = $tren2_4['total_nilai'];
-$tr2_5 = $tren2_5['total_nilai'];
-$tr2_6 = $tren2_6['total_nilai'];
-$tr2_7 = $tren2_7['total_nilai'];
+$tr2_1 = $tren2_1['total_nilai'] ?? null;
+$tr2_2 = $tren2_2['total_nilai'] ?? null;
+$tr2_3 = $tren2_3['total_nilai'] ?? null;
+$tr2_4 = $tren2_4['total_nilai'] ?? null;
+$tr2_5 = $tren2_5['total_nilai'] ?? null;
+$tr2_6 = $tren2_6['total_nilai'] ?? null;
+$tr2_7 = $tren2_7['total_nilai'] ?? null;
 
 $nilai_tr1 = ($tr1+$tr2+$tr3+$tr4+$tr5+$tr6+$tr7)/7;
 $nilai_tr2 = ($tr2_1+$tr2_2+$tr2_3+$tr2_4+$tr2_5+$tr2_6+$tr2_7)/7;
@@ -159,12 +159,12 @@ $pembanding_ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT AVG(inheren_li
 $pembanding_ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT AVG(inheren_reputasi) AS rata_reputasi_p FROM keterangan_profil_reputasi INNER JOIN frame_laporan_profil_risiko ON keterangan_profil_reputasi.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE frame_laporan_profil_risiko.kantor_cabang IN (22,23,24,25,26,27,28) AND frame_laporan_profil_risiko.tahun ='$prevtahun' AND frame_laporan_profil_risiko.periode ='$prevtriwulan'"));
 $pembanding_ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT AVG(inheren_stratejik) AS rata_stratejik_p FROM keterangan_profil_stratejik INNER JOIN frame_laporan_profil_risiko ON keterangan_profil_stratejik.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE frame_laporan_profil_risiko.kantor_cabang IN (22,23,24,25,26,27,28) AND frame_laporan_profil_risiko.tahun ='$prevtahun' AND frame_laporan_profil_risiko.periode ='$prevtriwulan'"));
 
-$rata_kredit = $ket1['rata_kredit'];
-$rata_operasional = $ket2['rata_operasional'];
-$rata_kepatuhan = $ket3['rata_kepatuhan'];
-$rata_likuiditas = $ket4['rata_likuiditas'];
-$rata_reputasi = $ket5['rata_reputasi'];
-$rata_stratejik = $ket6['rata_stratejik'];
+$rata_kredit = $ket1['rata_kredit'] ?? null;
+$rata_operasional = $ket2['rata_operasional'] ?? null;
+$rata_kepatuhan = $ket3['rata_kepatuhan'] ?? null;
+$rata_likuiditas = $ket4['rata_likuiditas'] ?? null;
+$rata_reputasi = $ket5['rata_reputasi'] ?? null;
+$rata_stratejik = $ket6['rata_stratejik'] ?? null;
 
 
 
@@ -273,12 +273,12 @@ if ($rata_stratejik < 1.00) {
 
 
 
-$pembanding_rata_kredit = $pembanding_ket1['rata_kredit_p'];
-$pembanding_rata_operasional = $pembanding_ket2['rata_operasional_p'];
-$pembanding_rata_kepatuhan = $pembanding_ket3['rata_kepatuhan_p'];
-$pembanding_rata_likuiditas = $pembanding_ket4['rata_likuiditas_p'];
-$pembanding_rata_reputasi = $pembanding_ket5['rata_reputasi_p'];
-$pembanding_rata_stratejik = $pembanding_ket6['rata_stratejik_p'];
+$pembanding_rata_kredit = $pembanding_ket1['rata_kredit_p'] ?? null;
+$pembanding_rata_operasional = $pembanding_ket2['rata_operasional_p'] ?? null;
+$pembanding_rata_kepatuhan = $pembanding_ket3['rata_kepatuhan_p'] ?? null;
+$pembanding_rata_likuiditas = $pembanding_ket4['rata_likuiditas_p'] ?? null;
+$pembanding_rata_reputasi = $pembanding_ket5['rata_reputasi_p'] ?? null;
+$pembanding_rata_stratejik = $pembanding_ket6['rata_stratejik_p'] ?? null;
 
 
 
@@ -385,12 +385,12 @@ if ($pembanding_rata_stratejik < 1.00) {
 
 
 //penilaian bpr
-$nil1 = $ket1['rata_kredit'];
-$nil2 = $ket2['rata_operasional'];
-$nil3 = $ket3['rata_kepatuhan'];
-$nil4 = $ket4['rata_likuiditas'];
-$nil5 = $ket5['rata_reputasi'];
-$nil6 = $ket6['rata_stratejik'];
+$nil1 = $ket1['rata_kredit'] ?? null;
+$nil2 = $ket2['rata_operasional'] ?? null;
+$nil3 = $ket3['rata_kepatuhan'] ?? null;
+$nil4 = $ket4['rata_likuiditas'] ?? null;
+$nil5 = $ket5['rata_reputasi'] ?? null;
+$nil6 = $ket6['rata_stratejik'] ?? null;
 
 
 
@@ -424,12 +424,12 @@ if ($total_nilai < 1.00) {
 
 
 //penilaian bpr
-$pembanding_nil1 = $pembanding_ket1['rata_kredit_p'];
-$pembanding_nil2 = $pembanding_ket2['rata_operasional_p'];
-$pembanding_nil3 = $pembanding_ket3['rata_kepatuhan_p'];
-$pembanding_nil4 = $pembanding_ket4['rata_likuiditas_p'];
-$pembanding_nil5 = $pembanding_ket5['rata_reputasi_p'];
-$pembanding_nil6 = $pembanding_ket6['rata_stratejik_p'];
+$pembanding_nil1 = $pembanding_ket1['rata_kredit_p'] ?? null;
+$pembanding_nil2 = $pembanding_ket2['rata_operasional_p'] ?? null;
+$pembanding_nil3 = $pembanding_ket3['rata_kepatuhan_p'] ?? null;
+$pembanding_nil4 = $pembanding_ket4['rata_likuiditas_p'] ?? null;
+$pembanding_nil5 = $pembanding_ket5['rata_reputasi_p'] ?? null;
+$pembanding_nil6 = $pembanding_ket6['rata_stratejik_p'] ?? null;
 
 $pembanding_hsl1 = ($pembanding_nil1*30)/100;
 $pembanding_hsl2 = ($pembanding_nil2*30)/100;
@@ -465,13 +465,13 @@ $nilai_per_kre = $periode - 1;
 if ($nilai_per_kre == 0) {
     $yy_kre = $tahun-1;
     $tren2_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_kredit) AS rata_tren_kredit2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$yy_kre' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = 4"));
-    $tr2_kre = $tren2_kre['rata_tren_kredit2'];
+    $tr2_kre = $tren2_kre['rata_tren_kredit2'] ?? null;
 }  else {
     $tren2_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_kredit) AS rata_tren_kredit2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per_kre'"));
-    $tr2_kre = $tren2_kre['rata_tren_kredit2'];
+    $tr2_kre = $tren2_kre['rata_tren_kredit2'] ?? null;
 }
 
-$tr1_kre = $tren1_kre['rata_tren_kredit1'];
+$tr1_kre = $tren1_kre['rata_tren_kredit1'] ?? null;
 
 
 
@@ -482,12 +482,12 @@ $nilai_per_op = $periode - 1;
 if ($nilai_per_op == 0) {
     $yy_op = $tahun-1;
     $tren2_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_operasional) AS rata_tren_operasional2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$yy_op' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = 4"));
-    $tr2_op = $tren2_op['rata_tren_operasional2'];
+    $tr2_op = $tren2_op['rata_tren_operasional2'] ?? null;
 }  else {
     $tren2_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_operasional) AS rata_tren_operasional2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per_op'"));
-    $tr2_op = $tren2_op['rata_tren_operasional2'];
+    $tr2_op = $tren2_op['rata_tren_operasional2'] ?? null;
 }
-$tr1_op = $tren1_op['rata_tren_operasional1'];
+$tr1_op = $tren1_op['rata_tren_operasional1'] ?? null;
 
 
 
@@ -497,12 +497,12 @@ $nilai_per_kep = $periode - 1;
 if ($nilai_per_kep == 0) {
     $yy_kep = $tahun-1;
     $tren2_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_kepatuhan) AS rata_tren_kepatuhan2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$yy_kep' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = 4"));
-    $tr2_kep = $tren2_kep['rata_tren_kepatuhan2'];
+    $tr2_kep = $tren2_kep['rata_tren_kepatuhan2'] ?? null;
 }  else {
     $tren2_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_kepatuhan) AS rata_tren_kepatuhan2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per_kep'"));
-    $tr2_kep = $tren2_kep['rata_tren_kepatuhan2'];
+    $tr2_kep = $tren2_kep['rata_tren_kepatuhan2'] ?? null;
 }
-$tr1_kep = $tren1_kep['rata_tren_kepatuhan1'];
+$tr1_kep = $tren1_kep['rata_tren_kepatuhan1'] ?? null;
 
 
 
@@ -512,12 +512,12 @@ $nilai_per_lik = $periode - 1;
 if ($nilai_per_lik == 0) {
     $yy_lik = $tahun-1;
     $tren2_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_likuiditas) AS rata_tren_likuiditas2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$yy_lik' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = 4"));
-    $tr2_lik = $tren2_lik['rata_tren_likuiditas2'];
+    $tr2_lik = $tren2_lik['rata_tren_likuiditas2'] ?? null;
 }  else {
     $tren2_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_likuiditas) AS rata_tren_likuiditas2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per_lik'"));
-    $tr2_lik = $tren2_lik['rata_tren_likuiditas2'];
+    $tr2_lik = $tren2_lik['rata_tren_likuiditas2'] ?? null;
 }
-$tr1_lik = $tren1_lik['rata_tren_likuiditas1'];
+$tr1_lik = $tren1_lik['rata_tren_likuiditas1'] ?? null;
 
 
 $tren1_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_reputasi) AS rata_tren_reputasi1 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode ='$periode'"));
@@ -526,12 +526,12 @@ $nilai_per_rep = $periode - 1;
 if ($nilai_per_rep == 0) {
     $yy_rep = $tahun-1;
     $tren2_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_reputasi) AS rata_tren_reputasi2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$yy_rep' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = 4"));
-    $tr2_rep = $tren2_rep['rata_tren_reputasi2'];
+    $tr2_rep = $tren2_rep['rata_tren_reputasi2'] ?? null;
 }  else {
     $tren2_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_reputasi) AS rata_tren_reputasi2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per_rep'"));
-    $tr2_rep = $tren2_rep['rata_tren_reputasi2'];
+    $tr2_rep = $tren2_rep['rata_tren_reputasi2'] ?? null;
 }
-$tr1_rep = $tren1_rep['rata_tren_reputasi1'];
+$tr1_rep = $tren1_rep['rata_tren_reputasi1'] ?? null;
 
 
 
@@ -541,12 +541,12 @@ $nilai_per_stra = $periode - 1;
 if ($nilai_per_stra == 0) {
     $yy_stra = $tahun-1;
     $tren2_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_stratejik) AS rata_tren_stratejik2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$yy_stra' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = 4"));
-    $tr2_stra = $tren2_stra['rata_tren_stratejik2'];
+    $tr2_stra = $tren2_stra['rata_tren_stratejik2'] ?? null;
 }  else {
     $tren2_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT AVG(inheren_stratejik) AS rata_tren_stratejik2 from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang IN (22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per_stra'"));
-    $tr2_stra = $tren2_stra['rata_tren_stratejik2'];
+    $tr2_stra = $tren2_stra['rata_tren_stratejik2'] ?? null;
 }
-$tr1_stra = $tren1_stra['rata_tren_stratejik1'];
+$tr1_stra = $tren1_stra['rata_tren_stratejik1'] ?? null;
 
 
 $get_data = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risiko) AS total FROM frame_laporan_profil_risiko WHERE user =3 AND Kantor_cabang IN(22,23,24,25,26,27,28)"));
@@ -555,9 +555,9 @@ $ket_nilai = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM nilai_profil 
 $pembanding_ket_nilai = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = '$dp'"));
 
 if (isset($_POST['submit'])) {
-    $kode_kantor = $_POST['kode_kantor'];
-    $tahun = $_POST['tahun'];
-    $periode = $_POST['periode'];
+    $kode_kantor = (int)($_POST['kode_kantor'] ?? 0);
+    $tahun = (int)($_POST['tahun'] ?? 0);
+    $periode = (int)($_POST['periode'] ?? 0);
         header("Location: index.php?page=dashboard&kode_kantor=$kode_kantor&tahun=$tahun&periode=$periode");
         exit();
 }
@@ -599,7 +599,7 @@ if (isset($_POST['submit'])) {
                                                 <div class="card shadow-none m-0">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-download" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $get_data['total'] ?></span></h3>
+                                                        <h3><span><?= $get_data['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Masuk</p>
                                                     </div>
                                                 </div>
@@ -609,7 +609,7 @@ if (isset($_POST['submit'])) {
                                                 <div class="card shadow-none m-0 border-start">
                                                     <div class="card-body text-center">
                                                         <i class=" uil-fast-mail" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $get_data2['total'] ?></span></h3>
+                                                        <h3><span><?= $get_data2['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Diteruskan Ke Kantor Pusat</p>
                                                     </div>
                                                 </div>
@@ -701,7 +701,7 @@ if (isset($_POST['submit'])) {
                                                                     include "../conn/conn.php";
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
-                                                                        <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                        <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                     <?php
                                                                     };
                                                                     ?>
@@ -957,7 +957,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kredit
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_ket1['rata_kredit_p'],2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_ket1['rata_kredit_p']) ? number_format((float)$pembanding_ket1['rata_kredit_p'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -967,7 +967,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko operasional
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_ket2['rata_operasional_p'],2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_ket2['rata_operasional_p']) ? number_format((float)$pembanding_ket2['rata_operasional_p'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -977,7 +977,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kepatuhan
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_ket3['rata_kepatuhan_p'],2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_ket3['rata_kepatuhan_p']) ? number_format((float)$pembanding_ket3['rata_kepatuhan_p'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -987,7 +987,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko likuiditas
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_ket4['rata_likuiditas_p'],2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_ket4['rata_likuiditas_p']) ? number_format((float)$pembanding_ket4['rata_likuiditas_p'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -997,7 +997,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko reputasi
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_ket5['rata_reputasi_p'],2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_ket5['rata_reputasi_p']) ? number_format((float)$pembanding_ket5['rata_reputasi_p'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -1007,7 +1007,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko stratejik
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_ket6['rata_stratejik_p'],2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_ket6['rata_stratejik_p']) ? number_format((float)$pembanding_ket6['rata_stratejik_p'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -1017,7 +1017,7 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_total_nilai,2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_total_nilai) ? number_format((float)$pembanding_total_nilai, 2) : '-' ?></b></center>
                                                                                 
                                                                                 <center><b><?= $pembanding_ket_pembanding_total_nilai ?></b></center>
                                                                                 </th>
@@ -1058,7 +1058,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kredit
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($ket1['rata_kredit'],2 ) ?></b></center>
+                                                                                <center><b><?= isset($ket1['rata_kredit']) ? number_format((float)$ket1['rata_kredit'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -1068,7 +1068,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko operasional
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($ket2['rata_operasional'],2 ) ?></b></center>
+                                                                                <center><b><?= isset($ket2['rata_operasional']) ? number_format((float)$ket2['rata_operasional'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -1078,7 +1078,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko kepatuhan
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($ket3['rata_kepatuhan'],2 ) ?></b></center>
+                                                                                <center><b><?= isset($ket3['rata_kepatuhan']) ? number_format((float)$ket3['rata_kepatuhan'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                 
                                                                             </tr>
@@ -1088,7 +1088,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko likuiditas
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($ket4['rata_likuiditas'],2 ) ?></b></center>
+                                                                                <center><b><?= isset($ket4['rata_likuiditas']) ? number_format((float)$ket4['rata_likuiditas'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -1098,7 +1098,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko reputasi
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($ket5['rata_reputasi'],2 ) ?></b></center>
+                                                                                <center><b><?= isset($ket5['rata_reputasi']) ? number_format((float)$ket5['rata_reputasi'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -1108,7 +1108,7 @@ if (isset($_POST['submit'])) {
                                                                                     Risiko stratejik
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= number_format($ket6['rata_stratejik'],2 ) ?></b></center>
+                                                                                <center><b><?= isset($ket6['rata_stratejik']) ? number_format((float)$ket6['rata_stratejik'], 2) : '-' ?></b></center>
                                                                                 </th>
                                                                                
                                                                             </tr>
@@ -1119,7 +1119,7 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= number_format($total_nilai,2) ?></b></center>
+                                                                                <center><b><?= isset($total_nilai) ? number_format((float)$total_nilai, 2) : '-' ?></b></center>
                                                                                 
                                                                                 <center><b><?= $ket_total_nilai ?></b></center>
                                                                                 </th>
@@ -1226,7 +1226,7 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= number_format($pembanding_total_nilai,2) ?></b></center>
+                                                                                <center><b><?= isset($pembanding_total_nilai) ? number_format((float)$pembanding_total_nilai, 2) : '-' ?></b></center>
                                                                                 
                                                                                 <center><b><?= $pembanding_ket_pembanding_total_nilai ?></b></center>
                                                                                 </th>
@@ -1328,7 +1328,7 @@ if (isset($_POST['submit'])) {
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= number_format($total_nilai,2) ?></b></center>
+                                                                                <center><b><?= isset($total_nilai) ? number_format((float)$total_nilai, 2) : '-' ?></b></center>
                                                                                 
                                                                                 <center><b><?= $ket_total_nilai ?></b></center>
                                                                                 </th>
@@ -1382,10 +1382,10 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Kredit',
                                         data: [
-                                                <?= number_format($ket1_tw1['rata_kredit'],2 ) ?>,
-                                                <?= number_format($ket1_tw2['rata_kredit'],2 ) ?>,
-                                                <?= number_format($ket1_tw3['rata_kredit'],2 ) ?>,
-                                                <?= number_format($ket1_tw4['rata_kredit'],2 ) ?>
+                                                <?= json_encode(isset($ket1_tw1['rata_kredit']) ? round((float)$ket1_tw1['rata_kredit'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket1_tw2['rata_kredit']) ? round((float)$ket1_tw2['rata_kredit'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket1_tw3['rata_kredit']) ? round((float)$ket1_tw3['rata_kredit'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket1_tw4['rata_kredit']) ? round((float)$ket1_tw4['rata_kredit'], 2) : null) ?>
                                         ],
                                         type: 'line',
                                         fill: false,
@@ -1399,10 +1399,10 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Operasional',
                                         data: [
-                                                <?= number_format($ket2_tw1['rata_operasional'],2 ) ?>,
-                                                <?= number_format($ket2_tw2['rata_operasional'],2 ) ?>,
-                                                <?= number_format($ket2_tw3['rata_operasional'],2 ) ?>,
-                                                <?= number_format($ket2_tw4['rata_operasional'],2 ) ?>
+                                                <?= json_encode(isset($ket2_tw1['rata_operasional']) ? round((float)$ket2_tw1['rata_operasional'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket2_tw2['rata_operasional']) ? round((float)$ket2_tw2['rata_operasional'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket2_tw3['rata_operasional']) ? round((float)$ket2_tw3['rata_operasional'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket2_tw4['rata_operasional']) ? round((float)$ket2_tw4['rata_operasional'], 2) : null) ?>
                                                 ],
 
                                         type: 'line',
@@ -1414,10 +1414,10 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Kepatuhan',
                                         data: [
-                                                <?= number_format($ket3_tw1['rata_kepatuhan'],2 ) ?>,
-                                                <?= number_format($ket3_tw2['rata_kepatuhan'],2 ) ?>,
-                                                <?= number_format($ket3_tw3['rata_kepatuhan'],2 ) ?>,
-                                                <?= number_format($ket3_tw4['rata_kepatuhan'],2 ) ?>
+                                                <?= json_encode(isset($ket3_tw1['rata_kepatuhan']) ? round((float)$ket3_tw1['rata_kepatuhan'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket3_tw2['rata_kepatuhan']) ? round((float)$ket3_tw2['rata_kepatuhan'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket3_tw3['rata_kepatuhan']) ? round((float)$ket3_tw3['rata_kepatuhan'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket3_tw4['rata_kepatuhan']) ? round((float)$ket3_tw4['rata_kepatuhan'], 2) : null) ?>
                                         ],
 
                                         type: 'line',
@@ -1429,10 +1429,10 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Likuiditas',
                                         data: [
-                                                <?= number_format($ket4_tw1['rata_likuiditas'],2 ) ?>,
-                                                <?= number_format($ket4_tw2['rata_likuiditas'],2 ) ?>,
-                                                <?= number_format($ket4_tw3['rata_likuiditas'],2 ) ?>,
-                                                <?= number_format($ket4_tw4['rata_likuiditas'],2 ) ?>
+                                                <?= json_encode(isset($ket4_tw1['rata_likuiditas']) ? round((float)$ket4_tw1['rata_likuiditas'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket4_tw2['rata_likuiditas']) ? round((float)$ket4_tw2['rata_likuiditas'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket4_tw3['rata_likuiditas']) ? round((float)$ket4_tw3['rata_likuiditas'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket4_tw4['rata_likuiditas']) ? round((float)$ket4_tw4['rata_likuiditas'], 2) : null) ?>
                                         ],
 
                                         type: 'line',
@@ -1444,10 +1444,10 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Reputasi',
                                         data: [
-                                                <?= number_format($ket5_tw1['rata_reputasi'],2 ) ?>,
-                                                <?= number_format($ket5_tw2['rata_reputasi'],2 ) ?>,
-                                                <?= number_format($ket5_tw3['rata_reputasi'],2 ) ?>,
-                                                <?= number_format($ket5_tw4['rata_reputasi'],2 ) ?>
+                                                <?= json_encode(isset($ket5_tw1['rata_reputasi']) ? round((float)$ket5_tw1['rata_reputasi'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket5_tw2['rata_reputasi']) ? round((float)$ket5_tw2['rata_reputasi'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket5_tw3['rata_reputasi']) ? round((float)$ket5_tw3['rata_reputasi'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket5_tw4['rata_reputasi']) ? round((float)$ket5_tw4['rata_reputasi'], 2) : null) ?>
                                         ],
 
                                         type: 'line',
@@ -1459,10 +1459,10 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Stratejik',
                                         data: [
-                                                <?= number_format($ket6_tw1['rata_stratejik'],2 ) ?>,
-                                                <?= number_format($ket6_tw2['rata_stratejik'],2 ) ?>,
-                                                <?= number_format($ket6_tw3['rata_stratejik'],2 ) ?>,
-                                                <?= number_format($ket6_tw4['rata_stratejik'],2 ) ?>
+                                                <?= json_encode(isset($ket6_tw1['rata_stratejik']) ? round((float)$ket6_tw1['rata_stratejik'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket6_tw2['rata_stratejik']) ? round((float)$ket6_tw2['rata_stratejik'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket6_tw3['rata_stratejik']) ? round((float)$ket6_tw3['rata_stratejik'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket6_tw4['rata_stratejik']) ? round((float)$ket6_tw4['rata_stratejik'], 2) : null) ?>
                                         ],
 
                                         type: 'line',
@@ -1512,12 +1512,12 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Periode Sebelumnya',
                                         data: [
-                                                <?= number_format($pembanding_ket1['rata_kredit_p'],2 ) ?>,
-                                                <?= number_format($pembanding_ket2['rata_operasional_p'],2 ) ?>,
-                                                <?= number_format($pembanding_ket3['rata_kepatuhan_p'],2 ) ?>,
-                                                <?= number_format($pembanding_ket4['rata_likuiditas_p'],2 ) ?>,
-                                                <?= number_format($pembanding_ket5['rata_reputasi_p'],2 ) ?>,
-                                                <?= number_format($pembanding_ket6['rata_stratejik_p'],2 ) ?>
+                                                <?= json_encode(isset($pembanding_ket1['rata_kredit_p']) ? round((float)$pembanding_ket1['rata_kredit_p'], 2) : null) ?>,
+                                                <?= json_encode(isset($pembanding_ket2['rata_operasional_p']) ? round((float)$pembanding_ket2['rata_operasional_p'], 2) : null) ?>,
+                                                <?= json_encode(isset($pembanding_ket3['rata_kepatuhan_p']) ? round((float)$pembanding_ket3['rata_kepatuhan_p'], 2) : null) ?>,
+                                                <?= json_encode(isset($pembanding_ket4['rata_likuiditas_p']) ? round((float)$pembanding_ket4['rata_likuiditas_p'], 2) : null) ?>,
+                                                <?= json_encode(isset($pembanding_ket5['rata_reputasi_p']) ? round((float)$pembanding_ket5['rata_reputasi_p'], 2) : null) ?>,
+                                                <?= json_encode(isset($pembanding_ket6['rata_stratejik_p']) ? round((float)$pembanding_ket6['rata_stratejik_p'], 2) : null) ?>
                                         ],
                                         type: 'bar',
                                         fill: true,
@@ -1531,12 +1531,12 @@ if (isset($_POST['submit'])) {
                                 {
                                         label: 'Profil Risiko Saat Ini (yang dipilih)',
                                         data: [
-                                                <?= number_format($ket1['rata_kredit'],2 ) ?>,
-                                                <?= number_format($ket2['rata_operasional'],2 ) ?>,
-                                                <?= number_format($ket3['rata_kepatuhan'],2 ) ?>,
-                                                <?= number_format($ket4['rata_likuiditas'],2 ) ?>,
-                                                <?= number_format($ket5['rata_reputasi'],2 ) ?>,
-                                                <?= number_format($ket6['rata_stratejik'],2 ) ?>
+                                                <?= json_encode(isset($ket1['rata_kredit']) ? round((float)$ket1['rata_kredit'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket2['rata_operasional']) ? round((float)$ket2['rata_operasional'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket3['rata_kepatuhan']) ? round((float)$ket3['rata_kepatuhan'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket4['rata_likuiditas']) ? round((float)$ket4['rata_likuiditas'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket5['rata_reputasi']) ? round((float)$ket5['rata_reputasi'], 2) : null) ?>,
+                                                <?= json_encode(isset($ket6['rata_stratejik']) ? round((float)$ket6['rata_stratejik'], 2) : null) ?>
                                         ],
                                         type: 'bar',
                                         fill: true,

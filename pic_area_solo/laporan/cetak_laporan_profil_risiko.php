@@ -78,32 +78,37 @@ function pdf_pick_name_from_row($row){
 }
 
 function pdf_pernyataan_ttd_html($conn, $frame){
+    $isCabang = ((int)($frame['user'] ?? 0) === 3 || stripos((string)($frame['tipe_user'] ?? ''), 'Kantor Cabang') !== false);
     $idCabang = (int)($frame['kantor_cabang'] ?? 0);
     $dibuatBy = (int)($frame['dibuat_by'] ?? 0);
 
     $namaKacab = '';
-    if ($idCabang > 0 && pdf_table_exists($conn, 'user')) {
+    if ($isCabang && $idCabang > 0 && pdf_table_exists($conn, 'user')) {
         $qKacab = pdf_one($conn, "SELECT * FROM `user` WHERE lokasi_kerja='".$idCabang."' ORDER BY user_id ASC LIMIT 1");
         $namaKacab = pdf_pick_name_from_row($qKacab);
     }
 
     $namaRisk = '';
-    if ($dibuatBy > 0 && pdf_table_exists($conn, 'user')) {
+    if ($isCabang && $dibuatBy > 0 && pdf_table_exists($conn, 'user')) {
         $qRisk = pdf_one($conn, "SELECT * FROM `user` WHERE user_id='".$dibuatBy."' LIMIT 1");
         $namaRisk = pdf_pick_name_from_row($qRisk);
     }
-    if ($namaRisk === '') $namaRisk = trim((string)($frame['nama'] ?? ''));
+    if ($isCabang && $namaRisk === '') $namaRisk = trim((string)($frame['nama'] ?? ''));
 
     $statusKorwil = ((int)($frame['status_korwil'] ?? 0) === 1) ? 'V' : 'X';
     $statusMr     = ((int)($frame['status_skmr'] ?? 0) === 1) ? 'V' : 'X';
     $tanggalCetak = pdf_tgl_indo_long(date('Y-m-d'));
 
+    $pelaksana = $isCabang ? 'Kantor Cabang' : 'Kantor Pusat dan RTU';
+    $jabatanKiri = $isCabang ? 'Kepala Cabang' : 'Kepala Bidang';
+    $jabatanKanan = $isCabang ? 'Risk Residence Area' : 'Kepala Divisi';
+
     return '<section class="pernyataan-page">'
         . '<div class="pernyataan-line"></div>'
-        . '<p>Dengan ini menyatakan bahwa seluruh informasi dalam pengisian profil risiko di BPR BKK Jateng adalah akurat dan sesuai dengan kondisi sebenarnya. Dengan Tindak lanjut atas profil risiko dan hasil perbaikan oleh Kantor Cabang dilakukan sebelum periode penilaian selanjutnya dan akan di evaluasi secara berkala</p>'
-        . '<div class="status-konfirmasi"><b>Status Konfirmasi (V/X)</b><br><b>Kepala Wilayah : '.esc_pdf($statusKorwil).'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Manrisk Kantor Pusat : '.esc_pdf($statusMr).'</b></div>'
+        . '<p>Dengan ini menyatakan bahwa seluruh informasi dalam pengisian profil risiko di BPR BKK Jateng adalah akurat dan sesuai dengan kondisi sebenarnya. Dengan Tindak lanjut atas profil risiko dan hasil perbaikan oleh '.esc_pdf($pelaksana).' dilakukan sebelum periode penilaian selanjutnya dan akan di evaluasi secara berkala</p>'
+        . ($isCabang ? '<div class="status-konfirmasi"><b>Status Konfirmasi (V/X)</b><br><b>Kepala Wilayah : '.esc_pdf($statusKorwil).'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Manrisk Kantor Pusat : '.esc_pdf($statusMr).'</b></div>' : '')
         . '<div class="tanggal-ttd"><b>Semarang, '.esc_pdf($tanggalCetak).'</b></div>'
-        . '<table class="ttd-table"><thead><tr><th>Kepala Cabang</th><th>Risk Residence Area</th></tr></thead>'
+        . '<table class="ttd-table"><thead><tr><th>'.esc_pdf($jabatanKiri).'</th><th>'.esc_pdf($jabatanKanan).'</th></tr></thead>'
         . '<tbody><tr><td class="ttd-space"></td><td class="ttd-space"></td></tr>'
         . '<tr><td><b>Nama : '.esc_pdf($namaKacab).'</b></td><td><b>Nama : '.esc_pdf($namaRisk).'</b></td></tr></tbody></table>'
         . '</section>';
@@ -188,17 +193,8 @@ $sections = [
     ['title' => '30. Profil Peringkat',             'pages' => ['nilpro']],
 ];
 
-/*
-   FIX CABANG:
-   Profil Risiko Kantor Cabang tidak memakai KPMR, jadi pada cetak lengkap
-   bagian KPMR 1 dan KPMR 2 tidak perlu ditampilkan.
-*/
-if ($isProfilCabangCetak) {
-    $sections = array_values(array_filter($sections, function($s){
-        $title = trim((string)($s['title'] ?? ''));
-        return (stripos($title, 'KPMR') === false);
-    }));
-}
+require_once dirname(__DIR__, 2) . '/fungsi/cetak_ringkas.php';
+$sections = cetak_ringkas_sections($sections, $isProfilCabangCetak);
 
 if ($onlyTindakLanjut) {
     // Cetak tindak lanjut khusus: tampilkan nomor per risiko dan isi mulai dari Analisis Risiko sampai Respon Cabang.
@@ -448,26 +444,8 @@ function pdf_profile_per_risk_html($conn, $id, $frame, $key){
     $title = strtoupper($r['label'] ?? ('Risiko '.$key));
     $title = str_replace('RISIKO ', 'RISIKO ', $title);
 
-    $mk = function($row, $caption) use ($isProfilCabangCetak) {
-        if ($isProfilCabangCetak) {
-            return '<table class="pdf-profile-single profil-cabang-only"><thead>'
-                .'<tr><th colspan="2">'.esc_pdf($caption).'</th></tr>'
-                .'<tr><th>Jenis Risiko</th><th>Tingkat Risiko Inheren</th></tr>'
-                .'</thead><tbody><tr>'
-                .'<td><b>'.esc_pdf($row['label'] ?? '').'</b></td>'
-                .'<td class="valrank">'.esc_pdf(pdf_num($row['nilai_in'] ?? 0)).'<br><b>'.esc_pdf($row['rank_in'] ?? '').'</b></td>'
-                .'</tr></tbody></table>';
-        }
-        return '<table class="pdf-profile-single"><thead>'
-            .'<tr><th colspan="5">'.esc_pdf($caption).'</th></tr>'
-            .'<tr><th>Jenis Risiko</th><th>Tingkat Risiko Inheren</th><th>Tingkat KPMR</th><th>Tingkat Risiko</th><th>Tingkat Kualitas Manajemen Risiko</th></tr>'
-            .'</thead><tbody><tr>'
-            .'<td><b>'.esc_pdf($row['label'] ?? '').'</b></td>'
-            .'<td class="valrank">'.esc_pdf(pdf_num($row['nilai_in'] ?? 0)).'<br><b>'.esc_pdf($row['rank_in'] ?? '').'</b></td>'
-            .'<td class="valrank">'.esc_pdf(pdf_num($row['nilai_kp'] ?? 0)).'<br><b>'.esc_pdf($row['rank_kp'] ?? '').'</b></td>'
-            .'<td class="valrank">'.esc_pdf(pdf_num($row['nilai_t'] ?? 0)).'<br><b>'.esc_pdf($row['rank_t'] ?? '').'</b></td>'
-            .'<td class="quality-cell">'.esc_pdf($row['kualitas'] ?? '').'</td>'
-            .'</tr></tbody></table>';
+    $mk = static function($row, $caption) use ($isProfilCabangCetak) {
+        return cetak_ringkas_profile_table($row, $caption, (bool)$isProfilCabangCetak);
     };
     if (!$rp) $rp = ['label'=>$r['label'] ?? '', 'nilai_in'=>0, 'nilai_kp'=>0, 'nilai_t'=>0, 'rank_in'=>'', 'rank_kp'=>'', 'rank_t'=>'', 'kualitas'=>''];
     return '<div class="clean-page profil-risk-direct"><h4>HASIL PROFIL '.esc_pdf(strtoupper($r['label'] ?? '')).'</h4>'
@@ -1188,7 +1166,6 @@ function pdf_kep_inheren2_detail_html($conn, $id, $frame){
 
 
 $fallbacks = [
-    '10. Risiko Kepatuhan - Inheren 1' => pdf_kep_inheren1_detail_html($conn, $id, $frame),
     '11. Risiko Kepatuhan - Inheren 2' => pdf_kep_inheren2_detail_html($conn, $id, $frame),
     '4. Risiko Kredit - Profil' => pdf_profile_per_risk_html($conn, $id, $frame, 'kredit'),
     '9. Risiko Operasional - Profil' => pdf_profile_per_risk_html($conn, $id, $frame, 'operasional'),
@@ -1489,12 +1466,31 @@ body.modal-view .clean-page table.inheren-wide-keterangan td{
     word-break:normal!important;
     white-space:normal!important;
 }
-.clean-page table.inheren-wide-keterangan td:last-child,
-.clean-page table.inheren-wide-keterangan th:last-child{
+.clean-page table.inheren-wide-keterangan:not(.inheren-keterangan-rowspan) td:last-child,
+.clean-page table.inheren-wide-keterangan:not(.inheren-keterangan-rowspan) th:last-child,
+.clean-page table.inheren-keterangan-rowspan .inheren-keterangan-merged{
     width:24%!important;
     min-width:24%!important;
     max-width:24%!important;
     vertical-align:top!important;
+}
+
+/* Grid native menjaga batas bawah sel rowspan sejajar subparameter terakhir. */
+.clean-page table.inheren-keterangan-rowspan.print-close-page-cut{
+    border-collapse:collapse!important;
+}
+.clean-page table.inheren-keterangan-rowspan.print-close-page-cut td,
+.clean-page table.inheren-keterangan-rowspan.print-close-page-cut th{
+    border:1px solid #111!important;
+    box-shadow:none!important;
+}
+
+/* Ruang akhir uraian menjaga teks rowspan tidak menyentuh parameter berikutnya
+   ketika Chromium memecah sel gabungan ke halaman cetak berikutnya. */
+.clean-page table.inheren-keterangan-rowspan .inheren-keterangan-merged > .print-field::after{
+    content:"";
+    display:block;
+    height:24px;
 }
 
 /* Gabung visual kolom Keterangan Inheren Kredit/Likuiditas tanpa rowspan asli.
@@ -2112,6 +2108,8 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
 }
 
 </style>
+<style><?= file_get_contents($__projectRoot . "/assets/css/print-cover-summary.css") ?></style>
+<style><?= file_get_contents($__projectRoot . "/assets/css/print-table-grid.css") ?></style>
 </head>
 <body class="print-portrait<?= $isModalView ? ' modal-view' : '' ?>">
 <div class="toolbar">
@@ -2146,6 +2144,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
             <tr><td><b>Tanggal Cetak</b></td><td><?= date('d-m-Y H:i') ?></td></tr>
         </table>
         <?= pdf_cover_profil_nilai_peringkat_html($conn, $id, $frame) ?>
+        <?= cetak_ringkas_cover_uraian($conn, $id) ?>
     </div>
     <?php endif; ?>
 
@@ -2159,7 +2158,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
         $pakaiFallbackLangsung = (($cetakProfilPerRisikoOnly || $onlyTindakLanjut) && trim((string)$fallbackHtml) !== '');
     ?>
     <section class="print-section" data-section="<?= (int)$idx ?>" data-title="<?= esc_pdf($s['title']) ?>" data-fallback="<?= esc_pdf($fallbackHtml) ?>" data-direct-fallback="<?= $pakaiFallbackLangsung ? '1' : '0' ?>">
-        <div class="section-title"><?= esc_pdf($s['title']) ?></div>
+        <div class="section-title"><?= esc_pdf(strtoupper(preg_replace('/\b(KPMR|INHEREN)\s+2\b/i', '$1', preg_replace('/^\d+\./', ($idx + 1) . '.', $s['title'])))) ?></div>
         <?php if ($pakaiFallbackLangsung): ?>
             <div class="section-content"><?= $fallbackHtml ?></div>
             <iframe class="source-frame" data-candidates='[]' data-title="<?= esc_pdf($s['title']) ?>"></iframe>
@@ -2186,6 +2185,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
     <?php endif; ?>
 </div>
 
+<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261030-03"></script>
 <script>
 (function(){
     window.setPrintOrientation = function(mode){
@@ -2271,11 +2271,12 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
     }
 
     function replaceControls(root){
+        removePrintSaveIndicators(root);
         root.querySelectorAll('textarea,input,select').forEach(function(el){
             const txt = textOfControl(el);
             if (txt === null) { el.remove(); return; }
             const div = document.createElement('div');
-            div.className = 'print-field' + (txt === '' ? ' empty' : '');
+            div.className = 'print-field' + (txt === '' ? ' empty' : '') + (el.tagName === 'TEXTAREA' ? ' print-note' : '');
             div.textContent = txt === '' ? '' : txt;
             el.parentNode.insertBefore(div, el);
             el.remove();
@@ -2518,10 +2519,10 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
             /*
               FIX STABIL:
               - Tabel KPMR jangan digabung karena setiap baris punya keterangan sendiri.
-              - Untuk Inheren Kredit dan Inheren Likuiditas, jangan pakai rowspan asli lagi.
-                Rowspan asli sering bikin tabel pecah, kolom tinggi kosong, dan halaman blank saat print.
-              - Solusi: gabung VISUAL per parameter dengan menghilangkan border horizontal
-                pada kolom KETERANGAN sub-parameter. Struktur kolom tetap utuh, jadi tidak ngebug.
+              - Inheren Kredit memakai rowspan asli sampai sub-parameter terakhir.
+                Inheren Likuiditas mempertahankan susunan sel untuk variasi colspan sumber.
+              - Normalisasi sel dilakukan sebelum penggabungan agar kolom kanan lengkap;
+                kolom penilaian dan struktur tabel sumber tetap dipertahankan.
             */
             const isKpmrTable = headerText.indexOf('KPMR') >= 0;
             if (isKpmrTable) {
@@ -2540,13 +2541,17 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
             if (!isAllowedInheren) return;
             if (headerText.indexOf('KETERANGAN') < 0 && headerText.indexOf('REFERENSI') < 0) return;
 
+            // Kredit dan likuiditas: satu sel keterangan hingga subparameter terakhir.
+            // Jangan normalisasi ulang sel sub yang sudah ditutup oleh rowspan.
+            const isRowspanInheren = isAllowedInheren;
+            if (isRowspanInheren && tbl.classList.contains('inheren-keterangan-rowspan')) return;
+
             // Hapus rowspan lama dari sumber/hasil fix sebelumnya agar tidak ada kolom tinggi kosong.
             tbl.querySelectorAll('td[rowspan],th[rowspan]').forEach(function(c){
                 c.removeAttribute('rowspan');
                 c.style.verticalAlign = 'top';
             });
 
-            const allRows = Array.from(tbl.querySelectorAll('tbody tr'));
             let group = [];
 
             function getCells(row){
@@ -2578,11 +2583,34 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
                 const rows = Array.from(tbl.querySelectorAll('tbody tr'));
                 rows.forEach(function(row){
                     const txt = rowText(row).toUpperCase();
-                    if (!txt) return;
+                    if (!txt) {
+                        if (isRowspanInheren) row.remove();
+                        return;
+                    }
                     // Header/separator yang sudah colspan penuh jangan ditambah kolom.
                     if (/^PILAR\s*\d+|^LAINNYA|^REKAP|^REKAPITULASI|^URAIAN|^HASIL PENILAIAN|^RISIKO .* INHEREN/.test(txt)) return;
 
                     let current = countCols(row);
+                    // Rapikan kolom kosong berlebih dari markup sumber yang tidak seimbang.
+                    // Isi parameter dan nilai tidak dibuang.
+                    if (isRowspanInheren && current > expected) {
+                        const extras = getCells(row).slice(2).reverse();
+                        extras.forEach(function(cell){
+                            if (current <= expected || cellHasRealText(cell)) return;
+                            const remove = Math.min(current - expected, cell.colSpan);
+                            if (remove === cell.colSpan) cell.remove();
+                            else cell.colSpan -= remove;
+                            current -= remove;
+                        });
+                    }
+                    // Baris detail kualitatif memakai colspan hingga kolom keterangan.
+                    // Sisakan kolom nilainya saat sel keterangan digabung ke atas.
+                    const cells = getCells(row);
+                    const tail = cells[cells.length - 1];
+                    if (isRowspanInheren && current === expected && tail && tail.colSpan > 1) {
+                        tail.colSpan -= 1;
+                        current -= 1;
+                    }
                     // Banyak baris sub-parameter dari sumber tidak punya cell kanan KETERANGAN.
                     // Tambahkan cell kosong sampai jumlah kolom sama dengan header, supaya sisi kanan tidak bolong.
                     while (current < expected) {
@@ -2592,9 +2620,27 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
                         row.appendChild(td);
                         current++;
                     }
+                    if (isRowspanInheren) {
+                        // Colspan kosong pada baris detail tidak boleh menghapus grid nilai.
+                        // Colspan yang berisi teks/nilai tetap dipertahankan.
+                        getCells(row).forEach(function(cell){
+                            const span = cell.colSpan;
+                            if (span <= 1 || cellHasRealText(cell)) return;
+                            cell.colSpan = 1;
+                            let previous = cell;
+                            for (let i = 1; i < span; i++) {
+                                const empty = cell.cloneNode(false);
+                                empty.removeAttribute('id');
+                                empty.colSpan = 1;
+                                previous.after(empty);
+                                previous = empty;
+                            }
+                        });
+                    }
                 });
             }
             normalizeRightKeteranganCells();
+            const allRows = Array.from(tbl.querySelectorAll('tbody tr'));
             function isSeparator(row){
                 const txt = rowText(row).toUpperCase();
                 if (!txt) return true;
@@ -2613,7 +2659,9 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
             }
             function lastCell(row){
                 const cells = getCells(row);
-                if (cells.length < 4) return null;
+                if (isRowspanInheren) {
+                    if (cells.length < 2 || countCols(row) < 8) return null;
+                } else if (cells.length < 4) return null;
                 return cells[cells.length - 1];
             }
             function cleanKetClass(cell){
@@ -2629,7 +2677,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
 
             function processGroup(rows){
                 if (!rows || rows.length <= 0) return;
-                rows = rows.filter(function(r){ return getCells(r).length >= 4 && lastCell(r); });
+                rows = rows.filter(function(r){ return (isRowspanInheren || getCells(r).length >= 4) && lastCell(r); });
                 if (!rows.length) return;
 
                 // Hanya gabungkan grup yang dimulai dari parameter utama angka.
@@ -2638,7 +2686,9 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
                 if (!isMainParameterRow(rows[0])) return;
 
                 const firstText = rowText(rows[0]).toUpperCase();
-                if (firstText.indexOf('REKAP') >= 0 || firstText.indexOf('HASIL PENILAIAN') >= 0 || firstText.indexOf('URAIAN') >= 0) return;
+                // Keterangan kredit boleh memuat kata rekap/hasil penilaian/uraian.
+                // Batas grup inheren ditentukan dari nomor parameter, bukan isi keterangannya.
+                if (!isRowspanInheren && (firstText.indexOf('REKAP') >= 0 || firstText.indexOf('HASIL PENILAIAN') >= 0 || firstText.indexOf('URAIAN') >= 0)) return;
 
                 let source = null;
                 rows.forEach(function(r){
@@ -2677,6 +2727,22 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
                   cell keterangan dengan border penuh, hanya isi keterangan utama yang
                   dipindahkan ke baris parameter utama.
                 */
+                if (isRowspanInheren) {
+                    tbl.classList.add('inheren-keterangan-rowspan');
+                    first.rowSpan = rows.length;
+                    first.classList.add('inheren-keterangan-merged');
+                    // Cetak uraian saja; penghitung karakter adalah kontrol editor.
+                    const note = first.querySelector('.print-field');
+                    if (note) first.replaceChildren(note);
+                    first.style.verticalAlign = 'top';
+                    // Sel kanan baris sub diwakili sel rowspan; kolom nilai tetap utuh.
+                    for (let i = 1; i < rows.length; i++) {
+                        const ketCell = lastCell(rows[i]);
+                        if (ketCell) ketCell.remove();
+                    }
+                    return;
+                }
+
                 first.removeAttribute('rowspan');
                 first.classList.add('ket-merge-single');
                 first.style.verticalAlign = 'top';
@@ -2706,7 +2772,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
                     return;
                 }
                 const cells = getCells(row);
-                if (cells.length < 4) return;
+                if (cells.length < 4 && !(isRowspanInheren && countCols(row) >= 8)) return;
 
                 if (isMainParameterRow(row) && group.length > 0) {
                     processGroup(group);
@@ -2878,6 +2944,8 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
     function removeFaktorLainnyaEmptyRows(root){
         if (!root) return;
         root.querySelectorAll('table').forEach(function(tbl){
+            // Jangan hapus baris yang menjadi jangkar/span keterangan kredit.
+            if (tbl.classList.contains('inheren-keterangan-rowspan')) return;
             const raw = ((tbl.textContent || '') + ' ' + (tbl.tHead ? tbl.tHead.textContent : '')).toUpperCase();
             if (raw.indexOf('LAINNYA') < 0 || raw.indexOf('FAKTOR LAINNYA') < 0) return;
 
@@ -3448,6 +3516,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
         fixInherenNilaiCenterFinal(clone);
         fixInheren2ParameterLeft(clone);
         fixUraianRekapLeft(clone);
+        compactRiskPrintColumns(clone, expectedTitle);
         return clone;
     }
 
@@ -3535,11 +3604,12 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
             return;
         }
         let settled = false;
+        const candidateTimeout = /likuiditas/i.test(title || '') ? 20000 : 6000;
         const timer = setTimeout(function(){
             if (settled) return;
             settled = true;
             loadCandidate(frame, urls, index + 1, done, title);
-        }, 6000);
+        }, candidateTimeout);
 
         frame.onload = function(){
             if (settled) return;
@@ -3571,6 +3641,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
         if (section.getAttribute('data-direct-fallback') === '1' || (/Risiko .* - Profil/i.test(expectedTitle) && directFallback.trim() !== '')) {
             content.classList.remove('loading');
             if (directFallback.trim() !== '') content.innerHTML = directFallback;
+            compactRiskPrintColumns(content, expectedTitle);
             loadedCount++;
             setStatus();
             if (idx + 1 < sections.length) renderSection(sections[idx + 1], idx + 1);
@@ -3584,6 +3655,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
             content.innerHTML = '';
             const fb0 = section.getAttribute('data-fallback') || '';
             content.innerHTML = fb0.trim() !== '' ? fb0 : '<div style="padding:12px;border:1px solid #111;color:#000;">Halaman tidak ditemukan / route belum sesuai. Silakan cek daftar page pada file cetak.</div>';
+            compactRiskPrintColumns(content, expectedTitle);
             loadedCount++;
             setStatus();
             if (idx + 1 < sections.length) renderSection(sections[idx + 1], idx + 1);
@@ -3604,6 +3676,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
                 const clone = root.cloneNode(true);
                 content.appendChild(cleanupClone(clone, expectedTitle));
             }
+            compactRiskPrintColumns(content, expectedTitle);
             loadedCount++;
             setStatus();
             if (idx + 1 < sections.length) renderSection(sections[idx + 1], idx + 1);

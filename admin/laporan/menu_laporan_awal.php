@@ -1744,7 +1744,7 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     }
 
-    var params = new URLSearchParams(window.location.search);
+    var params = window.simproRouteParams ? window.simproRouteParams() : new URLSearchParams(window.location.search);
     var tabFromUrl = params.get('tab');
 
     if (tabFromUrl === 'final' || tabFromUrl === 'cabang' || tabFromUrl === 'divisi' || window.location.hash === '#tab-profil-risiko-final' || window.location.hash === '#tab-profil-risiko-cabang' || window.location.hash === '#tab-profil-risiko-divisi') {

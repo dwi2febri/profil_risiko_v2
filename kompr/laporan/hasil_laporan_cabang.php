@@ -26,7 +26,7 @@ function tgl_indo($tanggal)
     return $pecahkan[2] . ' ' . $bulan[(int)$pecahkan[1]] . ' ' . $pecahkan[0];
 }
 
-$id = $_SESSION['user_id'];
+$id = $_SESSION['user_id'] ?? null;
 $get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
 
 WHERE user_id = '$id'"));
@@ -36,14 +36,14 @@ WHERE user_id = '$id'"));
 
 <!--jamu-->
 <?php
-$tahun = $_GET['tahun'];
-$periode = $_GET['periode'];
+$tahun = (int)($_GET['tahun'] ?? 0);
+$periode = (int)($_GET['periode'] ?? 0);
 
 $frame = mysqli_fetch_array(mysqli_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE tahun ='$tahun' AND periode ='$periode'"));
 
 
-$id_pro = $frame['id_profil_risiko'];
-$dp = $frame['data_pembanding'];
+$id_pro = $frame['id_profil_risiko'] ?? 0;
+$dp = $frame['data_pembanding'] ?? 0;
 
 //kredit
 $kredit1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$tahun' AND periode = '$periode' AND user =3 AND status_korwil =1 AND status_skmr =1 AND kantor_cabang = 1"));
@@ -272,9 +272,9 @@ $banyumas_cnt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_r
 $pekalongan_cnt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risiko) AS total FROM frame_laporan_profil_risiko WHERE tahun ='$tahun' AND periode ='$periode' AND user =3 AND status_korwil =1 AND status_skmr =1 AND kantor_cabang IN(22,23,24,25,26,27,28)"));
 
 if (isset($_POST['submit'])) {
-    $kode_kantor = $_POST['kode_kantor'];
-    $tahun = $_POST['tahun'];
-    $periode = $_POST['periode'];
+    $kode_kantor = (int)($_POST['kode_kantor'] ?? 0);
+    $tahun = (int)($_POST['tahun'] ?? 0);
+    $periode = (int)($_POST['periode'] ?? 0);
         header("Location: index.php?page=hasil_lapkc&tahun=$tahun&periode=$periode");
         exit();
 }
@@ -349,7 +349,7 @@ if (isset($_POST['submit'])) {
                                                                     include "../conn/conn.php";
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
-                                                                        <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                        <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                     <?php
                                                                     };
                                                                     ?>
@@ -375,7 +375,7 @@ if (isset($_POST['submit'])) {
                                             <div class="col-lg-6">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-open" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $semarang_cnt['total'] ?></span></h3>
+                                                        <h3><span><?= $semarang_cnt['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan area semarang</p>
                                                     </div>
                                             </div>
@@ -384,7 +384,7 @@ if (isset($_POST['submit'])) {
                                                 <div class="card shadow-none m-0 border-start">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-open" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $solo_cnt['total'] ?></span></h3>
+                                                        <h3><span><?= $solo_cnt['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan area solo</p>
                                                     </div>
                                                 </div>
@@ -392,7 +392,7 @@ if (isset($_POST['submit'])) {
                                             <div class="col-lg-6">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-open" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $banyumas_cnt['total'] ?></span></h3>
+                                                        <h3><span><?= $banyumas_cnt['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">laporan area banyumas</p>
                                                     </div>
                                             </div>
@@ -401,7 +401,7 @@ if (isset($_POST['submit'])) {
                                                 <div class="card shadow-none m-0 border-start">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-open" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $pekalongan_cnt['total'] ?></span></h3>
+                                                        <h3><span><?= $pekalongan_cnt['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">laporan area pekalongan</p>
                                                     </div>
                                                 </div>
@@ -444,312 +444,312 @@ if (isset($_POST['submit'])) {
                                                                         <tr>
                                                                             <td>001</td>
                                                                             <td>KC. Utama</td>
-                                                                            <td><?= $kredit1['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional1['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan1['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas1['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi1['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik1['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit1['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional1['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan1['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas1['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi1['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik1['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>002</td>
                                                                             <td>KC. Rembang</td>
-                                                                            <td><?= $kredit2['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional2['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan2['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas2['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi2['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik2['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit2['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional2['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan2['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas2['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi2['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik2['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>003</td>
                                                                             <td>KC. Pati</td>
-                                                                            <td><?= $kredit3['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional3['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan3['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas3['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi3['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik3['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit3['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional3['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan3['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas3['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi3['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik3['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>004</td>
                                                                             <td>KC. Demak</td>
-                                                                            <td><?= $kredit4['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional4['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan4['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas4['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi4['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik4['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit4['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional4['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan4['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas4['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi4['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik4['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>005</td>
                                                                             <td>KC. Kendal</td>
-                                                                            <td><?= $kredit5['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional5['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan5['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas5['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi5['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik5['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit5['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional5['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan5['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas5['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi5['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik5['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                         <tr>
                                                                             <td>006</td>
                                                                             <td>KC. Salatiga</td>
-                                                                            <td><?= $kredit6['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional6['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan6['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas6['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi6['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik6['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit6['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional6['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan6['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas6['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi6['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik6['inheren_stratejik'] ?? '-' ?></td>
                                                                          
                                                                         </tr>
                                                                         <tr>
                                                                             <td>007</td>
                                                                             <td>KC.Kab. Semarang</td>
-                                                                            <td><?= $kredit7['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional7['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan7['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas7['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi7['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik7['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit7['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional7['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan7['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas7['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi7['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik7['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                     
                                                                         <tr>
                                                                             <td>008</td>
                                                                             <td>KC. Wonogiri</td>
-                                                                            <td><?= $kredit8['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional8['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan8['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas8['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi8['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik8['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit8['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional8['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan8['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas8['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi8['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik8['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>009</td>
                                                                             <td>KC. Kota Surakarta</td>
-                                                                            <td><?= $kredit9['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional9['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan9['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas9['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi9['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik9['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit9['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional9['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan9['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas9['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi9['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik9['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                         <tr>
                                                                             <td>010</td>
                                                                             <td>KC. Karanganyar</td>
-                                                                            <td><?= $kredit10['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional10['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan10['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas10['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi10['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik10['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit10['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional10['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan10['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas10['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi10['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik10['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                         <tr>
                                                                             <td>011</td>
                                                                             <td>KC. Sukoharjo</td>
-                                                                            <td><?= $kredit11['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional11['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan11['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas11['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi11['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik11['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit11['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional11['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan11['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas11['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi11['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik11['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>012</td>
                                                                             <td>KC. Sragen</td>
-                                                                            <td><?= $kredit12['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional12['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan12['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas12['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi12['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik12['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit12['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional12['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan12['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas12['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi12['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik12['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>013</td>
                                                                             <td>KC. Boyolali</td>
-                                                                            <td><?= $kredit13['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional13['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan13['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas13['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi13['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik13['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit13['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional13['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan13['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas13['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi13['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik13['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                         <tr>
                                                                             <td>014</td>
                                                                             <td>KC. Magelang</td>
-                                                                            <td><?= $kredit14['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional14['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan14['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas14['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi14['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik14['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit14['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional14['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan14['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas14['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi14['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik14['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                     
                                                                         <tr>
                                                                             <td>015</td>
                                                                             <td>KC. Wonosobo</td>
-                                                                            <td><?= $kredit15['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional15['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan15['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas15['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi15['inheren_reputasi'] ?></td>
-                                                                            <td><?= $strat1ejik15['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit15['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional15['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan15['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas15['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi15['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $strat1ejik15['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>016</td>
                                                                             <td>KC. Purworejo</td>
-                                                                            <td><?= $kredit16['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional16['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan16['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas16['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi16['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik16['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit16['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional16['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan16['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas16['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi16['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik16['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>017</td>
                                                                             <td>KC. Kebumen</td>
-                                                                            <td><?= $kredit17['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional17['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan17['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas17['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi17['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik17['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit17['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional17['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan17['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas17['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi17['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik17['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>018</td>
                                                                             <td>KC. Banjarnegara</td>
-                                                                            <td><?= $kredit18['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional18['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan18['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas18['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi18['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik18['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit18['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional18['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan18['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas18['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi18['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik18['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>019</td>
                                                                             <td>KC. Purbalingga</td>
-                                                                            <td><?= $kredit19['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional19['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan19['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas19['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi19['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik19['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit19['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional19['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan19['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas19['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi19['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik19['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>020</td>
                                                                             <td>KC. Banyumas</td>
-                                                                            <td><?= $kredit20['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional20['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan20['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas20['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi20['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik20['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit20['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional20['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan20['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas20['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi20['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik20['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>021</td>
                                                                             <td>KC. Cilacap</td>
-                                                                            <td><?= $kredit21['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional21['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan21['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas21['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi21['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik21['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit21['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional21['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan21['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas21['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi21['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik21['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                    
                                                                         <tr>
                                                                             <td>022</td>
                                                                             <td>KC. Kab. Tegal</td>
-                                                                            <td><?= $kredit22['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional22['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan22['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas22['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi22['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik22['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit22['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional22['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan22['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas22['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi22['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik22['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>023</td>
                                                                             <td>KC. Brebes</td>
-                                                                            <td><?= $kredit23['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional23['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan23['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas23['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi23['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik23['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit23['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional23['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan23['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas23['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi23['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik23['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>024</td>
                                                                             <td>KC. Kota Tegal</td>
-                                                                            <td><?= $kredit24['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional24['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan24['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas24['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi24['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik24['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit24['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional24['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan24['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas24['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi24['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik24['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>025</td>
                                                                             <td>KC. Pemalang</td>
-                                                                            <td><?= $kredit25['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional25['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan25['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas25['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi25['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik25['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit25['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional25['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan25['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas25['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi25['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik25['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>026</td>
                                                                             <td>KC. Kota Pekalongan</td>
-                                                                            <td><?= $kredit26['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional26['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan26['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas26['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi26['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik26['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit26['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional26['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan26['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas26['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi26['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik26['inheren_stratejik'] ?? '-' ?></td>
                                                                             
                                                                         </tr>
                                                                         <tr>
                                                                             <td>027</td>
                                                                             <td>KC. Kab. Pekalongan</td>
-                                                                            <td><?= $kredit27['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional27['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan27['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas27['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi27['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik27['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit27['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional27['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan27['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas27['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi27['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik27['inheren_stratejik'] ?? '-' ?></td>
                                                                            
                                                                         </tr>
                                                                         <tr>
                                                                             <td>028</td>
                                                                             <td>KC. Batang</td>
-                                                                            <td><?= $kredit28['inheren_kredit'] ?></td>
-                                                                            <td><?= $operasional28['inheren_operasional'] ?></td>
-                                                                            <td><?= $kepatuhan28['inheren_kepatuhan'] ?></td>
-                                                                            <td><?= $likuiditas28['inheren_likuiditas'] ?></td>
-                                                                            <td><?= $reputasi28['inheren_reputasi'] ?></td>
-                                                                            <td><?= $stratejik28['inheren_stratejik'] ?></td>
+                                                                            <td><?= $kredit28['inheren_kredit'] ?? '-' ?></td>
+                                                                            <td><?= $operasional28['inheren_operasional'] ?? '-' ?></td>
+                                                                            <td><?= $kepatuhan28['inheren_kepatuhan'] ?? '-' ?></td>
+                                                                            <td><?= $likuiditas28['inheren_likuiditas'] ?? '-' ?></td>
+                                                                            <td><?= $reputasi28['inheren_reputasi'] ?? '-' ?></td>
+                                                                            <td><?= $stratejik28['inheren_stratejik'] ?? '-' ?></td>
                                                                           
                                                                         </tr>
                                                                     </tbody>

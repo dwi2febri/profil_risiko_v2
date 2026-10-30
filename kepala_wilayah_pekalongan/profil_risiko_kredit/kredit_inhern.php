@@ -4271,7 +4271,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                             </th>
                                             <td><input type="text" form="my_form" name="aba" value="<?= fmt2($pilar2_p2f) ?>" class="form-control" id="rupiah" readonly></td>
                                             <td>
-                                                >= <?= $ambang_batas_kredit['kmsjt_per_tkyd'] ?> </td>
+                                                <= <?= $ambang_batas_kredit['kmsjt_per_tkyd'] ?> </td>
 
                                             <td>
                                                 <center><?= $hsl_pil2_par2f ?></center>

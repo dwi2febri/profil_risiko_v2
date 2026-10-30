@@ -723,6 +723,9 @@ $p2j = round(($kredit_kub / $kyd) * 100, 2);
 $p2k = round(($kredit_ta / $kyd) * 100, 2);
 $p2l = round(($kredit_korporasi / $kyd) * 100, 2);
 $p2m = round(($kredit_pep / $kyd) * 100, 2);
+$p2m_raw = ($kyd > 0)
+    ? ($kredit_pep / $kyd) * 100
+    : null;
 $p2n = round(($kredit_lebih350 / $kyd) * 100, 2);
 
 $p3 = round(($debitur_inti25 * 100) / $kyd, 2);
@@ -991,13 +994,15 @@ $para2_abm = $ambang_batas_kredit['kpep_per_tkyd'];
 $para2_ab2m = $ambang_batas_kredit['rr_kpep_per_tkyd'];
 $para2_ab3m = $ambang_batas_kredit['rrr_kpep_per_tkyd'];
 $para2_ab4m = $ambang_batas_kredit['rrrr_kpep_per_tkyd'];
-if ($p2m <= $para2_abm) {
+$nilai_p2m = (float) $p2m_raw;
+
+if ($nilai_p2m <= (float) $para2_abm) {
     $hsl2m = 1;
-} else if ($p2m > $para2_abm && $p2m <= $para2_ab2m) {
+} elseif ($nilai_p2m <= (float) $para2_ab2m) {
     $hsl2m = 2;
-} else if ($p2m > $para2_ab2m && $p2m <= $para2_ab3m) {
+} elseif ($nilai_p2m <= (float) $para2_ab3m) {
     $hsl2m = 3;
-} elseif ($p2m > $para2_ab3m && $p2m <= $para2_ab4m) {
+} elseif ($nilai_p2m <= (float) $para2_ab4m) {
     $hsl2m = 4;
 } else {
     $hsl2m = 5;

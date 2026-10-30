@@ -29,7 +29,7 @@ function tgl_indo($tanggal)
 }
 $currentYear = date("Y");
 
-$id = $_SESSION['user_id'];
+$id = $_SESSION['user_id'] ?? null;
 $get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
 
 WHERE user_id = '$id'"));
@@ -40,25 +40,26 @@ WHERE user_id = '$id'"));
 <!--jamu-->
 <?php
 
-$kode_kantor = $_GET['kode_kantor'];
-$jenis_user = $_GET['user'];
+$kode_kantor = (int)($_GET['kode_kantor'] ?? 0);
+$jenis_user = (int)($_GET['user'] ?? 1);
+$jenis_user22 = (int)($_GET['user22'] ?? $jenis_user);
 
 
-$tahun = $_GET['tahun'];
-$periode = $_GET['periode'];
+$tahun = (int)($_GET['tahun'] ?? 0);
+$periode = (int)($_GET['periode'] ?? 0);
 
-$start_year = $_GET['start_year'];
-$start_quarter = $_GET['start_quarter'];
+$start_year = (int)($_GET['start_year'] ?? 0);
+$start_quarter = (int)($_GET['start_quarter'] ?? 0);
 
-$end_year = $_GET['end_year'];
-$end_quarter = $_GET['end_quarter'];
+$end_year = (int)($_GET['end_year'] ?? 0);
+$end_quarter = (int)($_GET['end_quarter'] ?? 0);
 
 $frame = mysqli_fetch_array(mysqli_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE kantor_cabang = '$kode_kantor' AND tahun ='$tahun' AND periode ='$periode' AND user ='$jenis_user'"));
 $abk = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = '$start_year'"));
 $abl = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = '$start_year'"));
 
-$id_pro = $frame['id_profil_risiko'];
-$dp = $frame['data_pembanding'];
+$id_pro = $frame['id_profil_risiko'] ?? 0;
+$dp = $frame['data_pembanding'] ?? 0;
 
 
 
@@ -95,19 +96,19 @@ $triwulan4_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from fra
 
 //tren
 $tren1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' ORDER BY periode DESC LIMIT 1"));
-$perper = $tren1['periode'];
+$perper = $tren1['periode'] ?? null;
 $nilai_per = $perper - 1;
 if ($nilai_per == 0) {
     $yy_th = $currentYear-1;
     $tren2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$yy_th' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2 = $tren2['total_nilai'];
+    $tr2 = $tren2['total_nilai'] ?? null;
 }  else {
     $tren2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per'"));
-    $tr2 = $tren2['total_nilai'];
+    $tr2 = $tren2['total_nilai'] ?? null;
 }
 
 
-$tr1 = $tren1['total_nilai'];
+$tr1 = $tren1['total_nilai'] ?? null;
 
 
 //tren per risiko
@@ -117,13 +118,13 @@ $nilai_per_kre = $periode - 1;
 if ($nilai_per_kre == 0) {
     $yy_kre = $tahun-1;
     $tren2_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$yy_kre' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2_kre = $tren2_kre['tingkat_risiko'];
+    $tr2_kre = $tren2_kre['tingkat_risiko'] ?? null;
 }  else {
     $tren2_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per_kre'"));
-    $tr2_kre = $tren2_kre['tingkat_risiko'];
+    $tr2_kre = $tren2_kre['tingkat_risiko'] ?? null;
 }
 
-$tr1_kre = $tren1_kre['tingkat_risiko'];
+$tr1_kre = $tren1_kre['tingkat_risiko'] ?? null;
 
 
 
@@ -134,12 +135,12 @@ $nilai_per_op = $periode - 1;
 if ($nilai_per_op == 0) {
     $yy_op = $tahun-1;
     $tren2_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$yy_op' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2_op = $tren2_op['tingkat_risiko'];
+    $tr2_op = $tren2_op['tingkat_risiko'] ?? null;
 }  else {
     $tren2_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per_op'"));
-    $tr2_op = $tren2_op['tingkat_risiko'];
+    $tr2_op = $tren2_op['tingkat_risiko'] ?? null;
 }
-$tr1_op = $tren1_op['tingkat_risiko'];
+$tr1_op = $tren1_op['tingkat_risiko'] ?? null;
 
 
 
@@ -149,12 +150,12 @@ $nilai_per_kep = $periode - 1;
 if ($nilai_per_kep == 0) {
     $yy_kep = $tahun-1;
     $tren2_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$yy_kep' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2_kep = $tren2_kep['tingkat_risiko'];
+    $tr2_kep = $tren2_kep['tingkat_risiko'] ?? null;
 }  else {
     $tren2_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per_kep'"));
-    $tr2_kep = $tren2_kep['tingkat_risiko'];
+    $tr2_kep = $tren2_kep['tingkat_risiko'] ?? null;
 }
-$tr1_kep = $tren1_kep['tingkat_risiko'];
+$tr1_kep = $tren1_kep['tingkat_risiko'] ?? null;
 
 
 
@@ -164,12 +165,12 @@ $nilai_per_lik = $periode - 1;
 if ($nilai_per_lik == 0) {
     $yy_lik = $tahun-1;
     $tren2_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$yy_lik' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2_lik = $tren2_lik['tingkat_risiko'];
+    $tr2_lik = $tren2_lik['tingkat_risiko'] ?? null;
 }  else {
     $tren2_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per_lik'"));
-    $tr2_lik = $tren2_lik['tingkat_risiko'];
+    $tr2_lik = $tren2_lik['tingkat_risiko'] ?? null;
 }
-$tr1_lik = $tren1_lik['tingkat_risiko'];
+$tr1_lik = $tren1_lik['tingkat_risiko'] ?? null;
 
 
 $tren1_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode ='$periode'"));
@@ -178,12 +179,12 @@ $nilai_per_rep = $periode - 1;
 if ($nilai_per_rep == 0) {
     $yy_rep = $tahun-1;
     $tren2_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$yy_rep' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2_rep = $tren2_rep['tingkat_risiko'];
+    $tr2_rep = $tren2_rep['tingkat_risiko'] ?? null;
 }  else {
     $tren2_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per_rep'"));
-    $tr2_rep = $tren2_rep['tingkat_risiko'];
+    $tr2_rep = $tren2_rep['tingkat_risiko'] ?? null;
 }
-$tr1_rep = $tren1_rep['tingkat_risiko'];
+$tr1_rep = $tren1_rep['tingkat_risiko'] ?? null;
 
 
 
@@ -193,12 +194,12 @@ $nilai_per_stra = $periode - 1;
 if ($nilai_per_stra == 0) {
     $yy_stra = $tahun-1;
     $tren2_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$yy_stra' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = 4"));
-    $tr2_stra = $tren2_stra['tingkat_risiko'];
+    $tr2_stra = $tren2_stra['tingkat_risiko'] ?? null;
 }  else {
     $tren2_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = 100 AND user =1 AND user ='$jenis_user' AND periode = '$nilai_per_stra'"));
-    $tr2_stra = $tren2_stra['tingkat_risiko'];
+    $tr2_stra = $tren2_stra['tingkat_risiko'] ?? null;
 }
-$tr1_stra = $tren1_stra['tingkat_risiko'];
+$tr1_stra = $tren1_stra['tingkat_risiko'] ?? null;
 
 
 $ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id_pro'"));
@@ -272,15 +273,16 @@ $pembanding_ket_nilai = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ni
 
 
 if (isset($_POST['submit'])) {
-    $kode_kantor = $_POST['kode_kantor'];
-    $jenis_user = $_POST['user'];
-    $tahun = $_POST['tahun'];
-    $periode = $_POST['periode'];
-    $start_year = $_POST['start_year'];
-    $end_year = $_POST['end_year'];
-    $start_quarter = $_POST['start_quarter'];
-    $end_quarter = $_POST['end_quarter'];
-        header("Location: index.php?page=dashboard&kode_kantor=$kode_kantor&tahun=$tahun&periode=$periode&user=$jenis_user&start_year=$start_year&end_year=$end_year&start_quarter=$start_quarter&end_quarter=$end_quarter");
+    $kode_kantor = (int)($_POST['kode_kantor'] ?? $kode_kantor);
+    $jenis_user = (int)($_POST['user'] ?? $jenis_user);
+    $jenis_user22 = (int)($_POST['user22'] ?? $jenis_user22);
+    $tahun = (int)($_POST['tahun'] ?? $tahun);
+    $periode = (int)($_POST['periode'] ?? $periode);
+    $start_year = (int)($_POST['start_year'] ?? $start_year);
+    $end_year = (int)($_POST['end_year'] ?? $end_year);
+    $start_quarter = (int)($_POST['start_quarter'] ?? $start_quarter);
+    $end_quarter = (int)($_POST['end_quarter'] ?? $end_quarter);
+        header("Location: index.php?page=dashboard&kode_kantor=$kode_kantor&tahun=$tahun&periode=$periode&user=$jenis_user&user22=$jenis_user22&start_year=$start_year&end_year=$end_year&start_quarter=$start_quarter&end_quarter=$end_quarter");
         exit();
 }
 ?>
@@ -288,7 +290,7 @@ if (isset($_POST['submit'])) {
 <?php
 
 $kantor_cabang = 100;
-$user = 1;
+$user = $jenis_user22;
 $start_key = $start_year * 10 + $start_quarter;
 $end_key = $end_year * 10 + $end_quarter;
 
@@ -368,11 +370,11 @@ ROUND((master_likuiditas_pilar1.aset_likuid / master_likuiditas_pilar1.total_ase
 
 
 FROM frame_laporan_profil_risiko 
-INNER JOIN master_kredit_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = master_kredit_pilar1.id_profil_risiko
-INNER JOIN master_kredit_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = master_kredit_pilar2.id_profil_risiko
-INNER JOIN master_kredit_pilar3 ON frame_laporan_profil_risiko.id_profil_risiko = master_kredit_pilar3.id_profil_risiko
+LEFT JOIN master_kredit_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = master_kredit_pilar1.id_profil_risiko
+LEFT JOIN master_kredit_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = master_kredit_pilar2.id_profil_risiko
+LEFT JOIN master_kredit_pilar3 ON frame_laporan_profil_risiko.id_profil_risiko = master_kredit_pilar3.id_profil_risiko
 
-INNER JOIN master_likuiditas_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = master_likuiditas_pilar1.id_profil_risiko
+LEFT JOIN master_likuiditas_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = master_likuiditas_pilar1.id_profil_risiko
     WHERE (tahun * 10 + periode) BETWEEN $start_key AND $end_key 
         AND kantor_cabang = $kantor_cabang AND user = $user
     ORDER BY tahun ASC, periode ASC
@@ -477,23 +479,24 @@ $query_para = "
         inheren_likuiditas_lainnya.hasil_pil3_par1e lik_31e,
         inheren_likuiditas_lainnya.hasil_pil3_par1f lik_31f
     FROM frame_laporan_profil_risiko 
-    INNER JOIN inheren_kredit_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar1.id_profil_risiko
-INNER JOIN inheren_kredit_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar2.id_profil_risiko
-INNER JOIN inheren_kredit_pilar3 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar3.id_profil_risiko
-INNER JOIN inheren_kredit_pilar4 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar4.id_profil_risiko
+    LEFT JOIN inheren_kredit_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar1.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar2.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar3 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar3.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar4 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar4.id_profil_risiko
 
-INNER JOIN inheren_likuiditas_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar1.id_profil_risiko
-INNER JOIN inheren_likuiditas_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar2.id_profil_risiko
-INNER JOIN inheren_likuiditas_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_lainnya.id_profil_risiko
-INNER JOIN inheren_kredit_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_lainnya.id_profil_risiko
+LEFT JOIN inheren_likuiditas_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar1.id_profil_risiko
+LEFT JOIN inheren_likuiditas_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar2.id_profil_risiko
+LEFT JOIN inheren_likuiditas_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_lainnya.id_profil_risiko
+LEFT JOIN inheren_kredit_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_lainnya.id_profil_risiko
     WHERE (tahun * 10 + periode) BETWEEN $start_key AND $end_key 
         AND kantor_cabang = $kantor_cabang AND user = $user
     ORDER BY tahun ASC, periode ASC
 ";
 
 // Ambil data dalam rentang periode
+// Pertahankan urutan join agar perencanaan query tren tidak melambat.
 $query = "
-    SELECT 
+    SELECT STRAIGHT_JOIN
         (frame_laporan_profil_risiko.tahun * 10 + frame_laporan_profil_risiko.periode) AS key_form,
         frame_laporan_profil_risiko.tahun,
         frame_laporan_profil_risiko.periode,
@@ -616,23 +619,23 @@ $query = "
         inheren_likuiditas_lainnya.hasil_pil3_par1f lik_31f
 
     FROM frame_laporan_profil_risiko 
-    INNER JOIN keterangan_profil_kredit 
+    LEFT JOIN keterangan_profil_kredit
         ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko
-        INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko
-INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko
-INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko
-INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko
-INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko
+        LEFT JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko
+LEFT JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko
+LEFT JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko
+LEFT JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko
+LEFT JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko
 
-INNER JOIN inheren_kredit_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar1.id_profil_risiko
-INNER JOIN inheren_kredit_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar2.id_profil_risiko
-INNER JOIN inheren_kredit_pilar3 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar3.id_profil_risiko
-INNER JOIN inheren_kredit_pilar4 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar4.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar1.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar2.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar3 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar3.id_profil_risiko
+LEFT JOIN inheren_kredit_pilar4 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_pilar4.id_profil_risiko
 
-INNER JOIN inheren_likuiditas_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar1.id_profil_risiko
-INNER JOIN inheren_likuiditas_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar2.id_profil_risiko
-INNER JOIN inheren_likuiditas_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_lainnya.id_profil_risiko
-INNER JOIN inheren_kredit_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_lainnya.id_profil_risiko
+LEFT JOIN inheren_likuiditas_pilar1 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar1.id_profil_risiko
+LEFT JOIN inheren_likuiditas_pilar2 ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_pilar2.id_profil_risiko
+LEFT JOIN inheren_likuiditas_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_likuiditas_lainnya.id_profil_risiko
+LEFT JOIN inheren_kredit_lainnya ON frame_laporan_profil_risiko.id_profil_risiko = inheren_kredit_lainnya.id_profil_risiko
 
     WHERE (tahun * 10 + periode) BETWEEN $start_key AND $end_key 
         AND kantor_cabang = $kantor_cabang 
@@ -1165,7 +1168,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                 <div class="card shadow-none m-0">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-download" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $get_data['total'] ?></span></h3>
+                                                        <h3><span><?= $get_data['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Masuk</p>
                                                     </div>
                                                 </div>
@@ -1175,7 +1178,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                 <div class="card shadow-none m-0 border-start">
                                                     <div class="card-body text-center">
                                                         <i class="uil-envelope-open" style="font-size: 24px;"></i>
-                                                        <h3><span><?= $get_data2['total'] ?></span></h3>
+                                                        <h3><span><?= $get_data2['total'] ?? '-' ?></span></h3>
                                                         <p class="text-muted font-15 mb-0">Laporan Diterima </p>
                                                     </div>
                                                 </div>
@@ -1238,18 +1241,18 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         
                                         <h4 class="header-title mb-4">Filter</h4>
 
-                                        <form class="needs-validation" action="" method="POST" enctype="multipart/form-data">  <form class="needs-validation" action="" method="POST" enctype="multipart/form-data">
-                                            <div class="row">
+                                        <form class="needs-validation row" action="" method="POST" enctype="multipart/form-data">
+
                                                 <div class="mb-3" style="pointer-events: none;">
                                                         <label for="kc" class="form-label">Kantor Cabang</label>
                                                         <select class="form-select mb-3" name="kode_kantor" id="kode_kantor" required="">
                                                         <option value=" " selected> </option>
                                                             <?php
                                                             include "../conn/conn.php";
-                                                            $lokasi_kerja = $_SESSION['lokasi_kerja'];
+                                                            $lokasi_kerja = $_SESSION['lokasi_kerja'] ?? null;
                                                             $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang");
                                                             while ($data = mysqli_fetch_array($query_cabang)) { ?>
-                                                                <option value="<?= $data['id_cabang'] ?>" <?= $data['id_cabang'] == $lokasi_kerja ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>
+                                                                <option value="<?= $data['id_cabang'] ?? '' ?>" <?= $data['id_cabang'] == $lokasi_kerja ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>
                                                             <?php
                                                             };
                                                             ?>
@@ -1264,7 +1267,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                 include "../conn/conn.php";
                                                                 $query_periode = mysqli_query($conn, "SELECT * FROM user_profil_risiko WHERE id_user_profil_risiko NOT IN(2,3)");
                                                                 while ($data = mysqli_fetch_array($query_periode)) { ?>
-                                                                    <option value="<?= $data['id_user_profil_risiko'] ?>" <?= $data['id_user_profil_risiko'] == $jenis_user ? ' selected' : '' ?>><?= ucwords($data['tipe_user'] ) ?></option>
+                                                                    <option value="<?= $data['id_user_profil_risiko'] ?? '' ?>" <?= $data['id_user_profil_risiko'] == $jenis_user ? ' selected' : '' ?>><?= ucwords($data['tipe_user'] ) ?></option>
                                                                 <?php
                                                                 };
                                                                 ?>
@@ -1301,7 +1304,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     include "../conn/conn.php";
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
-                                                                        <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                        <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                     <?php
                                                                     };
                                                                     ?>
@@ -1311,7 +1314,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         <button class="btn btn-primary" type="submit" name="submit">Cari</button>
                                                 </div>
 
-                                            </div>
+
                                         </form>
                                         <!-- end row-->
 
@@ -1502,8 +1505,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
         </div>
         <div class="card-body">
         
-        <form class="needs-validation" action="" method="POST" enctype="multipart/form-data">  <form class="needs-validation" action="" method="POST" enctype="multipart/form-data">
-        <div class="row">
+        <form class="needs-validation row" action="" method="POST" enctype="multipart/form-data">
+
                                                 
             <div class="col-xl-2">
                 <label for="start_year">Tahun Awal:</label>
@@ -1535,7 +1538,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         include "../conn/conn.php";
                                                                         $query_start_quarter = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                         while ($data = mysqli_fetch_array($query_start_quarter)) { ?>
-                                                                            <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $start_quarter ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                            <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $start_quarter ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                         <?php
                                                                         };
                                                                         ?>
@@ -1571,7 +1574,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         include "../conn/conn.php";
                                                                         $query_end_quarter = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                         while ($data = mysqli_fetch_array($query_end_quarter)) { ?>
-                                                                            <option value="<?= $data['id_periode'] ?>" <?= $data['id_periode'] == $end_quarter ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
+                                                                            <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $end_quarter ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
                                                                         <?php
                                                                         };
                                                                         ?>
@@ -1582,12 +1585,20 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
             </div>
         </form>
         <br></br>
-        <h4><b>Catatan: Jika nilai slope/kemiringan semakin menurun(-) maka tren nilai risiko semakin bagus/rendah, sebaliknya jika tren nilai naik(+) maka nilai risiko semakin tinggi</b></h4>
-            <div class="tab-content">
+        <link rel="stylesheet" href="../assets/css/dashboard-trends.css?v=20261027-3">
+        <div class="risk-trend-note" role="note">
+            <i class="mdi mdi-information-outline" aria-hidden="true"></i>
+            <div><strong>Panduan membaca tren</strong><br>Nilai slope menurun (&minus;) menunjukkan risiko membaik. Nilai slope meningkat (+) menunjukkan risiko memburuk.</div>
+        </div>
+            <?php
+                $trend_filter_kantor = (int)($kantor_cabang ?? 0);
+                include __DIR__ . '/../fungsi/dashboard_trend_empty.php';
+            ?>
+            <div class="tab-content risk-trend-section<?= count($periode_list) > 4 ? ' risk-trend-section--wide' : '' ?>">
                 <div class="tab-pane show active" id="nilai">
-                    <div class="row">
+                    <div class="row risk-trend-grid">
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="card risk-trend-card risk-trend-card--kredit">
                                 <div class="card-header" style="background-color: rgba(69, 176, 72, 0.6); color: white;">
                                     <h4 class="header-title mb-3">Risiko Kredit</h4>
                                 </div>
@@ -1666,7 +1677,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -1753,7 +1764,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -1840,7 +1851,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -1872,18 +1883,20 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                     </div> <!-- end table-responsive-->
                                     
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#scrollable-modal-1">
-                                    Tren Parameter Kredit Nilai
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#scrollable-modal-3">
-                                    Tren Parameter Kredit Rasio
-                                    </button>
+                                    <div class="risk-trend-actions" role="group" aria-label="Tren parameter kredit">
+                                        <button type="button" class="btn risk-trend-action" data-bs-toggle="modal" data-bs-target="#scrollable-modal-1" aria-label="Tren Parameter Kredit Nilai">
+                                            <i class="mdi mdi-chart-line" aria-hidden="true"></i><span>Tren Nilai</span>
+                                        </button>
+                                        <button type="button" class="btn risk-trend-action risk-trend-action--ratio" data-bs-toggle="modal" data-bs-target="#scrollable-modal-3" aria-label="Tren Parameter Kredit Rasio">
+                                            <i class="mdi mdi-percent" aria-hidden="true"></i><span>Tren Rasio</span>
+                                        </button>
+                                    </div>
 
                                 </div> <!-- end card body-->
                             </div> <!-- end card -->
                         </div><!-- end col-->
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="card risk-trend-card risk-trend-card--operasional">
                                 <div class="card-header" style="background-color:  rgba(5, 40, 156, 0.6); color: white;">
                                 <h4 class="header-title mb-3">Risiko Operasional </h4>
                                 </div>
@@ -1963,7 +1976,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2049,7 +2062,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2135,7 +2148,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2170,7 +2183,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                             </div> <!-- end card -->
                         </div><!-- end col-->
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="card risk-trend-card risk-trend-card--kepatuhan">
                                 <div class="card-header" style="background-color:  rgba(176, 159, 5, 0.6); color: white;">
                                 <h4 class="header-title mb-3">Risiko Kepatuhan </h4>
                                 </div>
@@ -2250,7 +2263,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2336,7 +2349,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2422,7 +2435,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2457,10 +2470,8 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                 </div> <!-- end card body-->
                             </div> <!-- end card -->
                         </div><!-- end col-->
-                    </div>
-                    <div class="row">
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="card risk-trend-card risk-trend-card--likuiditas">
                                 <div class="card-header" style="background-color:  rgba(184, 57, 84, 0.6); color: white;">
                                 <h4 class="header-title mb-3">Risiko Likuiditas</h4>
                                 </div>
@@ -2540,7 +2551,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2626,7 +2637,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2712,7 +2723,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2744,18 +2755,20 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                     </div> <!-- end table-responsive-->
 
                                     <!-- Tombol untuk Modal 2 -->
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#scrollable-modal-2">
-                                    Tren Parameter Likuiditas Nilai
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#scrollable-modal-4">
-                                    Tren Parameter Likuiditas Rasio
-                                    </button>
+                                    <div class="risk-trend-actions" role="group" aria-label="Tren parameter likuiditas">
+                                        <button type="button" class="btn risk-trend-action" data-bs-toggle="modal" data-bs-target="#scrollable-modal-2" aria-label="Tren Parameter Likuiditas Nilai">
+                                            <i class="mdi mdi-chart-line" aria-hidden="true"></i><span>Tren Nilai</span>
+                                        </button>
+                                        <button type="button" class="btn risk-trend-action risk-trend-action--ratio" data-bs-toggle="modal" data-bs-target="#scrollable-modal-4" aria-label="Tren Parameter Likuiditas Rasio">
+                                            <i class="mdi mdi-percent" aria-hidden="true"></i><span>Tren Rasio</span>
+                                        </button>
+                                    </div>
 
                                 </div> <!-- end card body-->
                             </div> <!-- end card -->
                         </div><!-- end col-->
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="card risk-trend-card risk-trend-card--reputasi">
                                 <div class="card-header" style="background-color:  rgba(2, 156, 153, 0.6); color: white;">
                                 <h4 class="header-title mb-3">Risiko Reputasi</h4>
                                 </div>
@@ -2835,7 +2848,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -2920,7 +2933,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -3006,7 +3019,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -3041,7 +3054,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                             </div> <!-- end card -->
                         </div><!-- end col-->
                         <div class="col-xl-4">
-                            <div class="card">
+                            <div class="card risk-trend-card risk-trend-card--stratejik">
                                 <div class="card-header" style="background-color:  rgba(77, 79, 79, 0.6); color: white;">
                                 <h4 class="header-title mb-3">Risiko Stratejik</h4>
                                 </div>
@@ -3121,7 +3134,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -3207,7 +3220,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -3293,7 +3306,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                         if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                         $tren = 'Stay';
-                                                        $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                        $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                         $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                         // Tentukan tren
@@ -3415,16 +3428,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko kredit
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket1['inheren_kredit'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket1['inheren_kredit'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket1['kpmr_kredit'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket1['kpmr_kredit'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket1['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket1['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket1['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket1['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3433,16 +3446,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko operasional
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket2['inheren_operasional'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket2['inheren_operasional'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket2['kpmr_operasional'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket2['kpmr_operasional'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket2['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket2['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket2['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket2['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3451,16 +3464,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko kepatuhan
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket3['inheren_kepatuhan'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket3['inheren_kepatuhan'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket3['kpmr_kepatuhan'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket3['kpmr_kepatuhan'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket3['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket3['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket3['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket3['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3469,16 +3482,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko likuiditas
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket4['inheren_likuiditas'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket4['inheren_likuiditas'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket4['kpmr_likuiditas'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket4['kpmr_likuiditas'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket4['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket4['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket4['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket4['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3487,16 +3500,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko reputasi
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket5['inheren_reputasi'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket5['inheren_reputasi'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket5['kpmr_reputasi'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket5['kpmr_reputasi'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket5['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket5['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket5['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket5['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3505,16 +3518,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko stratejik
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket6['inheren_stratejik'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket6['inheren_stratejik'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket6['kpmr_stratejik'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket6['kpmr_stratejik'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket6['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket6['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket6['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket6['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
                                                                             <tr bgcolor="#edebe8" style="height:  100px; background-color: rgba(71, 162, 190, 0.6); color: black;">
@@ -3523,10 +3536,10 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3577,16 +3590,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko kredit
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket1['inheren_kredit'] ?></b></center>
+                                                                                <center><b><?= $ket1['inheren_kredit'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket1['kpmr_kredit'] ?></b></center>
+                                                                                <center><b><?= $ket1['kpmr_kredit'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket1['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $ket1['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th style="height: 60%; width: 40%">
-                                                                                <center><b><?= $ket1['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $ket1['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3595,16 +3608,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko operasional
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket2['inheren_operasional'] ?></b></center>
+                                                                                <center><b><?= $ket2['inheren_operasional'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket2['kpmr_operasional'] ?></b></center>
+                                                                                <center><b><?= $ket2['kpmr_operasional'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket2['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $ket2['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket2['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $ket2['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3613,16 +3626,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko kepatuhan
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket3['inheren_kepatuhan'] ?></b></center>
+                                                                                <center><b><?= $ket3['inheren_kepatuhan'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket3['kpmr_kepatuhan'] ?></b></center>
+                                                                                <center><b><?= $ket3['kpmr_kepatuhan'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket3['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $ket3['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket3['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $ket3['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3631,16 +3644,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko likuiditas
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket4['inheren_likuiditas'] ?></b></center>
+                                                                                <center><b><?= $ket4['inheren_likuiditas'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket4['kpmr_likuiditas'] ?></b></center>
+                                                                                <center><b><?= $ket4['kpmr_likuiditas'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket4['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $ket4['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket4['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $ket4['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3649,16 +3662,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko reputasi
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket5['inheren_reputasi'] ?></b></center>
+                                                                                <center><b><?= $ket5['inheren_reputasi'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket5['kpmr_reputasi'] ?></b></center>
+                                                                                <center><b><?= $ket5['kpmr_reputasi'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket5['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $ket5['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket5['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $ket5['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3667,16 +3680,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                     Risiko stratejik
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket6['inheren_stratejik'] ?></b></center>
+                                                                                <center><b><?= $ket6['inheren_stratejik'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket6['kpmr_stratejik'] ?></b></center>
+                                                                                <center><b><?= $ket6['kpmr_stratejik'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket6['tingkat_risiko'] ?></b></center>
+                                                                                <center><b><?= $ket6['tingkat_risiko'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket6['tingkat_kualitas_mr'] ?></b></center>
+                                                                                <center><b><?= $ket6['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
                                                                             
@@ -3686,10 +3699,10 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3741,16 +3754,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko kredit
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren1['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren1['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_kpmr1['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_kpmr1['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket1['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket1['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th style="height: 60%; width: 40%">
-                                                                            <center><b><?= $peringkat_pembanding_ket1['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket1['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3759,16 +3772,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko operasional
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren2['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren2['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_kpmr2['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_kpmr2['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket2['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket2['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket2['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket2['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3777,16 +3790,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko kepatuhan
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren3['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren3['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_kpmr3['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_kpmr3['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket3['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket3['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket3['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket3['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3795,16 +3808,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko likuiditas
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren4['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren4['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_kpmr4['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_kpmr4['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket4['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket4['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket4['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket4['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3813,16 +3826,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko reputasi
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren5['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren5['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_kpmr5['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_kpmr5['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket5['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket5['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket5['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket5['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3831,16 +3844,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko stratejik
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_inheren6['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_inheren6['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $pembanding_kpmr6['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $pembanding_kpmr6['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket6['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket6['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_pembanding_ket6['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_pembanding_ket6['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
                                                                         
@@ -3850,10 +3863,10 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $pembanding_ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -3900,16 +3913,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko kredit
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren1['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren1['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $kpmr1['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $kpmr1['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket1['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket1['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th style="height: 60%; width: 40%">
-                                                                            <center><b><?= $peringkat_ket1['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket1['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3918,16 +3931,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko operasional
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren2['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren2['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $kpmr2['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $kpmr2['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket2['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket2['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket2['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket2['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3936,16 +3949,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko kepatuhan
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren3['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren3['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $kpmr3['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $kpmr3['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket3['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket3['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket3['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket3['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3954,16 +3967,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko likuiditas
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren4['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren4['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $kpmr4['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $kpmr4['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket4['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket4['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket4['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket4['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3972,16 +3985,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko reputasi
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren5['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren5['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $kpmr5['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $kpmr5['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket5['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket5['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket5['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket5['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
 
@@ -3990,16 +4003,16 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 Risiko stratejik
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $inheren6['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $inheren6['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $kpmr6['hasil_peringkat'] ?></b></center>
+                                                                            <center><b><?= $kpmr6['hasil_peringkat'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket6['peringkat_tingkat_risiko'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket6['peringkat_tingkat_risiko'] ?? '-' ?></b></center>
                                                                             </th>
                                                                             <th>
-                                                                            <center><b><?= $peringkat_ket6['tingkat_kualitas_mr'] ?></b></center>
+                                                                            <center><b><?= $peringkat_ket6['tingkat_kualitas_mr'] ?? '-' ?></b></center>
                                                                             </th>
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8" style="height:  100px; background-color: rgba(71, 162, 190, 0.6); color: black;">
@@ -4008,10 +4021,10 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 </th>
                                                                                 
                                                                                 <th>
-                                                                                <center><b><?= $ket_nilai['total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                                 <th>
-                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?></b></center>
+                                                                                <center><b><?= $ket_nilai['ket_total_nilai'] ?? '-' ?></b></center>
                                                                                 </th>
                                                                             </tr>
 
@@ -4121,7 +4134,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4192,7 +4205,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4263,7 +4276,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4334,7 +4347,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4405,7 +4418,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4476,7 +4489,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4547,7 +4560,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4618,7 +4631,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4689,7 +4702,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4762,7 +4775,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4833,7 +4846,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4904,7 +4917,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -4975,7 +4988,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5046,7 +5059,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5117,7 +5130,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5188,7 +5201,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5259,7 +5272,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5330,7 +5343,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5401,7 +5414,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5472,7 +5485,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5543,7 +5556,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5614,7 +5627,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5685,7 +5698,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5756,7 +5769,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5827,7 +5840,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5898,7 +5911,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -5969,7 +5982,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6040,7 +6053,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6111,7 +6124,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6182,7 +6195,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6253,7 +6266,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6324,7 +6337,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6395,7 +6408,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6466,7 +6479,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6537,7 +6550,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6608,7 +6621,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6679,7 +6692,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6750,7 +6763,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6821,7 +6834,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6892,7 +6905,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -6963,7 +6976,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7034,7 +7047,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7105,7 +7118,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7176,7 +7189,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7247,7 +7260,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7318,7 +7331,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7389,7 +7402,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7460,7 +7473,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7531,7 +7544,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7602,7 +7615,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7673,7 +7686,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7744,7 +7757,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7815,7 +7828,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7886,7 +7899,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -7957,7 +7970,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -8028,7 +8041,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -8099,7 +8112,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -8170,7 +8183,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -8241,7 +8254,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -8349,7 +8362,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8420,7 +8433,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8491,7 +8504,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8562,7 +8575,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8633,7 +8646,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8704,7 +8717,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8775,7 +8788,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8846,7 +8859,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8917,7 +8930,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -8988,7 +9001,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9059,7 +9072,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9130,7 +9143,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9201,7 +9214,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9272,7 +9285,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9343,7 +9356,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9414,7 +9427,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9485,7 +9498,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9556,7 +9569,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9627,7 +9640,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9698,7 +9711,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9769,7 +9782,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9840,7 +9853,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9911,7 +9924,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -9982,7 +9995,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10053,7 +10066,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10124,7 +10137,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10195,7 +10208,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10266,7 +10279,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10337,7 +10350,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10408,7 +10421,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10479,7 +10492,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10550,7 +10563,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10621,7 +10634,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10692,7 +10705,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -10759,7 +10772,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                 <tbody>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Aset Produktif / Total Aset</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['ap_per_ta'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['ap_per_ta'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -10802,7 +10815,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -10831,7 +10844,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>a. Penempatan pada bank lain/ Total aset</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['pbl_per_tap'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['pbl_per_tap'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1a as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -10874,7 +10887,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -10903,7 +10916,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>b. Aba Pada 1 Bank Tertinggi / Penempatan Bank Lain</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['apbt_per_pbl'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['apbt_per_pbl'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1b as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -10946,7 +10959,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -10975,7 +10988,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>c. Aba Pada BPR / Penempatan Bank Lain</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['abapb_per_pbl'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['abapb_per_pbl'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1c as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11018,7 +11031,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11047,7 +11060,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>d. NOA Kredit fon s/d 150 juta/ NOA KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkp150_per_nkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkp150_per_nkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1d as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11090,7 +11103,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11119,7 +11132,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>e. Kredit PEP /Total KYD </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kpep_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kpep_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1e as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11162,7 +11175,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11191,7 +11204,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>f. Kredit plafon > 350jt / total KYD </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kp350_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kp350_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1f as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11234,7 +11247,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11263,7 +11276,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>g. Saldo PPAP / Total Kredit</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['sppap_per_tk'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['sppap_per_tk'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1g as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11306,7 +11319,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11335,7 +11348,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>h. AYD / KYD </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['ayda_per_kyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['ayda_per_kyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p1h as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11378,7 +11391,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11409,7 +11422,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Kredit yang diberikan / Aset Produktif </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kyd_per_ap'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kyd_per_ap'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11452,7 +11465,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11481,7 +11494,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>a. Aset skema potong gaji / Total Kredit </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kspg_per_tk'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kspg_per_tk'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12a as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11524,7 +11537,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11553,7 +11566,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>b. Kredit musiman (grace period) / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['km_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['km_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12b as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11596,7 +11609,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11625,7 +11638,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>c. Kredit jangka pendek / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kjpen_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kjpen_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12c as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11668,7 +11681,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11697,7 +11710,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>d. kredit jangka menengah / total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kjm_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kjm_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12d as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11740,7 +11753,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11769,7 +11782,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>e. kredit jangka panjang / total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kjpan_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kjpan_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12e as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11812,7 +11825,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11841,7 +11854,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>f. Kredit dengan anggunan tanah dan bangunan / Total KYD </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kdatdb_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kdatdb_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12f as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11884,7 +11897,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11913,7 +11926,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>g. Kredit agunan kendaraan bermotor / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kak_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kak_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12g as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -11956,7 +11969,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -11985,7 +11998,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>h. Kredit dengan anggunan roda 2 / Total KYD </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kakr2_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kakr2_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12h as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12028,7 +12041,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12057,7 +12070,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>i. OSC Produk KUB / total KYD </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['opk_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['opk_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12i as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12100,7 +12113,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12129,7 +12142,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>j. kredit Tanpa anggunan / total kredit KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kta_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kta_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12j as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12172,7 +12185,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12201,7 +12214,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>k. Kredit korporasi (Non Perorangan) / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kknp_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kknp_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p12k as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12244,7 +12257,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12273,7 +12286,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>25 Debitur Inti / Total Kredit </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['di25_per_tk'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['di25_per_tk'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p13 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12316,7 +12329,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12345,7 +12358,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Kredit per sektor ekonomi / Total Kredit</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kpse_per_tk'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kpse_per_tk'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p14 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12388,7 +12401,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12417,7 +12430,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Aset Produk Bermasalah / total aset produktif</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['apb_per_tap'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['apb_per_tap'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p21 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12460,7 +12473,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12489,7 +12502,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Kredit Bermasalah Neto / Total Kredit</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kbn_per_tk'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kbn_per_tk'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12532,7 +12545,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12561,7 +12574,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>a. NPL Kredit plafond s/d 150 juta / Total KYD plafond s/d 150 jt</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkp150_per_tkp150'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkp150_per_tkp150'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22a as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12604,7 +12617,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12633,7 +12646,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>b. NPL Kredit plafond diatas 50 juta / Total KYD plafond diatas 50 juta</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkpd50_per_tkpd50'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkpd50_per_tkpd50'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22b as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12676,7 +12689,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12705,7 +12718,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>c. NPL Kredit Dengan Perikatan APHT / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkdpapht_prt_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkdpapht_prt_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22c as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12748,7 +12761,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12777,7 +12790,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>d. NPL Kredit Dengan Perikatan SKMHT / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkdpskmht_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nkdpskmht_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22d as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12820,7 +12833,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12849,7 +12862,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>e. NPL Nilai Agunan Lebih Rendah Dari Baki Debe t /Total Kredit Nilai Agunan Lebih Rendah dari Baki Debet</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nalrdbd_per_tknalrdbd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nalrdbd_per_tknalrdbd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22e as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12892,7 +12905,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12921,7 +12934,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>f. Kredit Macet sudah jatuh tempo / Total KYD</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kmsjt_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kmsjt_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p22f as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -12964,7 +12977,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -12993,7 +13006,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Kredit Kualitas Rendah / Total Kredit</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kkr_per_tk'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kkr_per_tk'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p23 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13036,7 +13049,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13065,7 +13078,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>a. Kredit Par 4 / Total Kredit</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kp4_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kp4_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p23a as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13108,7 +13121,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13137,7 +13150,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                          <th> b. Kredit DP (PAR 3 + PAR 4 ) /Total Kredit</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['kdp3p4_per_tkyd'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['kdp3p4_per_tkyd'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p23b as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13180,7 +13193,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13209,7 +13222,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>c. NOA FPD 6 Bulan Terakhir / NOA Ekspansi 6 Bulan Terakhir</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nf6bt_per_ne6bt'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nf6bt_per_ne6bt'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p23c as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13252,7 +13265,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13281,7 +13294,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>d. Nominal FPD 6 Bulan Terakhir / plafond Ekspansi 6 Bulan Terakhir</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['nomf6bt_per_pe6bt'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['nomf6bt_per_pe6bt'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p23d as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13324,7 +13337,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13353,7 +13366,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#E2DCD3">
                                                                         <th>Strategi Penyediaan Dana </th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['apb_per_tap'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['apb_per_tap'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p31 as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13396,7 +13409,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13426,7 +13439,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                    
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>d. Penempatan dana antar bank</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['ap_per_ta'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['ap_per_ta'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p31d as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13469,7 +13482,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13498,7 +13511,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     </tr>
                                                                     <tr bgcolor="#edebe8">
                                                                         <th>e. Konsentrasi Penempatan ABA</th>
-                                                                        <th style="background-color:#b6d1cf"><?= $abk['ap_per_ta'] ?></th>
+                                                                        <th style="background-color:#b6d1cf"><?= $abk['ap_per_ta'] ?? '-' ?></th>
                                                                         <?php foreach ($kre_p31e as $val): ?>
                                                                             <td><?= $val ?></td>
                                                                         <?php endforeach; ?>
@@ -13541,7 +13554,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                             if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                             $tren = 'Stay';
-                                                                            $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                            $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                             $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                             // Tentukan tren
@@ -13609,7 +13622,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                     <tbody>
                                                                         <tr bgcolor="#E2DCD3">
                                                                             <th>Aset Likuid/Total aset</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_ta'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_ta'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p1 as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -13652,7 +13665,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -13681,7 +13694,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#E2DCD3">
                                                                             <th>Aset Likuid / Kewajiban Lancar</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_kl'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_kl'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12 as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -13724,7 +13737,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -13753,7 +13766,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>a. Total Aset Likuid / Pendanaan jangka Pendek </th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['tal_per_pjp'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['tal_per_pjp'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12a as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -13796,7 +13809,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -13825,7 +13838,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>b.Aset Likuid / Kewajiban Jangka Pendek </th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_kjp'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_kjp'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12b as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -13868,7 +13881,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -13897,7 +13910,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>c. Arus Kas Netto / Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['akn_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['akn_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12c as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -13940,7 +13953,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -13969,7 +13982,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>d. Tabungan / Total DPKK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['tabungan_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['tabungan_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12d as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14012,7 +14025,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14041,7 +14054,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>e. Deposito Jangka Waktu 3 bln / Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['djw3bln_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['djw3bln_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12e as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14084,7 +14097,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14113,7 +14126,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>f. Deposito Jangka Waktu 6 bln /  Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['djw6bln_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['djw6bln_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12f as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14156,7 +14169,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14185,7 +14198,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>g. Deposito Jangka Waktu 12 bln / Total DPK </th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['djw12bln_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['djw12bln_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12g as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14228,7 +14241,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14257,7 +14270,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>h. Modal Disetor / Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['md_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['md_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12h as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14300,7 +14313,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14329,7 +14342,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>i. Pinjaman / Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['pin_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['pin_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p12i as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14372,7 +14385,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14401,7 +14414,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#E2DCD3">
                                                                             <th>Kredit Yang Diberikan / Total Dana Pihak Ketiga Bukan Bank</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['kyd_per_tdpkbk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['kyd_per_tdpkbk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p13 as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14444,7 +14457,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14473,7 +14486,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>a.DPK Yang Dijamin LPS/ DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['dpkydlps_per_dpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['dpkydlps_per_dpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p13a as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14516,7 +14529,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14545,7 +14558,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>b. Alat Likuid + Kredit Lancar / Dana Pihak Ke 3</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['alkl_per_dpk3'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['alkl_per_dpk3'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p13b as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14588,7 +14601,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14617,7 +14630,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>c. Deposito Tenor Sampai Dengan 6 bln / Alat Likuid</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['dtsd6bln_per_al'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['dtsd6bln_per_al'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p13c as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14660,7 +14673,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14689,7 +14702,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>d. Pertumbuhan Kredit / Pertumbuhan Simpanan</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['pk_per_ps'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['pk_per_ps'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p13d as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14732,7 +14745,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14761,7 +14774,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#E2DCD3">
                                                                             <th>25 Deposan dan Penabung Terbesar / Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['ddpt25_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['ddpt25_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p14 as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14804,7 +14817,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14833,7 +14846,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#E2DCD3">
                                                                             <th>Pendanaan Non Inti / Total Pendanaan</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['pni_per_tp'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['pni_per_tp'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p15 as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14876,7 +14889,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14905,7 +14918,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>a. Pendanaan Non Inti-Alat Likuid / Total Aset-Aset Likuid</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['pnial_per_taal'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['pnial_per_taal'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p15a as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -14948,7 +14961,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -14977,7 +14990,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>b. Deposito Rate Spesial / Alat LikuidAlat Likuid / Total Aset-Aset Likuid</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['drs_per_al'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['drs_per_al'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p15b as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -15020,7 +15033,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -15049,7 +15062,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>c. Aset Likuid / Pendanaan Non Inti</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_pni'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['al_per_pni'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p15c as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -15092,7 +15105,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -15121,7 +15134,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                         </tr>
                                                                         <tr bgcolor="#edebe8">
                                                                             <th>d. deposito inti (100 Deposan) / Total DPK</th>
-                                                                            <th style="background-color:#b6d1cf"><?= $abl['di_per_tdpk'] ?></th>
+                                                                            <th style="background-color:#b6d1cf"><?= $abl['di_per_tdpk'] ?? '-' ?></th>
                                                                             <?php foreach ($lik_p15d as $val): ?>
                                                                                 <td><?= $val ?></td>
                                                                             <?php endforeach; ?>
@@ -15164,7 +15177,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
 
                                                                                 if ($n >= 2 && ($n * $sumX2 - $sumX * $sumX) != 0) {
                                                                                 $tren = 'Stay';
-                                                                                $b = number_format(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX),2); // slope
+                                                                                $b = round(($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX), 2); // slope
                                                                                 $a = ($sumY - $b * $sumX) / $n; // intercept
 
                                                                                 // Tentukan tren
@@ -15227,19 +15240,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                                 <?php
                                                 $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  keterangan_profil_kredit.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1 AND user ='$jenis_user'"));
-                                                echo $triwulan1_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
                                                 $triwulan2_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2 AND user ='$jenis_user'"));
-                                                echo $triwulan2_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan2_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
                                                 $triwulan3_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3 AND user ='$jenis_user'"));
-                                                echo $triwulan3_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan3_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
                                                 $triwulan4_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4 AND user ='$jenis_user'"));
-                                                echo $triwulan4_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan4_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
                                         type: 'line',
@@ -15256,19 +15269,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                                 <?php
                                                 $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1 AND user ='$jenis_user'"));
-                                                echo $triwulan1_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan1_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2 AND user ='$jenis_user'"));
-                                                echo $triwulan2_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan2_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                <?php
                                                 $triwulan3_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3 AND user ='$jenis_user'"));
-                                                echo $triwulan3_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan3_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4 AND user ='$jenis_user'"));
-                                                echo $triwulan4_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan4_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                                 ],
 
@@ -15283,19 +15296,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                             <?php
                                                 $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1 AND user ='$jenis_user'"));
-                                                echo $triwulan1_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2 AND user ='$jenis_user'"));
-                                                echo $triwulan2_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan2_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3 AND user ='$jenis_user'"));
-                                                echo $triwulan3_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan3_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4 AND user ='$jenis_user'"));
-                                                echo $triwulan4_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan4_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -15310,19 +15323,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                             <?php
                                                 $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1 AND user ='$jenis_user'"));
-                                                echo $triwulan1_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan1_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2 AND user ='$jenis_user'"));
-                                                echo $triwulan2_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan2_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3 AND user ='$jenis_user'"));
-                                                echo $triwulan3_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan3_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4 AND user ='$jenis_user'"));
-                                                echo $triwulan4_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan4_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -15337,19 +15350,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                             <?php
                                                 $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1 AND user ='$jenis_user'"));
-                                                echo $triwulan1_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan1_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2 AND user ='$jenis_user'"));
-                                                echo $triwulan2_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan2_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3 AND user ='$jenis_user'"));
-                                                echo $triwulan3_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan3_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4 AND user ='$jenis_user'"));
-                                                echo $triwulan4_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan4_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -15364,19 +15377,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                                 <?php
                                                 $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1 AND user ='$jenis_user'"));
-                                                echo $triwulan1_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan1_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan2_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2 AND user ='$jenis_user'"));
-                                                echo $triwulan2_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan2_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan3_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3 AND user ='$jenis_user'"));
-                                                echo $triwulan3_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan3_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan4_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.tingkat_risiko AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4 AND user ='$jenis_user'"));
-                                                echo $triwulan4_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan4_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
 
@@ -15427,27 +15440,27 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                                 <?php
                                                 $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  tingkat_risiko from keterangan_profil_kredit WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_operasional WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan1_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_kepatuhan WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_likuiditas WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan1_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_reputasi WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan1_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_stratejik WHERE id_profil_risiko = '$dp'"));
-                                                echo $triwulan1_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan1_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
                                         type: 'bar',
@@ -15464,27 +15477,27 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         data: [
                                                 <?php
                                                 $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  tingkat_risiko from keterangan_profil_kredit WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_kredit['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_operasional WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_operasional['tingkat_risiko'];
+                                                echo json_encode($triwulan1_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_kepatuhan['tingkat_risiko'];
+                                                echo json_encode($triwulan1_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_likuiditas WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_likuiditas['tingkat_risiko'];
+                                                echo json_encode($triwulan1_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_reputasi WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_reputasi['tingkat_risiko'];
+                                                echo json_encode($triwulan1_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
                                                 $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT tingkat_risiko from keterangan_profil_stratejik WHERE id_profil_risiko = '$id_pro'"));
-                                                echo $triwulan1_stratejik['tingkat_risiko'];
+                                                echo json_encode($triwulan1_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
                                         type: 'bar',
