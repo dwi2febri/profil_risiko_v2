@@ -166,7 +166,7 @@ include "../fungsi/fungsi.php";
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
                                             INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode

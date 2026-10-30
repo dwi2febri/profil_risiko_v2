@@ -637,7 +637,7 @@ if (!isset($ket['ket_profil_kpmr']) || trim((string)$ket['ket_profil_kpmr']) ===
 }
 
 if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     if (!headers_sent()) header('Content-Type: application/json; charset=utf-8');
 
     $inheren_kredit = (float)$inheren['hasil_tingkat_risiko'];
@@ -675,7 +675,7 @@ if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
 }
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $inheren_kredit = (float)$inheren['hasil_tingkat_risiko'];
     $kpmr_kredit = (float)$kpmr['hasil_tingkat_risiko'];
     $ket_profil_risiko = mysqli_real_escape_string($conn, (string)($_POST['ket_profil_risiko'] ?? ''));

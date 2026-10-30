@@ -1,6 +1,6 @@
 <?php
 include "../fungsi/fungsi.php";
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -118,7 +118,7 @@ if (isset($_POST['submit'])) {
 
     $frameDipilih = null;
     if ($frame_perumusan_id > 0) {
-        $qFrameDipilih = mysqli_query($conn, "
+        $qFrameDipilih = simpro_db_query($conn, "
             SELECT
                 fp.id_frame_perumusan,
                 fp.tahun,
@@ -141,10 +141,10 @@ if (isset($_POST['submit'])) {
             FROM frame_perumusan fp
             INNER JOIN user_profil_risiko upr
                 ON fp.user_id = upr.id_user_profil_risiko
-            WHERE fp.id_frame_perumusan = '$frame_perumusan_id'
+            WHERE fp.id_frame_perumusan = ?
               AND UPPER(upr.tipe_user) LIKE '%KANTOR CABANG%'
             LIMIT 1
-        ");
+        ", [$frame_perumusan_id]);
         if ($qFrameDipilih && mysqli_num_rows($qFrameDipilih) > 0) {
             $frameDipilih = mysqli_fetch_assoc($qFrameDipilih);
         }
@@ -759,7 +759,7 @@ if (isset($_POST['submit'])) {
                                                     <label for="kc" class="form-label">Kantor Cabang</label>
                                                     <select class="form-select mb-3" name="lokasi_kerja" id="kc" required="">
                                                         <?php
-                                                        include "../conn/conn.php";
+                                                        require dirname(__DIR__, 2).'/conn/conn.php';
                                                         $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang WHERE id_cabang BETWEEN 15 AND 21 ORDER BY id_cabang ASC");
                                                         while ($data = mysqli_fetch_array($query_cabang)) { ?>
                                                             <option value="<?= $data['id_cabang'] ?>" <?= ((int)$selectedLokasi === (int)$data['id_cabang'] ? 'selected' : (((int)$selectedLokasi === 0 && (int)$data['id_cabang'] === (int)($_SESSION['lokasi_kerja'] ?? 0)) ? 'selected' : '')) ?>><?= ucwords($data['cabang']) ?></option>
@@ -796,7 +796,7 @@ if (isset($_POST['submit'])) {
                                                     <select class="form-select mb-3" name="periode" id="periode" required="">
                                                     <option value=" " selected> </option>
                                                                 <?php
-                                                                include "../conn/conn.php";
+                                                                require dirname(__DIR__, 2).'/conn/conn.php';
                                                                 $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                 while ($data = mysqli_fetch_array($query_periode)) { ?>
                                                                     <option value="<?= $data['id_periode'] ?>"><?= ucwords($data['periode_laporan']) ?></option>
@@ -904,7 +904,7 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $id_user = $_SESSION['user_id'];

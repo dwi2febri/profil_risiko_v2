@@ -39,15 +39,15 @@ if (empty($id) || $id === null) {
 <?php
 include "../fungsi/fungsi.php";
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ?", [$id]));
 $dp = $frame['data_pembanding'];
 $kacab = $frame['kantor_cabang'];
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $data_pembanding = $_POST['selected_id'];
 
-        mysqli_query($conn, "UPDATE frame_laporan_profil_risiko SET data_pembanding = '$data_pembanding' WHERE id_profil_risiko = '$id'");
+        simpro_db_query($conn, "UPDATE frame_laporan_profil_risiko SET data_pembanding = ? WHERE id_profil_risiko = ?", [$data_pembanding, $id]);
 
         echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -151,15 +151,15 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $id_user = $_SESSION['user_id'];
-                                            $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+                                            $query = simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
                                             INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
                                             INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang
                                             INNER JOIN user_profil_risiko ON frame_laporan_profil_risiko.user = user_profil_risiko.id_user_profil_risiko
-                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE  frame_laporan_profil_risiko.kantor_cabang = '$kacab' AND id_profil_risiko NOT IN ('$id') order by id_profil_risiko desc");
+                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE  frame_laporan_profil_risiko.kantor_cabang = ? AND id_profil_risiko NOT IN (?) order by id_profil_risiko desc", [$kacab, $id]);
                                             while ($data = mysqli_fetch_array($query)) { ?>
                                                 <tr>
                                                     <td>
@@ -265,15 +265,15 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $id_user = $_SESSION['user_id'];
-                                            $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+                                            $query = simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
                                             INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
                                             INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang
                                             INNER JOIN user_profil_risiko ON frame_laporan_profil_risiko.user = user_profil_risiko.id_user_profil_risiko
-                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE  frame_laporan_profil_risiko.kantor_cabang = '$kacab' AND id_profil_risiko= '$id'");
+                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE  frame_laporan_profil_risiko.kantor_cabang = ? AND id_profil_risiko= ?", [$kacab, $id]);
                                             while ($data = mysqli_fetch_array($query)) { ?>
                                                 <tr>
                                                     <td>
@@ -355,15 +355,15 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $id_user = $_SESSION['user_id'];
-                                            $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+                                            $query = simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
                                             INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
                                             INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang
                                             INNER JOIN user_profil_risiko ON frame_laporan_profil_risiko.user = user_profil_risiko.id_user_profil_risiko
-                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE  frame_laporan_profil_risiko.kantor_cabang = '$kacab'  AND id_profil_risiko= '$dp'");
+                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE  frame_laporan_profil_risiko.kantor_cabang = ?  AND id_profil_risiko= ?", [$kacab, $dp]);
                                             while ($data = mysqli_fetch_array($query)) { ?>
                                                 <tr>
                                                     <td>

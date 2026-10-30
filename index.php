@@ -1,95 +1,25 @@
 <?php
-/* =========================================================
-   PROSES LOGIN DI ATAS HTML
-   Supaya header redirect aman dan login tetap jalan
-========================================================= */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+require_once __DIR__.'/fungsi/authentication.php';
+$appBase = simpro_app_base_path();
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && str_ends_with((string)parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/index.php')) {
+    $query = http_build_query($_GET);
+    header('Location: '.$appBase.($query !== '' ? '?'.$query : ''), true, 302);
+    exit;
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include "conn/conn.php";
-
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-
-    $query = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username' AND password = '$password'");
-    $cek_user = $query ? mysqli_num_rows($query) : 0;
-
-    if ($cek_user > 0) {
-        $data = mysqli_fetch_array($query);
-
-        $_SESSION['username'] = $data['username'];
-        $_SESSION['nama'] = $data['nama'];
-        $_SESSION['user_id'] = $data['user_id'];
-        $_SESSION['lokasi_kerja'] = $data['lokasi_kerja'];
-        $_SESSION['tipe'] = $data['tipe'];
-
-        if ($data['tipe'] == "admin") {
-            header("location:admin/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala cabang") {
-            header("location:kepala_cabang/index.php");
-            exit();
-        } elseif ($data['tipe'] == "admin kc") {
-            header("location:admin_kc/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala wilayah semarang") {
-            header("location:kepala_wilayah_semarang/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala wilayah solo") {
-            header("location:kepala_wilayah_solo/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala wilayah banyumas") {
-            header("location:kepala_wilayah_banyumas/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala wilayah pekalongan") {
-            header("location:kepala_wilayah_pekalongan/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi pemasaran") {
-            header("location:kadiv_pemasaran/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi penyelesaian kredit") {
-            header("location:kadiv_penyelesaian_kredit/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi operasional") {
-            header("location:kadiv_operasional/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi sdm") {
-            header("location:kadiv_sdm/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi kepatuhan") {
-            header("location:kadiv_kepatuhan/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi sekper") {
-            header("location:kadiv_sekper/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi litbang") {
-            header("location:kadiv_litbang/index.php");
-            exit();
-        } elseif ($data['tipe'] == "kepala divisi skai") {
-            header("location:satker_skai/index.php");
-            exit();
-        } elseif ($data['tipe'] == "direksi") {
-            header("location:direksi/index.php");
-            exit();
-        } elseif ($data['tipe'] == "pic semarang") {
-            header("location:pic_area_semarang/index.php");
-            exit();
-        } elseif ($data['tipe'] == "pic solo") {
-            header("location:pic_area_solo/index.php");
-            exit();
-        } elseif ($data['tipe'] == "pic pekalongan") {
-            header("location:pic_area_pekalongan/index.php");
-            exit();
-        } elseif ($data['tipe'] == "pic banyumas") {
-            header("location:pic_area_banyumas/index.php");
-            exit();
-        }
+if (session_status() === PHP_SESSION_NONE) session_start();
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    require __DIR__.'/conn/conn.php';
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $data = is_string($username) && is_string($password) ? simpro_authenticate($conn, $username, $password) : null;
+    if ($data) {
+        session_regenerate_id(true);
+        foreach (['username','nama','user_id','lokasi_kerja','tipe'] as $key) $_SESSION[$key] = $data[$key];
+        header('Location: '.$appBase.simpro_role_folder((string)$data['tipe']).'/', true, 302);
     } else {
-        header("location:index.php?alert=gagal");
-        exit();
+        header('Location: '.$appBase.'?alert=gagal', true, 302);
     }
+    exit;
 }
 ?>
 <!DOCTYPE html>

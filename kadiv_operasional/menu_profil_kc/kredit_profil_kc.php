@@ -47,30 +47,30 @@ include "../fungsi/fungsi.php";
 
 
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $dp = $frame['data_pembanding'];
 
-$pembanding_inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$dp'"));
+$pembanding_inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$dp]));
 
-$pembanding_kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = '$dp'"));
+$pembanding_kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = ?", [$dp]));
 
 $pem_i = $pembanding_inheren['hasil_peringkat'];
 $pem_k = $pembanding_kpmr['hasil_peringkat'];
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
-$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
-$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
-$pil4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar4 WHERE id_profil_risiko = '$id'"));
-$kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
+$pil4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar4 WHERE id_profil_risiko = ?", [$id]));
+$kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = ?", [$id]));
 
-$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$id'"));
+$inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 
-$ket = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id'"));
+$ket = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id]));
 
 $trs = $inheren['hasil_peringkat'];
-$matrik_ojk_kre = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM matrik_ojk_kredit WHERE tingkat_risiko = '$trs'"));
+$matrik_ojk_kre = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM matrik_ojk_kredit WHERE tingkat_risiko = ?", [$trs]));
 
 
 $i = $inheren['hasil_peringkat'];
@@ -385,7 +385,7 @@ else {
 
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
 
 
@@ -398,14 +398,14 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE keterangan_profil_kredit SET 
-    inheren_kredit = '$inheren_kredit',
-    tingkat_risiko = '$tingkat_risiko',
-    peringkat_tingkat_risiko = '$ket_tingkat_risiko',
-    tingkat_kualitas_mr = '$tingkat_kualitas_mr',
-    ket_profil_inheren = '$ket_profil_inheren',
-    tindak_lanjut = '$tindak_lanjut'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE keterangan_profil_kredit SET 
+    inheren_kredit = ?,
+    tingkat_risiko = ?,
+    peringkat_tingkat_risiko = ?,
+    tingkat_kualitas_mr = ?,
+    ket_profil_inheren = ?,
+    tindak_lanjut = ?
+    WHERE id_profil_risiko = ?", [$inheren_kredit, $tingkat_risiko, $ket_tingkat_risiko, $tingkat_kualitas_mr, $ket_profil_inheren, $tindak_lanjut, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -416,12 +416,12 @@ if (isset($_POST['submit'])) {
 }
 
 
-    $length = mysqli_fetch_array(mysqli_query($conn, "SELECT 
-    CHAR_LENGTH(ket_profil_inheren) AS l1 FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id'"));
+    $length = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
+    CHAR_LENGTH(ket_profil_inheren) AS l1 FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id]));
 
 
 
-$terbesar_pilar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN pil1_tingkat_risiko = greatest(pil1_tingkat_risiko, pil2_tingkat_risiko, pil3_tingkat_risiko, pil4_tingkat_risiko, pil5_tingkat_risiko) THEN 'pil1_tingkat_risiko'
     WHEN pil2_tingkat_risiko = greatest(pil1_tingkat_risiko, pil2_tingkat_risiko, pil3_tingkat_risiko, pil4_tingkat_risiko, pil5_tingkat_risiko) THEN 'pil2_tingkat_risiko'
@@ -430,16 +430,16 @@ CASE
     WHEN pil5_tingkat_risiko = greatest(pil1_tingkat_risiko, pil2_tingkat_risiko, pil3_tingkat_risiko, pil4_tingkat_risiko, pil5_tingkat_risiko) THEN 'pil5_tingkat_risiko'
 END AS val
 FROM hasil_inheren_kredit
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 
 $que_pilar = $terbesar_pilar['val'];
 
-$terbesar_nilai_pilar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(pil1_tingkat_risiko, pil2_tingkat_risiko, pil3_tingkat_risiko, pil4_tingkat_risiko, pil5_tingkat_risiko) AS nilai_tertinggi_pilar
-FROM hasil_inheren_kredit WHERE id_profil_risiko = '$id'"));
+FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 
 
-$terbesar_pilar1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN hasil_pil1_par1 = greatest(hasil_pil1_par1, hasil_pil1_par2, hasil_pil1_par3, hasil_pil1_par4) THEN 'hasil_pil1_par1'
     WHEN hasil_pil1_par2 = greatest(hasil_pil1_par1, hasil_pil1_par2, hasil_pil1_par3, hasil_pil1_par4) THEN 'hasil_pil1_par2'
@@ -448,15 +448,15 @@ CASE
     
 END AS val
 FROM inheren_kredit_pilar1
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 
-$terbesar_nilai_pilar1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil1_par1, hasil_pil1_par2, hasil_pil1_par3, hasil_pil1_par4) AS nilai_tertinggi_pilar1
-FROM inheren_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
 
 $que_pilar1 = $terbesar_pilar1['val'];
 
-$terbesar_pilar2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN hasil_pil2_par1 = greatest(hasil_pil2_par1, hasil_pil2_par2, hasil_pil2_par3) THEN 'hasil_pil2_par1'
     WHEN hasil_pil2_par2 = greatest(hasil_pil2_par1, hasil_pil2_par2, hasil_pil2_par3) THEN 'hasil_pil2_par2'
@@ -464,16 +464,16 @@ CASE
     
 END AS val
 FROM inheren_kredit_pilar2
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 
-$terbesar_nilai_pilar2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil2_par1, hasil_pil2_par2, hasil_pil2_par3) AS nilai_tertinggi_pilar2
-FROM inheren_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
 
 $que_pilar2 = $terbesar_pilar2['val'];
 
 
-$terbesar_pilar3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar3 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN hasil_pil3_par1a = greatest(hasil_pil3_par1a, hasil_pil3_par1b, hasil_pil3_par1c, hasil_pil3_par1d, hasil_pil3_par1e) THEN 'hasil_pil3_par1a'
     WHEN hasil_pil3_par1b = greatest(hasil_pil3_par1a, hasil_pil3_par1b, hasil_pil3_par1c, hasil_pil3_par1d, hasil_pil3_par1e) THEN 'hasil_pil3_par1b'
@@ -483,15 +483,15 @@ CASE
     
 END AS val
 FROM inheren_kredit_pilar3
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 
-$terbesar_nilai_pilar3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar3 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil3_par1a, hasil_pil3_par1b, hasil_pil3_par1c, hasil_pil3_par1d, hasil_pil3_par1e) AS nilai_tertinggi_pilar3
-FROM inheren_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
 
 $que_pilar3 = $terbesar_pilar3['val'];
 
-$terbesar_pilar4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar4 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN hasil_pil4_par1a = greatest(hasil_pil4_par1a, hasil_pil4_par1b, hasil_pil4_par1c, hasil_pil4_par1d) THEN 'hasil_pil4_par1a'
     WHEN hasil_pil4_par1b = greatest(hasil_pil4_par1a, hasil_pil4_par1b, hasil_pil4_par1c, hasil_pil4_par1d) THEN 'hasil_pil4_par1b'
@@ -499,16 +499,16 @@ CASE
     WHEN hasil_pil4_par1d = greatest(hasil_pil4_par1a, hasil_pil4_par1b, hasil_pil4_par1c, hasil_pil4_par1d) THEN 'hasil_pil4_par1d'
 END AS val
 FROM inheren_kredit_pilar4
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 
-$terbesar_nilai_pilar4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar4 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil4_par1a, hasil_pil4_par1b, hasil_pil4_par1c, hasil_pil4_par1d) AS nilai_tertinggi_pilar4
-FROM inheren_kredit_pilar4 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar4 WHERE id_profil_risiko = ?", [$id]));
 
 
 $que_pilar4 = $terbesar_pilar4['val'];
 
-$terbesar_pilar5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar5 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN hasil_pil5_par1a = greatest(hasil_pil5_par1a, hasil_pil5_par1b, hasil_pil5_par1c, hasil_pil5_par1d, hasil_pil5_par1e, hasil_pil5_par1f, hasil_pil5_par1g, hasil_pil5_par1h, hasil_pil5_par1i, hasil_pil5_par1j, hasil_pil5_par1k) THEN 'hasil_pil5_par1a'
     WHEN hasil_pil5_par1b = greatest(hasil_pil5_par1a, hasil_pil5_par1b, hasil_pil5_par1c, hasil_pil5_par1d, hasil_pil5_par1e, hasil_pil5_par1f, hasil_pil5_par1g, hasil_pil5_par1h, hasil_pil5_par1i, hasil_pil5_par1j, hasil_pil5_par1k) THEN 'hasil_pil5_par1b'
@@ -524,11 +524,11 @@ CASE
     
 END AS val
 FROM inheren_kredit_lainnya
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 
-$terbesar_nilai_pilar5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar5 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil5_par1a, hasil_pil5_par1b, hasil_pil5_par1c, hasil_pil5_par1d, hasil_pil5_par1e, hasil_pil5_par1f, hasil_pil5_par1g, hasil_pil5_par1h, hasil_pil5_par1i, hasil_pil5_par1j, hasil_pil5_par1k) AS nilai_tertinggi_pilar5
-FROM inheren_kredit_lainnya WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_lainnya WHERE id_profil_risiko = ?", [$id]));
 
 $que_pilar5 = $terbesar_pilar5['val'];
 
@@ -536,23 +536,23 @@ $que_pilar5 = $terbesar_pilar5['val'];
 
 
 
-$hasil_a_pilar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar'"));
+$hasil_a_pilar = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar]));
 
-$hasil_par_pilar1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar1'"));
+$hasil_par_pilar1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar1]));
 
-$hasil_par_pilar2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar2'"));
+$hasil_par_pilar2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar2]));
 
-$hasil_par_pilar3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar3'"));
+$hasil_par_pilar3 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar3]));
 
-$hasil_par_pilar4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar4'"));
+$hasil_par_pilar4 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar4]));
 
-$hasil_par_pilar5 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar5'"));
+$hasil_par_pilar5 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar5]));
 
 $que_pilar1_sub = $hasil_par_pilar1['kode_pil'];
 $que_pilar2_sub = $hasil_par_pilar2['kode_pil'];
@@ -560,7 +560,7 @@ $que_pilar2_sub = $hasil_par_pilar2['kode_pil'];
 
 
 if ($que_pilar1_sub == 1) {
-$terbesar_pilar1_sub1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_pilar1_sub1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 CASE 
     WHEN hasil_pil1_par1a = greatest(hasil_pil1_par1a, hasil_pil1_par1b, hasil_pil1_par1c, hasil_pil1_par1d, hasil_pil1_par1e, hasil_pil1_par1f, hasil_pil1_par1g, hasil_pil1_par1h) THEN 'hasil_pil1_par1a'
     WHEN hasil_pil1_par1b = greatest(hasil_pil1_par1a, hasil_pil1_par1b, hasil_pil1_par1c, hasil_pil1_par1d, hasil_pil1_par1e, hasil_pil1_par1f, hasil_pil1_par1g, hasil_pil1_par1h) THEN 'hasil_pil1_par1b'
@@ -572,20 +572,20 @@ CASE
     WHEN hasil_pil1_par1h = greatest(hasil_pil1_par1a, hasil_pil1_par1b, hasil_pil1_par1c, hasil_pil1_par1d, hasil_pil1_par1e, hasil_pil1_par1f, hasil_pil1_par1g, hasil_pil1_par1h) THEN 'hasil_pil1_par1h'
 END AS val
 FROM inheren_kredit_pilar1
-WHERE id_profil_risiko = '$id'"));
+WHERE id_profil_risiko = ?", [$id]));
 $que_pilar1_sub1 = $terbesar_pilar1_sub1['val'];
 
-$terbesar_nilai_pilar1_sub = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar1_sub = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil1_par1a,hasil_pil1_par1b,hasil_pil1_par1c,hasil_pil1_par1d,hasil_pil1_par1e,hasil_pil1_par1f,hasil_pil1_par1g,hasil_pil1_par1h) AS nilai_tertinggi_pilar1_sub
-FROM inheren_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
 $maxsub1 = $terbesar_nilai_pilar1_sub['nilai_tertinggi_pilar1_sub'];
 
-$query_subpar_pilar1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT parameter FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar1_sub1'"));
+$query_subpar_pilar1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT parameter FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar1_sub1]));
 $hasil_subpar_pilar1 = $query_subpar_pilar1['parameter'];
 }
 else if ($que_pilar1_sub == 2) {
-    $terbesar_pilar1_sub2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+    $terbesar_pilar1_sub2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
     CASE 
     WHEN hasil_pil1_par2a = greatest(hasil_pil1_par2a, hasil_pil1_par2b, hasil_pil1_par2c, hasil_pil1_par2d, hasil_pil1_par2e, hasil_pil1_par2f, hasil_pil1_par2g, hasil_pil1_par2h, hasil_pil1_par2i, hasil_pil1_par2j, hasil_pil1_par2k) THEN 'hasil_pil1_par2a'
     WHEN hasil_pil1_par2b = greatest(hasil_pil1_par2a, hasil_pil1_par2b, hasil_pil1_par2c, hasil_pil1_par2d, hasil_pil1_par2e, hasil_pil1_par2f, hasil_pil1_par2g, hasil_pil1_par2h, hasil_pil1_par2i, hasil_pil1_par2j, hasil_pil1_par2k) THEN 'hasil_pil1_par2b'
@@ -600,18 +600,18 @@ else if ($que_pilar1_sub == 2) {
     WHEN hasil_pil1_par2k = greatest(hasil_pil1_par2a, hasil_pil1_par2b, hasil_pil1_par2c, hasil_pil1_par2d, hasil_pil1_par2e, hasil_pil1_par2f, hasil_pil1_par2g, hasil_pil1_par2h, hasil_pil1_par2i, hasil_pil1_par2j, hasil_pil1_par2k) THEN 'hasil_pil1_par2k'
     END AS val
     FROM inheren_kredit_pilar1
-    WHERE id_profil_risiko = '$id'"));
+    WHERE id_profil_risiko = ?", [$id]));
     
     
 $que_pilar1_sub1 = $terbesar_pilar1_sub2['val'];
 
-$terbesar_nilai_pilar1_sub = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar1_sub = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil1_par2a,hasil_pil1_par2b,hasil_pil1_par2c,hasil_pil1_par2d,hasil_pil1_par2e,hasil_pil1_par2f,hasil_pil1_par2g,hasil_pil1_par2h,hasil_pil1_par2i,hasil_pil1_par2j,hasil_pil1_par2k) AS nilai_tertinggi_pilar1_sub
-FROM inheren_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
 $maxsub1 = $terbesar_nilai_pilar1_sub['nilai_tertinggi_pilar1_sub'];
 
-$query_subpar_pilar1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT parameter FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar1_sub1'"));
+$query_subpar_pilar1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT parameter FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar1_sub1]));
 $hasil_subpar_pilar1 = $query_subpar_pilar1['parameter'];
 }
 else if ($que_pilar1_sub == 3) {
@@ -635,7 +635,7 @@ if ($que_pilar2_sub == 5) {
     $maxsub2 = ' ';
 }
 else if ($que_pilar2_sub == 6) {
-    $terbesar_pilar2_sub2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+    $terbesar_pilar2_sub2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
     CASE 
     WHEN hasil_pil2_par2a = greatest(hasil_pil2_par2a, hasil_pil2_par2b, hasil_pil2_par2c, hasil_pil2_par2d, hasil_pil2_par2e, hasil_pil2_par2f) THEN 'hasil_pil2_par2a'
     WHEN hasil_pil2_par2b = greatest(hasil_pil2_par2a, hasil_pil2_par2b, hasil_pil2_par2c, hasil_pil2_par2d, hasil_pil2_par2e, hasil_pil2_par2f) THEN 'hasil_pil2_par2b'
@@ -645,23 +645,23 @@ else if ($que_pilar2_sub == 6) {
     WHEN hasil_pil2_par2f = greatest(hasil_pil2_par2a, hasil_pil2_par2b, hasil_pil2_par2c, hasil_pil2_par2d, hasil_pil2_par2e, hasil_pil2_par2f) THEN 'hasil_pil2_par2f'
     END AS val
     FROM inheren_kredit_pilar2
-    WHERE id_profil_risiko = '$id'"));
+    WHERE id_profil_risiko = ?", [$id]));
     
     
 $que_pilar2_sub1 = $terbesar_pilar2_sub2['val'];
 
-$terbesar_nilai_pilar2_sub = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+$terbesar_nilai_pilar2_sub = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
 GREATEST(hasil_pil2_par2a,hasil_pil2_par2b,hasil_pil2_par2c,hasil_pil2_par2d,hasil_pil2_par2e,hasil_pil2_par2f,hasil_pil2_par2g,hasil_pil2_par2h,hasil_pil2_par2i,hasil_pil2_par2j,hasil_pil2_par2k) AS nilai_tertinggi_pilar2_sub
-FROM inheren_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
 $maxsub2 = $terbesar_nilai_pilar2_sub['nilai_tertinggi_pilar2_sub'];
 
 
-$query_subpar_pilar2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT parameter FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar2_sub1'"));
+$query_subpar_pilar2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT parameter FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar2_sub1]));
 $hasil_subpar_pilar2 = $query_subpar_pilar2['parameter'];
 }
 else if ($que_pilar2_sub == 7) {
-    $terbesar_pilar2_sub2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+    $terbesar_pilar2_sub2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
     CASE 
     WHEN hasil_pil2_par3a = greatest(hasil_pil2_par3a, hasil_pil2_par3b, hasil_pil2_par3c, hasil_pil2_par3d) THEN 'hasil_pil2_par3a'
     WHEN hasil_pil2_par3b = greatest(hasil_pil2_par3a, hasil_pil2_par3b, hasil_pil2_par3c, hasil_pil2_par3d) THEN 'hasil_pil2_par3b'
@@ -670,18 +670,18 @@ else if ($que_pilar2_sub == 7) {
    
     END AS val
     FROM inheren_kredit_pilar2
-    WHERE id_profil_risiko = '$id'"));
+    WHERE id_profil_risiko = ?", [$id]));
     
-    $terbesar_nilai_pilar2_sub = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
+    $terbesar_nilai_pilar2_sub = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT 
     GREATEST(hasil_pil2_par3a,hasil_pil2_par3b,hasil_pil2_par3c,hasil_pil2_par3d) AS nilai_tertinggi_pilar2_sub
-    FROM inheren_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
+    FROM inheren_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
     $maxsub2 = $terbesar_nilai_pilar2_sub['nilai_tertinggi_pilar2_sub'];
 
     
 $que_pilar2_sub1 = $terbesar_pilar2_sub2['val'];
 
-$query_subpar_pilar2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT parameter FROM parameter_kredit
-WHERE kode_parameter = '$que_pilar2_sub1'"));
+$query_subpar_pilar2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT parameter FROM parameter_kredit
+WHERE kode_parameter = ?", [$que_pilar2_sub1]));
 $hasil_subpar_pilar2 = $query_subpar_pilar2['parameter'];
 }
 else {

@@ -46,40 +46,40 @@ include "../fungsi/fungsi.php";
 
 
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $dp = $frame['data_pembanding'];
 
 
-$length = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$length = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
 CHAR_LENGTH(ket_pil1) AS l1,
 CHAR_LENGTH(ket_pil2) AS l2,
 CHAR_LENGTH(ket_pil3) AS l3,
 CHAR_LENGTH(ket_pil4) AS l4,
-CHAR_LENGTH(ket_inheren) AS l5 FROM keterangan_inheren2_stratejik WHERE id_profil_risiko = '$id'"));
+CHAR_LENGTH(ket_inheren) AS l5 FROM keterangan_inheren2_stratejik WHERE id_profil_risiko = ?", [$id]));
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_pilar1 WHERE id_profil_risiko = '$id'"));
-$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_pilar2 WHERE id_profil_risiko = '$id'"));
-$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_pilar3 WHERE id_profil_risiko = '$id'"));
-$pil4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_lainnya WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_pilar3 WHERE id_profil_risiko = ?", [$id]));
+$pil4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_lainnya WHERE id_profil_risiko = ?", [$id]));
 
-$pembanding_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_pilar1 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_pilar2 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_pilar3 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_stratejik_lainnya WHERE id_profil_risiko = '$dp'"));
+$pembanding_pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_pilar1 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_pilar2 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_pilar3 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_stratejik_lainnya WHERE id_profil_risiko = ?", [$dp]));
 
-$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = '$id'"));
+$inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = ?", [$id]));
 
-$respon1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ket_inheren_stratejik_pilar1 WHERE id_profil_risiko = '$id'"));
-$respon2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ket_inheren_stratejik_pilar2 WHERE id_profil_risiko = '$id'"));
-$respon3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ket_inheren_stratejik_pilar3 WHERE id_profil_risiko = '$id'"));
-$respon4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ket_inheren_stratejik_lainnya WHERE id_profil_risiko = '$id'"));
+$respon1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ket_inheren_stratejik_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$respon2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ket_inheren_stratejik_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$respon3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ket_inheren_stratejik_pilar3 WHERE id_profil_risiko = ?", [$id]));
+$respon4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ket_inheren_stratejik_lainnya WHERE id_profil_risiko = ?", [$id]));
 
-$ket = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren2_stratejik WHERE id_profil_risiko = '$id'"));
+$ket = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_inheren2_stratejik WHERE id_profil_risiko = ?", [$id]));
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
     $ket_pil1_1 = $_POST['ket_pil1_1'];
     $ket_pil1 = $_POST['ket_pil1'];
@@ -96,19 +96,19 @@ if (isset($_POST['submit'])) {
 
 
 
-   mysqli_query($conn, "UPDATE keterangan_inheren2_stratejik SET 
-   ket_pil1_1 = '$ket_pil1_1',
-   ket_pil1 = '$ket_pil1',
-   ket_pil2_1 = '$ket_pil2_1',
-   ket_pil2_2 = '$ket_pil2_2',
-   ket_pil2 = '$ket_pil2',
-   ket_pil3_1 = '$ket_pil3_1',
-   ket_pil3_2 = '$ket_pil3_2',
-   ket_pil3 = '$ket_pil3',
-   ket_pil4_1 = '$ket_pil4_1',
-   ket_pil4 = '$ket_pil4',
-   ket_inheren = '$ket_inheren'
-    WHERE id_profil_risiko = '$id'");
+   simpro_db_query($conn, "UPDATE keterangan_inheren2_stratejik SET 
+   ket_pil1_1 = ?,
+   ket_pil1 = ?,
+   ket_pil2_1 = ?,
+   ket_pil2_2 = ?,
+   ket_pil2 = ?,
+   ket_pil3_1 = ?,
+   ket_pil3_2 = ?,
+   ket_pil3 = ?,
+   ket_pil4_1 = ?,
+   ket_pil4 = ?,
+   ket_inheren = ?
+    WHERE id_profil_risiko = ?", [$ket_pil1_1, $ket_pil1, $ket_pil2_1, $ket_pil2_2, $ket_pil2, $ket_pil3_1, $ket_pil3_2, $ket_pil3, $ket_pil4_1, $ket_pil4, $ket_inheren, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

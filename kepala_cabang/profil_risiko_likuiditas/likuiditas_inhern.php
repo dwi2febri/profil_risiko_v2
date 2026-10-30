@@ -42,57 +42,57 @@ include "../fungsi/fungsi.php";
 
 
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 
-$frame_laporan_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT user,tahun,periode,data_pembanding FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+$frame_laporan_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT user,tahun,periode,data_pembanding FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ?", [$id]));
 $jenis_pr = $frame_laporan_likuiditas['user'];
 $tahun = $frame_laporan_likuiditas['tahun'];
 $periode = $frame_laporan_likuiditas['periode'];
 $dp = $frame_laporan_likuiditas['data_pembanding'];
 
 
-$master_likuiditas_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
-$master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+$master_likuiditas_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$master_kredit_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
-$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$id'"));
-$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = ?", [$id]));
 
-$pembanding_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$dp'"));
+$pembanding_pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = ?", [$dp]));
 
-$hasil = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
+$hasil = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = ?", [$id]));
 
 
-$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE user = '$jenis_pr' AND tahun = '$tahun' AND periode = '$periode'"));
+$inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE user = ? AND tahun = ? AND periode = ?", [$jenis_pr, $tahun, $periode]));
 
-$ket_inhern_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
+$ket_inhern_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = ?", [$id]));
 
 
 // Ambang batas likuiditas harus ambil row yang sesuai user/jenis profil risiko aktif.
 // Sebelumnya hanya berdasarkan tahun, sehingga bisa mengambil row lama/salah jika ada lebih dari satu setting ambang pada tahun yang sama.
-$q_amb_lik = mysqli_query($conn, "
+$q_amb_lik = simpro_db_query($conn, "
     SELECT *
     FROM ambang_batas_likuiditas
-    WHERE tahun = '$tahun'
-      AND user = '$jenis_pr'
+    WHERE tahun = ?
+      AND user = ?
     ORDER BY id_ambang_batas_likuiditas DESC
     LIMIT 1
-");
+", [$tahun, $jenis_pr]);
 if ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) {
     $ambang_batas_likuiditas = mysqli_fetch_array($q_amb_lik);
 } else {
-    $q_amb_lik = mysqli_query($conn, "
+    $q_amb_lik = simpro_db_query($conn, "
         SELECT *
         FROM ambang_batas_likuiditas
-        WHERE tahun = '$tahun'
+        WHERE tahun = ?
           AND (user IS NULL OR user = 0 OR user = '')
         ORDER BY id_ambang_batas_likuiditas DESC
         LIMIT 1
-    ");
+    ", [$tahun]);
     $ambang_batas_likuiditas = ($q_amb_lik && mysqli_num_rows($q_amb_lik) > 0) ? mysqli_fetch_array($q_amb_lik) : [];
 }
 // Bobot likuiditas menggunakan setting aktif bobot_likuiditas_per_parameter.
@@ -135,13 +135,13 @@ if ($q_bobot_likuiditas_aktif && mysqli_num_rows($q_bobot_likuiditas_aktif) > 0)
     $pembobotan = mysqli_fetch_array($q_bobot_likuiditas_aktif);
 } else {
     // fallback data lama jika belum memakai frame_bobot
-    $pembobotan = mysqli_fetch_array(mysqli_query($conn, "
+    $pembobotan = mysqli_fetch_array(simpro_db_query($conn, "
         SELECT *
         FROM bobot_likuiditas_per_parameter
-        WHERE tahun = '$tahun'
+        WHERE tahun = ?
         ORDER BY id_bobot_likuiditas_per_parameter DESC
         LIMIT 1
-    "));
+    ", [$tahun]));
 }
 
 if (!function_exists('lik_bobot_num_fix')) {
@@ -984,7 +984,7 @@ function lik_save_query_fix($conn, $sql, $label = 'SQL'){
 
 if (isset($_POST['submit']) || pv('autosave') == '1') {
     $is_autosave = (pv('autosave') == '1');
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
     // FIX AUTOSAVE: pastikan row target sudah ada. Jika row belum ada, UPDATE tidak akan menyimpan apa pun.
     lik_ensure_row_fix($conn, 'inheren_likuiditas_pilar1', $id);

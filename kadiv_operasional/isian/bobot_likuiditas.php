@@ -1,8 +1,8 @@
 <?php
 $id = $_GET['idbobot'];
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 
-$bobot_kpmr_likuiditas_per_parameter = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM bobot_likuiditas_per_parameter WHERE id_bobot = '$id'"));
+$bobot_kpmr_likuiditas_per_parameter = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM bobot_likuiditas_per_parameter WHERE id_bobot = ?", [$id]));
 
 
 if (isset($_POST['submit'])) {
@@ -41,33 +41,33 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE bobot_likuiditas_per_parameter SET
-    sub_parameter2_1 = '$sub_parameter2_1',
-    sub_parameter2_2 = '$sub_parameter2_2',
-    sub_parameter2_3 = '$sub_parameter2_3',
-    sub_parameter2_4 = '$sub_parameter2_4',
-	sub_parameter2_5 = '$sub_parameter2_5',
-	sub_parameter2_6 = '$sub_parameter2_6',
-	sub_parameter2_7 = '$sub_parameter2_7',
-	sub_parameter2_8 = '$sub_parameter2_8',
-	sub_parameter2_9 = '$sub_parameter2_9',
-	sub_parameter3_1 = '$sub_parameter3_1',
-	sub_parameter3_2 = '$sub_parameter3_2',
-	sub_parameter3_3 = '$sub_parameter3_3',
-	sub_parameter3_4 = '$sub_parameter3_4',
-	sub_parameter4_1 = '$sub_parameter4_1',
-	sub_parameter4_2 = '$sub_parameter4_2',
-	sub_parameter4_3 = '$sub_parameter4_3',
-	sub_parameter4_4 = '$sub_parameter4_4',
-	sub_parameter5_1 = '$sub_parameter5_1',
-	sub_parameter5_2 = '$sub_parameter5_2',
-	sub_parameter5_3 = '$sub_parameter5_3',
-	sub_parameter6_1 = '$sub_parameter6_1',
-	sub_parameter6_2 = '$sub_parameter6_2',
-	sub_parameter6_3 = '$sub_parameter6_3',
-	sub_parameter6_4 = '$sub_parameter6_4',
-	sub_parameter6_5 = '$sub_parameter6_5',
-	sub_parameter6_6 = '$sub_parameter6_6' WHERE id_bobot = '$id'");
+    simpro_db_query($conn, "UPDATE bobot_likuiditas_per_parameter SET
+    sub_parameter2_1 = ?,
+    sub_parameter2_2 = ?,
+    sub_parameter2_3 = ?,
+    sub_parameter2_4 = ?,
+	sub_parameter2_5 = ?,
+	sub_parameter2_6 = ?,
+	sub_parameter2_7 = ?,
+	sub_parameter2_8 = ?,
+	sub_parameter2_9 = ?,
+	sub_parameter3_1 = ?,
+	sub_parameter3_2 = ?,
+	sub_parameter3_3 = ?,
+	sub_parameter3_4 = ?,
+	sub_parameter4_1 = ?,
+	sub_parameter4_2 = ?,
+	sub_parameter4_3 = ?,
+	sub_parameter4_4 = ?,
+	sub_parameter5_1 = ?,
+	sub_parameter5_2 = ?,
+	sub_parameter5_3 = ?,
+	sub_parameter6_1 = ?,
+	sub_parameter6_2 = ?,
+	sub_parameter6_3 = ?,
+	sub_parameter6_4 = ?,
+	sub_parameter6_5 = ?,
+	sub_parameter6_6 = ? WHERE id_bobot = ?", [$sub_parameter2_1, $sub_parameter2_2, $sub_parameter2_3, $sub_parameter2_4, $sub_parameter2_5, $sub_parameter2_6, $sub_parameter2_7, $sub_parameter2_8, $sub_parameter2_9, $sub_parameter3_1, $sub_parameter3_2, $sub_parameter3_3, $sub_parameter3_4, $sub_parameter4_1, $sub_parameter4_2, $sub_parameter4_3, $sub_parameter4_4, $sub_parameter5_1, $sub_parameter5_2, $sub_parameter5_3, $sub_parameter6_1, $sub_parameter6_2, $sub_parameter6_3, $sub_parameter6_4, $sub_parameter6_5, $sub_parameter6_6, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

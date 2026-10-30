@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 include "../fungsi/fungsi.php";
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -90,7 +90,7 @@ if (isset($_POST['submit'])) {
     $dibuat_at = date('Y-m-d');
     $dibuat_by = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 
-    $query = mysqli_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = '$tahun' AND user='$userProfil'");
+    $query = simpro_db_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = ? AND user=?", [$tahun, $userProfil]);
     $cek_user = $query ? mysqli_num_rows($query) : 0;
 
     if ($tahun <= 0 || $userProfil <= 0) {

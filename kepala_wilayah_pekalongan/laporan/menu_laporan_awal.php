@@ -3,7 +3,7 @@
 <?php
 include "../fungsi/fungsi.php";
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $lokasi_kerja = $_POST['lokasi_kerja'];
     $tahun = $_POST['tahun'];
     $user = $_POST['user'];
@@ -15,449 +15,449 @@ if (isset($_POST['submit'])) {
 
     $dibuat_at = date('Y-m-d');
     $dibuat_by = $_SESSION['user_id'];
-    $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ");
+    $query = simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ", [$lokasi_kerja, $tahun, $user, $periode]);
     $cek_user = mysqli_num_rows($query);
     if ($cek_user > 0) {
         echo '
         <script>$.NotificationApp.send("Gagal","Your awesome message text","Position","Background color","Icon")</script>
         ';
     } else {
-        mysqli_query($conn, "INSERT INTO frame_laporan_profil_risiko(id_profil_risiko,kantor_cabang,tahun,user,periode,modal_inti,total_aset,keterangan,dibuat_at,dibuat_by)
-        VALUES ('0','$lokasi_kerja','$tahun','$user','$periode','$modal_inti','$total_aset','$keterangan','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO frame_laporan_profil_risiko(id_profil_risiko,kantor_cabang,tahun,user,periode,modal_inti,total_aset,keterangan,dibuat_at,dibuat_by)
+        VALUES ('0',?,?,?,?,?,?,?,?,?)", [$lokasi_kerja, $tahun, $user, $periode, $modal_inti, $total_aset, $keterangan, $dibuat_at, $dibuat_by]);
 
         //kre
-        mysqli_query($conn, "INSERT INTO master_kredit_pilar1(id_mk_pilar1,id_profil_risiko,dibuat_by,total_aset)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by','$total_aset')");
+        simpro_db_query($conn, "INSERT INTO master_kredit_pilar1(id_mk_pilar1,id_profil_risiko,dibuat_by,total_aset)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?,?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by, $total_aset]);
 
-        mysqli_query($conn, "INSERT INTO master_kredit_pilar2(id_mk_pilar2,id_profil_risiko,dibuat_by,modal_inti)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by','$modal_inti')");
+        simpro_db_query($conn, "INSERT INTO master_kredit_pilar2(id_mk_pilar2,id_profil_risiko,dibuat_by,modal_inti)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?,?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by, $modal_inti]);
 
-        mysqli_query($conn, "INSERT INTO master_kredit_pilar3(id_mk_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO master_kredit_pilar3(id_mk_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
       
 
-        mysqli_query($conn, "INSERT INTO inheren_kredit_pilar1(id_inheren_kredit_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kredit_pilar1(id_inheren_kredit_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_kredit_pilar2(id_inheren_kredit_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kredit_pilar2(id_inheren_kredit_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_kredit_pilar3(id_inheren_kredit_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kredit_pilar3(id_inheren_kredit_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_kredit_pilar4(id_inheren_kredit_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kredit_pilar4(id_inheren_kredit_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_kredit_lainnya(id_inheren_kredit_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kredit_lainnya(id_inheren_kredit_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO hasil_inheren_kredit(id_hasil_inheren_kredit,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-        
-
-        mysqli_query($conn, "INSERT INTO kpmr_kredit_pilar1(id_kpmr_kredit_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-        
-        mysqli_query($conn, "INSERT INTO kpmr_kredit_pilar2(id_kpmr_kredit_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-        
-        mysqli_query($conn, "INSERT INTO kpmr_kredit_pilar3(id_kpmr_kredit_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-        
-        mysqli_query($conn, "INSERT INTO kpmr_kredit_pilar4(id_kpmr_kredit_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-        
-        mysqli_query($conn, "INSERT INTO hasil_kpmr_kredit(id_hasil_kpmr_kredit,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_inheren_kredit(id_hasil_inheren_kredit,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil1(id_respon_kredit_pil1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kredit_pilar1(id_kpmr_kredit_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil2(id_respon_kredit_pil2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kredit_pilar2(id_kpmr_kredit_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil3(id_respon_kredit_pil3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kredit_pilar3(id_kpmr_kredit_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil4(id_respon_kredit_pil4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kredit_pilar4(id_kpmr_kredit_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+        
+        simpro_db_query($conn, "INSERT INTO hasil_kpmr_kredit(id_hasil_kpmr_kredit,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
-        mysqli_query($conn, "INSERT INTO keterangan_kpmr2_kredit(id_kpmr2_kredit,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil1(id_respon_kredit_pil1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO keterangan_inheren_kredit(id_keterangan_inheren_kredit,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil2(id_respon_kredit_pil2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO keterangan_profil_kredit(id_ket_profil_kredit,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil3(id_respon_kredit_pil3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+        
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kredit_pil4(id_respon_kredit_pil4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+        
+
+        simpro_db_query($conn, "INSERT INTO keterangan_kpmr2_kredit(id_kpmr2_kredit,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+        
+        simpro_db_query($conn, "INSERT INTO keterangan_inheren_kredit(id_keterangan_inheren_kredit,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+        
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_kredit(id_ket_profil_kredit,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
 
         //op
-        mysqli_query($conn, "INSERT INTO inheren_operasional_pilar1(id_inheren_operasional_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_operasional_pilar1(id_inheren_operasional_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_operasional_pilar2(id_inheren_operasional_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_operasional_pilar2(id_inheren_operasional_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_operasional_pilar3(id_inheren_operasional_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_operasional_pilar3(id_inheren_operasional_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_operasional_pilar4(id_inheren_operasional_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_operasional_pilar4(id_inheren_operasional_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_operasional_pilar5(id_inheren_operasional_pilar5,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_operasional_pilar5(id_inheren_operasional_pilar5,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_operasional_lainnya(id_inheren_operasional_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_operasional_lainnya(id_inheren_operasional_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
         
-        mysqli_query($conn, "INSERT INTO ket_inheren_operasional_pilar1(id_ket_inheren_operasional_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_operasional_pilar1(id_ket_inheren_operasional_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO ket_inheren_operasional_pilar2(id_ket_inheren_operasional_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_operasional_pilar2(id_ket_inheren_operasional_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO ket_inheren_operasional_pilar3(id_ket_inheren_operasional_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_operasional_pilar3(id_ket_inheren_operasional_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO ket_inheren_operasional_pilar4(id_ket_inheren_operasional_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_operasional_pilar4(id_ket_inheren_operasional_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO ket_inheren_operasional_pilar5(id_ket_inheren_operasional_pilar5,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_operasional_pilar5(id_ket_inheren_operasional_pilar5,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO ket_inheren_operasional_lainnya(id_ket_inheren_operasional_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_operasional_lainnya(id_ket_inheren_operasional_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
     
 
-        mysqli_query($conn, "INSERT INTO kpmr_operasional_pilar1(id_kpmr_operasional_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_operasional_pilar1(id_kpmr_operasional_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_operasional_pilar2(id_kpmr_operasional_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_operasional_pilar2(id_kpmr_operasional_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_operasional_pilar3(id_kpmr_operasional_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_operasional_pilar3(id_kpmr_operasional_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_operasional_pilar4(id_kpmr_operasional_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_operasional_pilar4(id_kpmr_operasional_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
     
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil1(id_respon_operasional_pil1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil1(id_respon_operasional_pil1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil2(id_respon_operasional_pil2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil2(id_respon_operasional_pil2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil3(id_respon_operasional_pil3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil3(id_respon_operasional_pil3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil4(id_respon_operasional_pil4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_operasional_pil4(id_respon_operasional_pil4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
 
 
-        mysqli_query($conn, "INSERT INTO hasil_inheren_operasional(id_hasil_inheren_operasional,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_inheren_operasional(id_hasil_inheren_operasional,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO hasil_kpmr_operasional(id_hasil_kpmr_operasional,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_kpmr_operasional(id_hasil_kpmr_operasional,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO keterangan_inheren2_operasional(id_keterangan_inheren2_operasional,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_inheren2_operasional(id_keterangan_inheren2_operasional,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO keterangan_kpmr2_operasional(id_kpmr2_operasional,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_kpmr2_operasional(id_kpmr2_operasional,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_profil_operasional(id_ket_profil_operasional,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_operasional(id_ket_profil_operasional,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
         //kep
-        mysqli_query($conn, "INSERT INTO inheren_kepatuhan_pilar1(id_inheren_kepatuhan_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kepatuhan_pilar1(id_inheren_kepatuhan_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_kepatuhan_pilar2(id_inheren_kepatuhan_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kepatuhan_pilar2(id_inheren_kepatuhan_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_kepatuhan_lainnya(id_inheren_kepatuhan_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_kepatuhan_pilar1(id_ket_inheren_kepatuhan_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_kepatuhan_pilar2(id_ket_inheren_kepatuhan_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_kepatuhan_lainnya(id_ket_inheren_kepatuhan_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_kepatuhan_lainnya(id_inheren_kepatuhan_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
-        mysqli_query($conn, "INSERT INTO kpmr_kepatuhan_pilar1(id_kpmr_kepatuhan_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_kepatuhan_pilar1(id_ket_inheren_kepatuhan_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO ket_inheren_kepatuhan_pilar2(id_ket_inheren_kepatuhan_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO ket_inheren_kepatuhan_lainnya(id_ket_inheren_kepatuhan_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+
+        simpro_db_query($conn, "INSERT INTO kpmr_kepatuhan_pilar1(id_kpmr_kepatuhan_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_kepatuhan_pilar2(id_kpmr_kepatuhan_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kepatuhan_pilar2(id_kpmr_kepatuhan_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_kepatuhan_pilar3(id_kpmr_kepatuhan_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kepatuhan_pilar3(id_kpmr_kepatuhan_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_kepatuhan_pilar4(id_kpmr_kepatuhan_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_kepatuhan_pilar4(id_kpmr_kepatuhan_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
     
 
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil1(id_respon_kepatuhan_pil1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil1(id_respon_kepatuhan_pil1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil2(id_respon_kepatuhan_pil2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil2(id_respon_kepatuhan_pil2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil3(id_respon_kepatuhan_pil3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil3(id_respon_kepatuhan_pil3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil4(id_respon_kepatuhan_pil4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_kepatuhan_pil4(id_respon_kepatuhan_pil4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
-        mysqli_query($conn, "INSERT INTO hasil_inheren_kepatuhan(id_hasil_inheren_kepatuhan,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_inheren_kepatuhan(id_hasil_inheren_kepatuhan,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO hasil_kpmr_kepatuhan(id_hasil_kpmr_kepatuhan,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_kpmr_kepatuhan(id_hasil_kpmr_kepatuhan,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_inheren2_kepatuhan(id_keterangan_inheren2_kepatuhan,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_inheren2_kepatuhan(id_keterangan_inheren2_kepatuhan,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_kpmr2_kepatuhan(id_kpmr2_kepatuhan,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_kpmr2_kepatuhan(id_kpmr2_kepatuhan,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_profil_kepatuhan(id_ket_profil_kepatuhan,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_kepatuhan(id_ket_profil_kepatuhan,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
         //lik
-        mysqli_query($conn, "INSERT INTO master_likuiditas_pilar1(id_ml_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO master_likuiditas_pilar1(id_ml_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_likuiditas_pilar1(id_inheren_likuiditas_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_likuiditas_pilar1(id_inheren_likuiditas_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_likuiditas_pilar2(id_inheren_likuiditas_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_likuiditas_pilar2(id_inheren_likuiditas_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO inheren_likuiditas_lainnya(id_inheren_likuiditas_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_likuiditas_lainnya(id_inheren_likuiditas_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO hasil_inheren_likuiditas(id_hasil_inheren_likuiditas,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_inheren_likuiditas(id_hasil_inheren_likuiditas,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO keterangan_inheren_likuiditas(id_keterangan_inheren_likuiditas,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_inheren_likuiditas(id_keterangan_inheren_likuiditas,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
        
-        mysqli_query($conn, "INSERT INTO kpmr_likuiditas_pilar1(id_kpmr_likuiditas_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_likuiditas_pilar1(id_kpmr_likuiditas_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_likuiditas_pilar2(id_kpmr_likuiditas_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_likuiditas_pilar2(id_kpmr_likuiditas_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_likuiditas_pilar3(id_kpmr_likuiditas_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_likuiditas_pilar3(id_kpmr_likuiditas_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_likuiditas_pilar4(id_kpmr_likuiditas_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_likuiditas_pilar4(id_kpmr_likuiditas_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
     
 
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil1(id_respon_likuiditas_pil1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil1(id_respon_likuiditas_pil1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil2(id_respon_likuiditas_pil2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil2(id_respon_likuiditas_pil2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil3(id_respon_likuiditas_pil3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil3(id_respon_likuiditas_pil3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil4(id_respon_likuiditas_pil4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_likuiditas_pil4(id_respon_likuiditas_pil4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
        
-        mysqli_query($conn, "INSERT INTO hasil_kpmr_likuiditas(id_hasil_kpmr_likuiditas,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_kpmr_likuiditas(id_hasil_kpmr_likuiditas,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
       
-        mysqli_query($conn, "INSERT INTO keterangan_kpmr2_likuiditas(id_kpmr2_likuiditas,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_kpmr2_likuiditas(id_kpmr2_likuiditas,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_profil_likuiditas(id_ket_profil_likuiditas,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_likuiditas(id_ket_profil_likuiditas,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
 
 
 
         //rep
-        mysqli_query($conn, "INSERT INTO inheren_reputasi_pilar1(id_inheren_reputasi_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_reputasi_pilar1(id_inheren_reputasi_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_reputasi_pilar2(id_inheren_reputasi_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_reputasi_pilar2(id_inheren_reputasi_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_reputasi_pilar3(id_inheren_reputasi_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_reputasi_pilar3(id_inheren_reputasi_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_reputasi_lainnya(id_inheren_reputasi_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_reputasi_pilar1(id_ket_inheren_reputasi_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_reputasi_pilar2(id_ket_inheren_reputasi_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_reputasi_pilar3(id_ket_inheren_reputasi_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_reputasi_lainnya(id_ket_inheren_reputasi_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_reputasi_lainnya(id_inheren_reputasi_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
+        simpro_db_query($conn, "INSERT INTO ket_inheren_reputasi_pilar1(id_ket_inheren_reputasi_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO kpmr_reputasi_pilar1(id_kpmr_reputasi_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_reputasi_pilar2(id_ket_inheren_reputasi_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO ket_inheren_reputasi_pilar3(id_ket_inheren_reputasi_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO ket_inheren_reputasi_lainnya(id_ket_inheren_reputasi_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+
+
+        simpro_db_query($conn, "INSERT INTO kpmr_reputasi_pilar1(id_kpmr_reputasi_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_reputasi_pilar2(id_kpmr_reputasi_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_reputasi_pilar2(id_kpmr_reputasi_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_reputasi_pilar3(id_kpmr_reputasi_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_reputasi_pilar3(id_kpmr_reputasi_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO kpmr_reputasi_pilar4(id_kpmr_reputasi_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_reputasi_pilar4(id_kpmr_reputasi_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
     
 
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil1(id_respon_reputasi_pil1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil1(id_respon_reputasi_pil1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil2(id_respon_reputasi_pil2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil2(id_respon_reputasi_pil2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil3(id_respon_reputasi_pil3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil3(id_respon_reputasi_pil3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil4(id_respon_reputasi_pil4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_reputasi_pil4(id_respon_reputasi_pil4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
         
 
 
 
-        mysqli_query($conn, "INSERT INTO hasil_inheren_reputasi(id_hasil_inheren_reputasi,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_inheren_reputasi(id_hasil_inheren_reputasi,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO hasil_kpmr_reputasi(id_hasil_kpmr_reputasi,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO hasil_kpmr_reputasi(id_hasil_kpmr_reputasi,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_inheren2_reputasi(id_keterangan_inheren2_reputasi,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_inheren2_reputasi(id_keterangan_inheren2_reputasi,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_kpmr2_reputasi(id_kpmr2_reputasi,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_kpmr2_reputasi(id_kpmr2_reputasi,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO keterangan_profil_reputasi(id_ket_profil_reputasi,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_reputasi(id_ket_profil_reputasi,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
 
         //stra
-        mysqli_query($conn, "INSERT INTO inheren_stratejik_pilar1(id_inheren_stratejik_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_stratejik_pilar1(id_inheren_stratejik_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_stratejik_pilar2(id_inheren_stratejik_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_stratejik_pilar2(id_inheren_stratejik_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_stratejik_pilar3(id_inheren_stratejik_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_stratejik_pilar3(id_inheren_stratejik_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO inheren_stratejik_lainnya(id_inheren_stratejik_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_stratejik_pilar1(id_ket_inheren_stratejik_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_stratejik_pilar2(id_ket_inheren_stratejik_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_stratejik_pilar3(id_ket_inheren_stratejik_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO ket_inheren_stratejik_lainnya(id_ket_inheren_stratejik_lainnya,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO inheren_stratejik_lainnya(id_inheren_stratejik_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
+        simpro_db_query($conn, "INSERT INTO ket_inheren_stratejik_pilar1(id_ket_inheren_stratejik_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO kpmr_stratejik_pilar1(id_kpmr_stratejik_pilar1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_stratejik_pilar2(id_ket_inheren_stratejik_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO kpmr_stratejik_pilar2(id_kpmr_stratejik_pilar2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_stratejik_pilar3(id_ket_inheren_stratejik_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO kpmr_stratejik_pilar3(id_kpmr_stratejik_pilar3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO kpmr_stratejik_pilar4(id_kpmr_stratejik_pilar4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil1(id_respon_stratejik_pil1,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil2(id_respon_stratejik_pil2,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil3(id_respon_stratejik_pil3,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil4(id_respon_stratejik_pil4,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO hasil_inheren_stratejik(id_hasil_inheren_stratejik,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO hasil_kpmr_stratejik(id_hasil_kpmr_stratejik,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO keterangan_inheren2_stratejik(id_keterangan_inheren2_stratejik,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO keterangan_kpmr2_stratejik(id_kpmr2_stratejik,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO keterangan_profil_stratejik(id_ket_profil_stratejik,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ket_inheren_stratejik_lainnya(id_ket_inheren_stratejik_lainnya,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
 
 
+        simpro_db_query($conn, "INSERT INTO kpmr_stratejik_pilar1(id_kpmr_stratejik_pilar1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO nilai_profil(id_nilai_profil,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_stratejik_pilar2(id_kpmr_stratejik_pilar2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO peringkat_profil(id_peringkat_profil,id_profil_risiko,dibuat_by)
-        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND user = '$user' AND periode = '$periode' ),'$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO kpmr_stratejik_pilar3(id_kpmr_stratejik_pilar3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO kpmr_stratejik_pilar4(id_kpmr_stratejik_pilar4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil1(id_respon_stratejik_pil1,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil2(id_respon_stratejik_pil2,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil3(id_respon_stratejik_pil3,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO respon_unit_kerja_stratejik_pil4(id_respon_stratejik_pil4,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO hasil_inheren_stratejik(id_hasil_inheren_stratejik,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO hasil_kpmr_stratejik(id_hasil_kpmr_stratejik,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO keterangan_inheren2_stratejik(id_keterangan_inheren2_stratejik,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO keterangan_kpmr2_stratejik(id_kpmr2_stratejik,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_stratejik(id_ket_profil_stratejik,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+
+
+
+        simpro_db_query($conn, "INSERT INTO nilai_profil(id_nilai_profil,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO peringkat_profil(id_peringkat_profil,id_profil_risiko,dibuat_by)
+        VALUES ('0',(select id_profil_risiko from frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND user = ? AND periode = ? ),?)", [$lokasi_kerja, $tahun, $user, $periode, $dibuat_by]);
 
         echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -520,7 +520,7 @@ if (isset($_POST['submit'])) {
                                                     <label for="kc" class="form-label">Kantor Cabang</label>
                                                     <select class="form-select mb-3" name="lokasi_kerja" id="kc" required="">
                                                         <?php
-                                                        include "../conn/conn.php";
+                                                        require dirname(__DIR__, 2).'/conn/conn.php';
                                                         $kode_kantor = $_SESSION['lokasi_kerja'];
                                                         $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang");
                                                         while ($data = mysqli_fetch_array($query_cabang)) { ?>
@@ -558,7 +558,7 @@ if (isset($_POST['submit'])) {
                                                     <select class="form-select mb-3" name="user" id="user" required="">
                                                     <option value=" " selected> </option>
                                                                 <?php
-                                                                include "../conn/conn.php";
+                                                                require dirname(__DIR__, 2).'/conn/conn.php';
                                                                 $query_periode = mysqli_query($conn, "SELECT * FROM user_profil_risiko");
                                                                 while ($data = mysqli_fetch_array($query_periode)) { ?>
                                                                     <option value="<?= $data['id_user_profil_risiko'] ?>"><?= ucwords($data['tipe_user']) ?></option>
@@ -576,7 +576,7 @@ if (isset($_POST['submit'])) {
                                                     <select class="form-select mb-3" name="periode" id="periode" required="">
                                                     <option value=" " selected> </option>
                                                                 <?php
-                                                                include "../conn/conn.php";
+                                                                require dirname(__DIR__, 2).'/conn/conn.php';
                                                                 $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                 while ($data = mysqli_fetch_array($query_periode)) { ?>
                                                                     <option value="<?= $data['id_periode'] ?>"><?= ucwords($data['periode_laporan']) ?></option>
@@ -688,17 +688,17 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $id_user = $_SESSION['user_id'];
                                             $cabang_awal = 22;
                                             $cabang_akhir = 28;
-                                            $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+                                            $query = simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
                                             INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
                                             INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang
                                             INNER JOIN user_profil_risiko ON frame_laporan_profil_risiko.user = user_profil_risiko.id_user_profil_risiko
-                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE frame_laporan_profil_risiko.kantor_cabang BETWEEN '$cabang_awal' AND '$cabang_akhir' order by id_profil_risiko desc");
+                                            INNER JOIN user ON frame_laporan_profil_risiko.dibuat_by = user.user_id WHERE frame_laporan_profil_risiko.kantor_cabang BETWEEN ? AND ? order by id_profil_risiko desc", [$cabang_awal, $cabang_akhir]);
                                             while ($data = mysqli_fetch_array($query)) { ?>
                                                 <tr>
                                                     <td>

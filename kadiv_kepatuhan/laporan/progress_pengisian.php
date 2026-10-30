@@ -1,6 +1,6 @@
 <?php
 include "../fungsi/fungsi.php";
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -505,7 +505,7 @@ function pg_progress_script2_inheren_kredit($conn, $id){
     if ($id <= 0) return 0;
 
 //inheren kredit
-$inheren_kredit1 = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_kredit1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN hasil_pil1_par1 IS NOT NULL AND TRIM(hasil_pil1_par1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN hasil_pil1_par1a IS NOT NULL AND TRIM(hasil_pil1_par1a) <> '' THEN 1 ELSE 0 END) + 
@@ -532,11 +532,11 @@ $inheren_kredit1 = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN hasil_pil1_par3 IS NOT NULL AND TRIM(hasil_pil1_par3) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN pilar1_4 IS NOT NULL AND TRIM(pilar1_4) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil1_par4 IS NOT NULL AND TRIM(hasil_pil1_par4) <> '' THEN 1 ELSE 0 END) AS jumlah
-FROM inheren_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
 $ik_pilar1 = $inheren_kredit1['jumlah'];
 
 
-$inheren_kredit2 = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_kredit2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN hasil_pil2_par1 IS NOT NULL AND TRIM(hasil_pil2_par1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN hasil_pil2_par2 IS NOT NULL AND TRIM(hasil_pil2_par2) <> '' THEN 1 ELSE 0 END) + 
@@ -552,10 +552,10 @@ $inheren_kredit2 = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN hasil_pil2_par3c IS NOT NULL AND TRIM(hasil_pil2_par3c) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil2_par3d IS NOT NULL AND TRIM(hasil_pil2_par3d) <> '' THEN 1 ELSE 0 END)
   AS jumlah
-FROM inheren_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
 $ik_pilar2 = $inheren_kredit2['jumlah'];
 
-$inheren_kredit3 = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_kredit3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN pilar3_1 IS NOT NULL AND TRIM(pilar3_1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN pilar3_1a IS NOT NULL AND TRIM(pilar3_1a) <> '' THEN 1 ELSE 0 END) + 
@@ -570,10 +570,10 @@ $inheren_kredit3 = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN hasil_pil3_par1d IS NOT NULL AND TRIM(hasil_pil3_par1d) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil3_par1e IS NOT NULL AND TRIM(hasil_pil3_par1e) <> '' THEN 1 ELSE 0 END) 
   AS jumlah
-FROM inheren_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
 $ik_pilar3 = $inheren_kredit3['jumlah'];
 
-$inheren_kredit4 = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_kredit4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN pilar4_1a IS NOT NULL AND TRIM(pilar4_1a) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN pilar4_1b IS NOT NULL AND TRIM(pilar4_1b) <> '' THEN 1 ELSE 0 END) +
@@ -585,12 +585,12 @@ $inheren_kredit4 = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN hasil_pil4_par1c IS NOT NULL AND TRIM(hasil_pil4_par1c) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil4_par1d IS NOT NULL AND TRIM(hasil_pil4_par1d) <> '' THEN 1 ELSE 0 END) 
   AS jumlah
-FROM inheren_kredit_pilar4 WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_pilar4 WHERE id_profil_risiko = ?", [$id]));
 $ik_pilar4 = $inheren_kredit4['jumlah'];
 
 
 
-$inheren_kredit_lainnya = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_kredit_lainnya = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN pilar5_1a IS NOT NULL AND TRIM(pilar5_1a) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN pilar5_1b IS NOT NULL AND TRIM(pilar5_1b) <> '' THEN 1 ELSE 0 END) +
@@ -615,10 +615,10 @@ $inheren_kredit_lainnya = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN hasil_pil5_par1i IS NOT NULL AND TRIM(hasil_pil5_par1i) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil5_par1j IS NOT NULL AND TRIM(hasil_pil5_par1j) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil5_par1k IS NOT NULL AND TRIM(hasil_pil5_par1k) <> '' THEN 1 ELSE 0 END) AS jumlah
-FROM inheren_kredit_lainnya WHERE id_profil_risiko = '$id'"));
+FROM inheren_kredit_lainnya WHERE id_profil_risiko = ?", [$id]));
 $ik_pilarl = $inheren_kredit_lainnya['jumlah'];
 
-$keterangan_inheren_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$keterangan_inheren_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN ket_pil1_1 IS NOT NULL AND TRIM(ket_pil1_1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN ket_pil1_2 IS NOT NULL AND TRIM(ket_pil1_2) <> '' THEN 1 ELSE 0 END) + 
@@ -636,7 +636,7 @@ $keterangan_inheren_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN ket_pil5_1 IS NOT NULL AND TRIM(ket_pil5_1) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN ket_pil5 IS NOT NULL AND TRIM(ket_pil5) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN ket_inheren IS NOT NULL AND TRIM(ket_inheren) <> '' THEN 1 ELSE 0 END) AS jumlah
-FROM keterangan_inheren_kredit WHERE id_profil_risiko = '$id'"));
+FROM keterangan_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 $ik_ket = $keterangan_inheren_kredit['jumlah'];
 
 
@@ -654,7 +654,7 @@ function pg_progress_script2_inheren_likuiditas($conn, $id){
     if ($id <= 0) return 0;
 
 //inheren likuiditas
-$inheren_likuiditas1 = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_likuiditas1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
     SUM(CASE WHEN hasil_pil1_par1 IS NOT NULL AND TRIM(hasil_pil1_par1) <> '' THEN 1 ELSE 0 END) + 
     SUM(CASE WHEN hasil_pil1_par2 IS NOT NULL AND TRIM(hasil_pil1_par2) <> '' THEN 1 ELSE 0 END) +
@@ -679,11 +679,11 @@ $inheren_likuiditas1 = mysqli_fetch_array(mysqli_query($conn, "SELECT
     SUM(CASE WHEN hasil_pil1_par5d IS NOT NULL AND TRIM(hasil_pil1_par5d) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN pilar1_4 IS NOT NULL AND TRIM(pilar1_4) <> '' THEN 1 ELSE 0 END) +
     SUM(CASE WHEN hasil_pil1_par4 IS NOT NULL AND TRIM(hasil_pil1_par4) <> '' THEN 1 ELSE 0 END) AS jumlah
-FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
+FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$id]));
 $ilik_pilar1 = $inheren_likuiditas1['jumlah'];
 
 
-$inheren_likuiditas2 = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_likuiditas2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN hasil_pil2_par1 IS NOT NULL AND TRIM(hasil_pil2_par1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN pil2_par1a IS NOT NULL AND TRIM(pil2_par1a) <> '' THEN 1 ELSE 0 END) + 
@@ -695,10 +695,10 @@ $inheren_likuiditas2 = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN pil2_par2 IS NOT NULL AND TRIM(pil2_par2) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil2_par2 IS NOT NULL AND TRIM(hasil_pil2_par2) <> '' THEN 1 ELSE 0 END)
   AS jumlah
-FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$id'"));
+FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = ?", [$id]));
 $ilik_pilar2 = $inheren_likuiditas2['jumlah'];
 
-$inheren_likuiditas_lainnya = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$inheren_likuiditas_lainnya = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN hasil_pil3_par1 IS NOT NULL AND TRIM(hasil_pil3_par1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN pil3_par1a IS NOT NULL AND TRIM(pil3_par1a) <> '' THEN 1 ELSE 0 END) + 
@@ -714,12 +714,12 @@ $inheren_likuiditas_lainnya = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN pil3_par1f IS NOT NULL AND TRIM(pil3_par1f) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN hasil_pil3_par1f IS NOT NULL AND TRIM(hasil_pil3_par1f) <> '' THEN 1 ELSE 0 END)
   AS jumlah
-FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$id'"));
+FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = ?", [$id]));
 $ilik_pilarl = $inheren_likuiditas_lainnya['jumlah'];
 
 
 
-$keterangan_inheren_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$keterangan_inheren_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
   	id_profil_risiko,
   SUM(CASE WHEN ket_pil1_1 IS NOT NULL AND TRIM(ket_pil1_1) <> '' THEN 1 ELSE 0 END) + 
   SUM(CASE WHEN ket_pil1_2 IS NOT NULL AND TRIM(ket_pil1_2) <> '' THEN 1 ELSE 0 END) + 
@@ -733,7 +733,7 @@ $keterangan_inheren_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT
   SUM(CASE WHEN ket_pil3_1 IS NOT NULL AND TRIM(ket_pil3_1) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN ket_pil3 IS NOT NULL AND TRIM(ket_pil3) <> '' THEN 1 ELSE 0 END) +
   SUM(CASE WHEN ket_inheren IS NOT NULL AND TRIM(ket_inheren) <> '' THEN 1 ELSE 0 END) AS jumlah
-FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
+FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = ?", [$id]));
 $ilik_ket = $keterangan_inheren_likuiditas['jumlah'];
 
 

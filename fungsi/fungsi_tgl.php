@@ -1,5 +1,5 @@
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 1).'/conn/conn.php';
 function tgl_indo($tanggal)
 {
     $bulan = array(

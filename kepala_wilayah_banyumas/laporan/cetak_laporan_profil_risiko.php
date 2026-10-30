@@ -128,7 +128,7 @@ if ($id <= 0) {
     die('<div style="font-family:Arial;padding:20px;color:#b00020;"><b>ID laporan tidak valid.</b></div>');
 }
 
-$frame = mysqli_fetch_assoc(mysqli_query($conn, "
+$frame = mysqli_fetch_assoc(simpro_db_query($conn, "
     SELECT
         f.*,
         p.periode_laporan,
@@ -138,9 +138,9 @@ $frame = mysqli_fetch_assoc(mysqli_query($conn, "
     LEFT JOIN periode_laporan_profil_risiko p ON f.periode = p.id_periode
     LEFT JOIN jenis_cabang jc ON f.kantor_cabang = jc.id_cabang
     LEFT JOIN user_profil_risiko upr ON f.user = upr.id_user_profil_risiko
-    WHERE f.id_profil_risiko = '$id'
+    WHERE f.id_profil_risiko = ?
     LIMIT 1
-"));
+", [$id]));
 
 if (!$frame) {
     die('<div style="font-family:Arial;padding:20px;color:#b00020;"><b>Data laporan tidak ditemukan.</b></div>');

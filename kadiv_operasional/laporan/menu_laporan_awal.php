@@ -1,5 +1,5 @@
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 include "../fungsi/fungsi.php";
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -44,7 +44,7 @@ function sync_master_kredit_awal_menu($conn, $idProfilRisiko, $modalInti, $total
     $totalAsetSql = mysqli_real_escape_string($conn, $totalAset === '' ? '0' : $totalAset);
 
     if (table_exists_menu($conn, 'master_kredit_pilar1') && column_exists_menu($conn, 'master_kredit_pilar1', 'total_aset')) {
-        $cekP1 = mysqli_query($conn, "SELECT id_profil_risiko FROM master_kredit_pilar1 WHERE id_profil_risiko = '$idProfilRisiko' LIMIT 1");
+        $cekP1 = simpro_db_query($conn, "SELECT id_profil_risiko FROM master_kredit_pilar1 WHERE id_profil_risiko = ? LIMIT 1", [$idProfilRisiko]);
         if ($cekP1 && mysqli_num_rows($cekP1) > 0) {
             mysqli_query($conn, "UPDATE master_kredit_pilar1 SET total_aset = '$totalAsetSql' WHERE id_profil_risiko = '$idProfilRisiko'");
         } elseif (column_exists_menu($conn, 'master_kredit_pilar1', 'id_profil_risiko')) {
@@ -53,7 +53,7 @@ function sync_master_kredit_awal_menu($conn, $idProfilRisiko, $modalInti, $total
     }
 
     if (table_exists_menu($conn, 'master_kredit_pilar2') && column_exists_menu($conn, 'master_kredit_pilar2', 'modal_inti')) {
-        $cekP2 = mysqli_query($conn, "SELECT id_profil_risiko FROM master_kredit_pilar2 WHERE id_profil_risiko = '$idProfilRisiko' LIMIT 1");
+        $cekP2 = simpro_db_query($conn, "SELECT id_profil_risiko FROM master_kredit_pilar2 WHERE id_profil_risiko = ? LIMIT 1", [$idProfilRisiko]);
         if ($cekP2 && mysqli_num_rows($cekP2) > 0) {
             mysqli_query($conn, "UPDATE master_kredit_pilar2 SET modal_inti = '$modalIntiSql' WHERE id_profil_risiko = '$idProfilRisiko'");
         } elseif (column_exists_menu($conn, 'master_kredit_pilar2', 'id_profil_risiko')) {
@@ -354,12 +354,12 @@ if (isset($_POST['action']) && $_POST['action'] === 'copy_profil_konsol') {
         $notif = 'Pilih profil risiko sumber yang berbeda.';
         $notif_type = 'danger';
     } else {
-        $qValid = mysqli_query($conn, "
+        $qValid = simpro_db_query($conn, "
             SELECT id_profil_risiko, user
             FROM frame_laporan_profil_risiko
-            WHERE id_profil_risiko IN ('$sourceId', '$targetId')
+            WHERE id_profil_risiko IN (?, ?)
               AND user = '1'
-        ");
+        ", [$sourceId, $targetId]);
 
         if (!$qValid || mysqli_num_rows($qValid) !== 2) {
             $notif = 'Profil risiko sumber atau tujuan tidak valid.';
@@ -419,7 +419,7 @@ if (isset($_POST['submit'])) {
 
     $frameDipilih = null;
     if ($frame_perumusan_id > 0) {
-        $qFrameDipilih = mysqli_query($conn, "
+        $qFrameDipilih = simpro_db_query($conn, "
             SELECT
                 fp.id_frame_perumusan,
                 fp.tahun,
@@ -429,7 +429,7 @@ if (isset($_POST['submit'])) {
             FROM frame_perumusan fp
             INNER JOIN user_profil_risiko upr
                 ON fp.user_id = upr.id_user_profil_risiko
-            WHERE fp.id_frame_perumusan = '$frame_perumusan_id'
+            WHERE fp.id_frame_perumusan = ?
               AND (
                     EXISTS (
                         SELECT 1 FROM perumusan_inheren pi
@@ -443,7 +443,7 @@ if (isset($_POST['submit'])) {
                     )
                   )
             LIMIT 1
-        ");
+        ", [$frame_perumusan_id]);
         if ($qFrameDipilih && mysqli_num_rows($qFrameDipilih) > 0) {
             $frameDipilih = mysqli_fetch_assoc($qFrameDipilih);
         }
@@ -614,7 +614,7 @@ $dataPeriode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko 
 /* =========================================================
    DATA TABEL
 ========================================================= */
-$queryList = mysqli_query($conn, "
+$queryList = simpro_db_query($conn, "
     SELECT
         f.*,
         p.periode_laporan,
@@ -630,10 +630,10 @@ $queryList = mysqli_query($conn, "
         ON f.user = upr.id_user_profil_risiko
     LEFT JOIN user u
         ON f.dibuat_by = u.user_id
-    WHERE f.kantor_cabang = '$lokasiSession'
+    WHERE f.kantor_cabang = ?
       AND f.user = '1'
     ORDER BY f.id_profil_risiko DESC
-");
+", [$lokasiSession]);
 
 $queryListCabang = mysqli_query($conn, "
     SELECT

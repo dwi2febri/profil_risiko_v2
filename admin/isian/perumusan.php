@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 
 function esc($str){ return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8'); }
 function postv($key,$default=''){ return isset($_POST[$key]) ? $_POST[$key] : $default; }

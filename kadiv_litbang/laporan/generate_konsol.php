@@ -468,41 +468,41 @@ function gk_year_has_complete_setting_for_user($conn, $tahun, $userId)
         return false;
     }
 
-    $qFrame = mysqli_query($conn, "
+    $qFrame = simpro_db_query($conn, "
         SELECT id_frame_perumusan
         FROM frame_perumusan
-        WHERE tahun = '$tahun'
-          AND user_id = '$userId'
+        WHERE tahun = ?
+          AND user_id = ?
           AND is_aktif = 1
           AND (id_divisi_tetapan IS NULL OR id_divisi_tetapan = 0)
         LIMIT 1
-    ");
+    ", [$tahun, $userId]);
     if (!$qFrame || mysqli_num_rows($qFrame) <= 0) {
         return false;
     }
 
-    $qInheren = mysqli_query($conn, "
+    $qInheren = simpro_db_query($conn, "
         SELECT pp.id
         FROM pr_pilih_parameter pp
         INNER JOIN pr_inheren_periode p ON p.id = pp.pr_inheren_periode_id
-        WHERE p.tahun = '$tahun'
-          AND pp.id_user_profil_risiko = '$userId'
+        WHERE p.tahun = ?
+          AND pp.id_user_profil_risiko = ?
           AND (pp.id_divisi_tetapan IS NULL OR pp.id_divisi_tetapan = 0)
         LIMIT 1
-    ");
+    ", [$tahun, $userId]);
     if (!$qInheren || mysqli_num_rows($qInheren) <= 0) {
         return false;
     }
 
-    $qKpmr = mysqli_query($conn, "
+    $qKpmr = simpro_db_query($conn, "
         SELECT kp.id
         FROM kpmr_pilih_parameter kp
         INNER JOIN kpmr_periode p ON p.id = kp.kpmr_periode_id
-        WHERE p.tahun = '$tahun'
-          AND kp.id_user_profil_risiko = '$userId'
+        WHERE p.tahun = ?
+          AND kp.id_user_profil_risiko = ?
           AND (kp.id_divisi_tetapan IS NULL OR kp.id_divisi_tetapan = 0)
         LIMIT 1
-    ");
+    ", [$tahun, $userId]);
     return $qKpmr && mysqli_num_rows($qKpmr) > 0;
 }
 
@@ -525,15 +525,15 @@ function gk_latest_skmr_profile($conn, $tahun, $periode, $lokasiSession)
         return $row;
     }
 
-    $qFallback = mysqli_query($conn, "
+    $qFallback = simpro_db_query($conn, "
         SELECT *
         FROM frame_laporan_profil_risiko
         WHERE user = 1
-          AND tahun = '$tahun'
-          AND periode = '$periode'
+          AND tahun = ?
+          AND periode = ?
         ORDER BY id_profil_risiko DESC
         LIMIT 1
-    ");
+    ", [$tahun, $periode]);
     return $qFallback ? mysqli_fetch_assoc($qFallback) : null;
 }
 
@@ -542,14 +542,14 @@ function gk_divisi_profiles($conn, $tahun, $periode)
     $ids = [];
     $tahun = (int)$tahun;
     $periode = (int)$periode;
-    $q = mysqli_query($conn, "
+    $q = simpro_db_query($conn, "
         SELECT id_profil_risiko
         FROM frame_laporan_profil_risiko
         WHERE user = 2
-          AND tahun = '$tahun'
-          AND periode = '$periode'
+          AND tahun = ?
+          AND periode = ?
         ORDER BY id_profil_risiko ASC
-    ");
+    ", [$tahun, $periode]);
     if ($q) {
         while ($row = mysqli_fetch_assoc($q)) {
             $ids[] = (int)$row['id_profil_risiko'];
@@ -563,14 +563,14 @@ function gk_divisi_profile_rows($conn, $tahun, $periode)
     $rows = [];
     $tahun = (int)$tahun;
     $periode = (int)$periode;
-    $q = mysqli_query($conn, "
+    $q = simpro_db_query($conn, "
         SELECT *
         FROM frame_laporan_profil_risiko
         WHERE user = 2
-          AND tahun = '$tahun'
-          AND periode = '$periode'
+          AND tahun = ?
+          AND periode = ?
         ORDER BY kantor_cabang ASC, id_profil_risiko ASC
-    ");
+    ", [$tahun, $periode]);
     if ($q) {
         while ($row = mysqli_fetch_assoc($q)) {
             $rows[] = $row;
@@ -600,14 +600,14 @@ function gk_divisi_generate_labels($conn, $tahun, $periode)
     $labels = [];
     $tahun = (int)$tahun;
     $periode = (int)$periode;
-    $q = mysqli_query($conn, "
+    $q = simpro_db_query($conn, "
         SELECT DISTINCT kantor_cabang
         FROM frame_laporan_profil_risiko
         WHERE user = 2
-          AND tahun = '$tahun'
-          AND periode = '$periode'
+          AND tahun = ?
+          AND periode = ?
         ORDER BY kantor_cabang ASC
-    ");
+    ", [$tahun, $periode]);
     if ($q) {
         while ($row = mysqli_fetch_assoc($q)) {
             $labels[] = gk_divisi_label($row['kantor_cabang']);
@@ -752,7 +752,7 @@ if (isset($_GET['hapus_generate'])) {
             throw new Exception('Data generate tidak valid.');
         }
 
-        $qHapus = mysqli_query($conn, "SELECT id_profil_risiko, user FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$hapusId' AND user IN (4, 5, 6) LIMIT 1");
+        $qHapus = simpro_db_query($conn, "SELECT id_profil_risiko, user FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ? AND user IN (4, 5, 6) LIMIT 1", [$hapusId]);
         if (!$qHapus || mysqli_num_rows($qHapus) <= 0) {
             throw new Exception('Data generate tidak ditemukan atau bukan laporan konsol.');
         }

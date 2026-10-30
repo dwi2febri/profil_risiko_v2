@@ -1,12 +1,12 @@
 <?php include "verif.php"; ?>
 
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 1).'/conn/conn.php';
 $user_id = $_SESSION['user_id'];
-$data_profile = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM user WHERE user_id = '$user_id'"));
+$data_profile = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM user WHERE user_id = ?", [$user_id]));
 if (isset($_POST['submit'])) {
     $password = $_POST['password'];
-    mysqli_query($conn, "UPDATE user SET password = '$password' WHERE user_id = '$user_id'");
+    simpro_db_query($conn, "UPDATE user SET password = ? WHERE user_id = ?", [$password, $user_id]);
     header("Location: index.php?page=profile");
     exit();
 }

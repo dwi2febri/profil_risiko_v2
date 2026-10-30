@@ -1,23 +1,23 @@
 <?php
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $tahun = $_POST['tahun'];
 
     $dibuat_at = date('Y-m-d');
     $dibuat_by = $_SESSION['user_id'];
-    $query = mysqli_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = '$tahun' ");
+    $query = simpro_db_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = ? ", [$tahun]);
     $cek_user = mysqli_num_rows($query);
     if ($cek_user > 0) {
         echo '
         <script>$.NotificationApp.send("Gagal","Your awesome message text","Position","Background color","Icon")</script>
         ';
     } else {
-        mysqli_query($conn, "INSERT INTO ambang_batas_kredit(id_ambang_batas_kredit,tahun,dibuat_at,dibuat_by)
-        VALUES ('0','$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ambang_batas_kredit(id_ambang_batas_kredit,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',?,?,?)", [$tahun, $dibuat_at, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO ambang_batas_likuiditas(id_ambang_batas_likuiditas,tahun,dibuat_at,dibuat_by)
-        VALUES ('0','$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO ambang_batas_likuiditas(id_ambang_batas_likuiditas,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',?,?,?)", [$tahun, $dibuat_at, $dibuat_by]);
 
         echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $query = mysqli_query($conn, "SELECT * FROM ambang_batas_kredit

@@ -897,7 +897,7 @@ $analisaTertinggiKredit = kre_get_highest_analysis_kredit($conn, $id);
 $definisiTingkatRisikoKredit = kre_lookup_kualitas_mr_kredit($conn, (string)($inheren['hasil_peringkat'] ?? ''));
 
 if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     // Bersihkan output HTML modal/template yang sudah terlanjur masuk buffer,
     // agar fetch menerima JSON murni dan autosave dianggap sukses.
     if (ob_get_length()) { ob_clean(); }
@@ -943,7 +943,7 @@ if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
 }
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $inheren_kredit = (float)$inheren['hasil_tingkat_risiko'];
     $kpmr_kredit = (float)$kpmr['hasil_tingkat_risiko'];
     $ket_profil_risiko_input = array_key_exists('ket_profil_risiko', $_POST) ? (string)$_POST['ket_profil_risiko'] : (string)($ket['ket_profil_risiko'] ?? '');

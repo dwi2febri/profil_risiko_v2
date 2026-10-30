@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 include "../fungsi/fungsi.php";
 
 if (session_status() === PHP_SESSION_NONE) {

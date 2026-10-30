@@ -23,14 +23,14 @@ if ($cek != "admin") {
 
 
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 1).'/conn/conn.php';
 $user_id = $_SESSION['user_id'];
-$data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM user INNER JOIN jenis_cabang ON user.lokasi_kerja = jenis_cabang.id_cabang
- WHERE user.user_id = '$user_id'"));
+$data_user = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM user INNER JOIN jenis_cabang ON user.lokasi_kerja = jenis_cabang.id_cabang
+ WHERE user.user_id = ?", [$user_id]));
 
 
 $id = $_GET['id'];
-$get_data = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+$get_data = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ?", [$id]));
 $isProfilRisikoCabangAktif = is_array($get_data) && (int)($get_data['user'] ?? 0) === 3;
 
 function skmr_admin_table_exists($conn, $table) {
@@ -110,7 +110,7 @@ function skmr_admin_divisi_sidebar_rules($conn, $frame) {
 
     $divisiName = '';
     if ($divisiId > 0 && skmr_admin_table_exists($conn, 'jenis_cabang')) {
-        $qDivisi = mysqli_query($conn, "SELECT cabang FROM jenis_cabang WHERE id_cabang = '$divisiId' LIMIT 1");
+        $qDivisi = simpro_db_query($conn, "SELECT cabang FROM jenis_cabang WHERE id_cabang = ? LIMIT 1", [$divisiId]);
         if ($qDivisi && mysqli_num_rows($qDivisi) > 0) {
             $rowDivisi = mysqli_fetch_assoc($qDivisi);
             $divisiName = strtolower((string)($rowDivisi['cabang'] ?? ''));

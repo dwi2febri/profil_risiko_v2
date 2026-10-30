@@ -40,59 +40,59 @@ include "../fungsi/fungsi.php";
 
 $id = $_GET['id'];
 
-$frame_laporan_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame_laporan_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $jenis_pr = $frame_laporan_likuiditas['user'];
 $tahun = $frame_laporan_likuiditas['tahun'];
 $periode = $frame_laporan_likuiditas['periode'];
 $dp = $frame_laporan_likuiditas['data_pembanding'];
 
 
-$master_likuiditas_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
-$master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
+$master_likuiditas_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$master_kredit_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
 
-$div_skmr_master_likuiditas_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode' "));
-$div_skmr_master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_kredit_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode' "));
+$div_skmr_master_likuiditas_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ? ", [$tahun, $periode]));
+$div_skmr_master_kredit_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_kredit_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ? ", [$tahun, $periode]));
 
-$div_master_likuiditas_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
-$div_master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_kredit_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
+$div_master_likuiditas_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
+$div_master_kredit_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar1 INNER JOIN frame_laporan_profil_risiko ON master_kredit_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
-$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$id'"));
-$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = ?", [$id]));
 
-$div_skmr_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode' "));
-$div_skmr_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar2.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode' "));
-$div_skmr_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_lainnya.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode' "));
-
-
-$div_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
-$div_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar2.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
-$div_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_lainnya.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
+$div_skmr_pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ? ", [$tahun, $periode]));
+$div_skmr_pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar2.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ? ", [$tahun, $periode]));
+$div_skmr_pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_lainnya INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_lainnya.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ? ", [$tahun, $periode]));
 
 
-$pembanding_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = '$dp'"));
-
-$hasil = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
+$div_pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar1.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
+$div_pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_pilar2.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
+$div_pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_lainnya INNER JOIN frame_laporan_profil_risiko ON inheren_likuiditas_lainnya.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
 
 
-$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE user = '$jenis_pr' AND tahun = '$tahun' AND periode = '$periode'"));
+$pembanding_pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_pilar2 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_likuiditas_lainnya WHERE id_profil_risiko = ?", [$dp]));
 
-$ket_inhern_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
-$div_pmsrn_ket_inhern_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren_likuiditas INNER JOIN frame_laporan_profil_risiko ON keterangan_inheren_likuiditas.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
-$div_skmr_ket_inhern_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren_likuiditas INNER JOIN frame_laporan_profil_risiko ON keterangan_inheren_likuiditas.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode' "));
+$hasil = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = ?", [$id]));
 
 
-$ambang_batas_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = '$tahun'"));
-$bobot_likuiditas = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = '$id'"));
+$inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE user = ? AND tahun = ? AND periode = ?", [$jenis_pr, $tahun, $periode]));
+
+$ket_inhern_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_inheren_likuiditas WHERE id_profil_risiko = ?", [$id]));
+$div_pmsrn_ket_inhern_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_inheren_likuiditas INNER JOIN frame_laporan_profil_risiko ON keterangan_inheren_likuiditas.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
+$div_skmr_ket_inhern_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_inheren_likuiditas INNER JOIN frame_laporan_profil_risiko ON keterangan_inheren_likuiditas.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ? ", [$tahun, $periode]));
+
+
+$ambang_batas_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = ?", [$tahun]));
+$bobot_likuiditas = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_likuiditas_pilar3 WHERE id_profil_risiko = ?", [$id]));
 
 
 
 //pembobotan
-$pembobotan = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM bobot_likuiditas_per_parameter WHERE tahun = '$tahun'"));
+$pembobotan = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM bobot_likuiditas_per_parameter WHERE tahun = ?", [$tahun]));
 $bobot2_1 = $pembobotan['sub_parameter2_1'];
 $bobot2_2 = $pembobotan['sub_parameter2_2'];
 $bobot2_3 = $pembobotan['sub_parameter2_3'];
@@ -928,7 +928,7 @@ $bobot_pil3_1 = 1/6;
 
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
 
 
@@ -1032,106 +1032,106 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE inheren_likuiditas_pilar1 SET 
-        hasil_pil1_par1 ='$hasil_pil1_par1',
-        hasil_pil1_par2 ='$hasil_pil1_par2',
-        hasil_pil1_par2a ='$hasil_pil1_par2a',
-        hasil_pil1_par2b ='$hasil_pil1_par2b',
-        hasil_pil1_par2c ='$hasil_pil1_par2c',
-        hasil_pil1_par2d ='$hasil_pil1_par2d',
-        hasil_pil1_par2e ='$hasil_pil1_par2e',
-        hasil_pil1_par2f ='$hasil_pil1_par2f',
-        hasil_pil1_par2g ='$hasil_pil1_par2g',
-        hasil_pil1_par2h ='$hasil_pil1_par2h',
-        hasil_pil1_par2i ='$hasil_pil1_par2i',
-        hasil_pil1_par3 ='$hasil_pil1_par3',
-        hasil_pil1_par3a ='$hasil_pil1_par3a',
-        hasil_pil1_par3b ='$hasil_pil1_par3b',
-        hasil_pil1_par3c ='$hasil_pil1_par3c',
-        hasil_pil1_par3d ='$hasil_pil1_par3d',
-        hasil_pil1_par5 ='$hasil_pil1_par5',
-        hasil_pil1_par5a ='$hasil_pil1_par5a',
-        hasil_pil1_par5b ='$hasil_pil1_par5b',
-        hasil_pil1_par5c ='$hasil_pil1_par5c',
-        hasil_pil1_par5d ='$hasil_pil1_par5d',
+    simpro_db_query($conn, "UPDATE inheren_likuiditas_pilar1 SET 
+        hasil_pil1_par1 =?,
+        hasil_pil1_par2 =?,
+        hasil_pil1_par2a =?,
+        hasil_pil1_par2b =?,
+        hasil_pil1_par2c =?,
+        hasil_pil1_par2d =?,
+        hasil_pil1_par2e =?,
+        hasil_pil1_par2f =?,
+        hasil_pil1_par2g =?,
+        hasil_pil1_par2h =?,
+        hasil_pil1_par2i =?,
+        hasil_pil1_par3 =?,
+        hasil_pil1_par3a =?,
+        hasil_pil1_par3b =?,
+        hasil_pil1_par3c =?,
+        hasil_pil1_par3d =?,
+        hasil_pil1_par5 =?,
+        hasil_pil1_par5a =?,
+        hasil_pil1_par5b =?,
+        hasil_pil1_par5c =?,
+        hasil_pil1_par5d =?,
         
-        pilar1_4 ='$pilar1_4',
-        hasil_pil1_par4 ='$hasil_pil1_par4'
-    WHERE id_profil_risiko ='$id'");
+        pilar1_4 =?,
+        hasil_pil1_par4 =?
+    WHERE id_profil_risiko =?", [$hasil_pil1_par1, $hasil_pil1_par2, $hasil_pil1_par2a, $hasil_pil1_par2b, $hasil_pil1_par2c, $hasil_pil1_par2d, $hasil_pil1_par2e, $hasil_pil1_par2f, $hasil_pil1_par2g, $hasil_pil1_par2h, $hasil_pil1_par2i, $hasil_pil1_par3, $hasil_pil1_par3a, $hasil_pil1_par3b, $hasil_pil1_par3c, $hasil_pil1_par3d, $hasil_pil1_par5, $hasil_pil1_par5a, $hasil_pil1_par5b, $hasil_pil1_par5c, $hasil_pil1_par5d, $pilar1_4, $hasil_pil1_par4, $id]);
 
 
 
-    mysqli_query($conn, "UPDATE inheren_likuiditas_pilar2 SET 
-    hasil_pil2_par1 = '$hasil_pil2_par1',
-    pil2_par1a = '$pil2_par1a',
-    hasil_pil2_par1a = '$hasil_pil2_par1a',
-    pil2_par1b = '$pil2_par1b',
-    hasil_pil2_par1b = '$hasil_pil2_par1b',
-    pil2_par1c = '$pil2_par1c',
-    hasil_pil2_par1c = '$hasil_pil2_par1c',
-    pil2_par2 = '$pil2_par2',
-    hasil_pil2_par2 = '$hasil_pil2_par2'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE inheren_likuiditas_pilar2 SET 
+    hasil_pil2_par1 = ?,
+    pil2_par1a = ?,
+    hasil_pil2_par1a = ?,
+    pil2_par1b = ?,
+    hasil_pil2_par1b = ?,
+    pil2_par1c = ?,
+    hasil_pil2_par1c = ?,
+    pil2_par2 = ?,
+    hasil_pil2_par2 = ?
+    WHERE id_profil_risiko = ?", [$hasil_pil2_par1, $pil2_par1a, $hasil_pil2_par1a, $pil2_par1b, $hasil_pil2_par1b, $pil2_par1c, $hasil_pil2_par1c, $pil2_par2, $hasil_pil2_par2, $id]);
 
 
-    mysqli_query($conn, "UPDATE inheren_likuiditas_lainnya SET 
-    hasil_pil3_par1 = '$hasil_pil3_par1',
-    pil3_par1a = '$pil3_par1a',
-    hasil_pil3_par1a = '$hasil_pil3_par1a',
-    pil3_par1b = '$pil3_par1b',
-    hasil_pil3_par1b = '$hasil_pil3_par1b',
-    pil3_par1c = '$pil3_par1c',
-    hasil_pil3_par1c = '$hasil_pil3_par1c',
-    pil3_par1d = '$pil3_par1d',
-    hasil_pil3_par1d = '$hasil_pil3_par1d',
-    pil3_par1e = '$pil3_par1e',
-    hasil_pil3_par1e = '$hasil_pil3_par1e',
-    pil3_par1f = '$pil3_par1f',
-    hasil_pil3_par1f = '$hasil_pil3_par1f'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE inheren_likuiditas_lainnya SET 
+    hasil_pil3_par1 = ?,
+    pil3_par1a = ?,
+    hasil_pil3_par1a = ?,
+    pil3_par1b = ?,
+    hasil_pil3_par1b = ?,
+    pil3_par1c = ?,
+    hasil_pil3_par1c = ?,
+    pil3_par1d = ?,
+    hasil_pil3_par1d = ?,
+    pil3_par1e = ?,
+    hasil_pil3_par1e = ?,
+    pil3_par1f = ?,
+    hasil_pil3_par1f = ?
+    WHERE id_profil_risiko = ?", [$hasil_pil3_par1, $pil3_par1a, $hasil_pil3_par1a, $pil3_par1b, $hasil_pil3_par1b, $pil3_par1c, $hasil_pil3_par1c, $pil3_par1d, $hasil_pil3_par1d, $pil3_par1e, $hasil_pil3_par1e, $pil3_par1f, $hasil_pil3_par1f, $id]);
 
 
 
 
-    mysqli_query($conn, "UPDATE hasil_inheren_likuiditas SET 
-        pil1_tertinggi = '$pil1_tertinggi',
-        pil1_terendah = '$pil1_terendah',
-        pil1_rata_rata = '$pil1_rata_rata',
-        pil1_risiko_ditetapkan = '$pil1_risiko_ditetapkan',
-        pil1_tingkat_risiko = '$pil1_tingkat_risiko',
-        pil2_tertinggi = '$pil2_tertinggi',
-        pil2_terendah = '$pil2_terendah',
-        pil2_rata_rata = '$pil2_rata_rata',
-        pil2_risiko_ditetapkan = '$pil2_risiko_ditetapkan',
-        pil2_tingkat_risiko = '$pil2_tingkat_risiko',
-        pil3_tertinggi = '$pil3_tertinggi',
-        pil3_terendah = '$pil3_terendah',
-        pil3_rata_rata = '$pil3_rata_rata',
-        pil3_risiko_ditetapkan = '$pil3_risiko_ditetapkan',
-        pil3_tingkat_risiko = '$pil3_tingkat_risiko',
-        hasil_inheren_tertinggi = '$hasil_inheren_tertinggi',
-        hasil_inheren_terendah = '$hasil_inheren_terendah',
-        hasil_inheren_rata_rata = '$hasil_inheren_rata_rata',
-        hasil_risiko_ditetapkan = '$hasil_risiko_ditetapkan',
-        hasil_tingkat_risiko = '$hasil_tingkat_risiko',
-        hasil_peringkat = '$hasil_peringkat'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE hasil_inheren_likuiditas SET 
+        pil1_tertinggi = ?,
+        pil1_terendah = ?,
+        pil1_rata_rata = ?,
+        pil1_risiko_ditetapkan = ?,
+        pil1_tingkat_risiko = ?,
+        pil2_tertinggi = ?,
+        pil2_terendah = ?,
+        pil2_rata_rata = ?,
+        pil2_risiko_ditetapkan = ?,
+        pil2_tingkat_risiko = ?,
+        pil3_tertinggi = ?,
+        pil3_terendah = ?,
+        pil3_rata_rata = ?,
+        pil3_risiko_ditetapkan = ?,
+        pil3_tingkat_risiko = ?,
+        hasil_inheren_tertinggi = ?,
+        hasil_inheren_terendah = ?,
+        hasil_inheren_rata_rata = ?,
+        hasil_risiko_ditetapkan = ?,
+        hasil_tingkat_risiko = ?,
+        hasil_peringkat = ?
+    WHERE id_profil_risiko = ?", [$pil1_tertinggi, $pil1_terendah, $pil1_rata_rata, $pil1_risiko_ditetapkan, $pil1_tingkat_risiko, $pil2_tertinggi, $pil2_terendah, $pil2_rata_rata, $pil2_risiko_ditetapkan, $pil2_tingkat_risiko, $pil3_tertinggi, $pil3_terendah, $pil3_rata_rata, $pil3_risiko_ditetapkan, $pil3_tingkat_risiko, $hasil_inheren_tertinggi, $hasil_inheren_terendah, $hasil_inheren_rata_rata, $hasil_risiko_ditetapkan, $hasil_tingkat_risiko, $hasil_peringkat, $id]);
 
 
-    mysqli_query($conn, "UPDATE keterangan_inheren_likuiditas SET 
-        ket_pil1_1 ='$ket_pil1_1',
-        ket_pil1_2 ='$ket_pil1_2',
-        ket_pil1_3 ='$ket_pil1_3',
-        ket_pil1_4 ='$ket_pil1_4',
-        ket_pil1_5 ='$ket_pil1_5',
-        ket_pil1 ='$ket_pil1',
-        ket_pil2_1 ='$ket_pil2_1',
-        ket_pil2_2 ='$ket_pil2_2',
-        ket_pil2 ='$ket_pil2',
-        ket_pil3_1 ='$ket_pil3_1',
-        ket_pil3 ='$ket_pil3',
-        ket_inheren ='$ket_inheren'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE keterangan_inheren_likuiditas SET 
+        ket_pil1_1 =?,
+        ket_pil1_2 =?,
+        ket_pil1_3 =?,
+        ket_pil1_4 =?,
+        ket_pil1_5 =?,
+        ket_pil1 =?,
+        ket_pil2_1 =?,
+        ket_pil2_2 =?,
+        ket_pil2 =?,
+        ket_pil3_1 =?,
+        ket_pil3 =?,
+        ket_inheren =?
+    WHERE id_profil_risiko = ?", [$ket_pil1_1, $ket_pil1_2, $ket_pil1_3, $ket_pil1_4, $ket_pil1_5, $ket_pil1, $ket_pil2_1, $ket_pil2_2, $ket_pil2, $ket_pil3_1, $ket_pil3, $ket_inheren, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

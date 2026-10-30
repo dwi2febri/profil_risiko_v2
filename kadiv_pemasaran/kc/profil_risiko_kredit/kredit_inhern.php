@@ -144,10 +144,10 @@ function esc_post_local($conn, $key, $default = ''){
 
 
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
-$frame_laporan_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT user,tahun,periode,data_pembanding FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
+$frame_laporan_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT user,tahun,periode,data_pembanding FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ?", [$id]));
 $jenis_pr = $frame_laporan_kredit['user'];
 $tahun = $frame_laporan_kredit['tahun'];
 $periode = $frame_laporan_kredit['periode'];
@@ -165,7 +165,7 @@ ensure_column_local($conn, 'inheren_kredit_pilar2', 'pilar2_1', "DECIMAL(10,2) N
 
 $report_divisi_tetapan = 0;
 if (table_exists_local($conn, 'frame_laporan_profil_risiko') && column_exists_local($conn, 'frame_laporan_profil_risiko', 'id_divisi_tetapan')) {
-    $qDiv = mysqli_query($conn, "SELECT id_divisi_tetapan FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id' LIMIT 1");
+    $qDiv = simpro_db_query($conn, "SELECT id_divisi_tetapan FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ? LIMIT 1", [$id]);
     if ($qDiv && mysqli_num_rows($qDiv) > 0) {
         $rDiv = mysqli_fetch_assoc($qDiv);
         $report_divisi_tetapan = isset($rDiv['id_divisi_tetapan']) ? (int)$rDiv['id_divisi_tetapan'] : 0;
@@ -174,7 +174,7 @@ if (table_exists_local($conn, 'frame_laporan_profil_risiko') && column_exists_lo
 
 
 
-$length = mysqli_fetch_array(mysqli_query($conn, "SELECT 
+$length = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
 CHAR_LENGTH(ket_pil1_1) AS l1,
 CHAR_LENGTH(ket_pil1_2) AS l2,
 CHAR_LENGTH(ket_pil1_3) AS l3,
@@ -190,27 +190,27 @@ CHAR_LENGTH(ket_pil4_1) AS l12,
 CHAR_LENGTH(ket_pil4) AS l13,
 CHAR_LENGTH(ket_pil5_1) AS l14,
 CHAR_LENGTH(ket_pil5) AS l15,
-CHAR_LENGTH(ket_inheren) AS l16 FROM keterangan_inheren_kredit WHERE id_profil_risiko = '$id'"));
+CHAR_LENGTH(ket_inheren) AS l16 FROM keterangan_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 
-$master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
-$master_kredit_P2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
-$master_kredit_P3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
+$master_kredit_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$master_kredit_P2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$master_kredit_P3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
-$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
 $pilar2_1_selected = (isset($pil2['pilar2_1']) && $pil2['pilar2_1'] !== '' ? (float)$pil2['pilar2_1'] : 0);
-$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
-$pil4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar4 WHERE id_profil_risiko = '$id'"));
-$pil5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_lainnya WHERE id_profil_risiko = '$id'"));
+$pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
+$pil4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar4 WHERE id_profil_risiko = ?", [$id]));
+$pil5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_lainnya WHERE id_profil_risiko = ?", [$id]));
 
-$pembanding_pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar1 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar2 WHERE id_profil_risiko = '$dp'"));
+$pembanding_pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar1 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar2 WHERE id_profil_risiko = ?", [$dp]));
 $pembanding_pilar2_1 = (isset($pembanding_pil2['pilar2_1']) && $pembanding_pil2['pilar2_1'] !== '' ? (float)$pembanding_pil2['pilar2_1'] : 0);
-$pembanding_pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar3 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_pilar4 WHERE id_profil_risiko = '$dp'"));
-$pembanding_pil5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM inheren_kredit_lainnya WHERE id_profil_risiko = '$dp'"));
+$pembanding_pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar3 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_pilar4 WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_pil5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM inheren_kredit_lainnya WHERE id_profil_risiko = ?", [$dp]));
 
-$hasil = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$id'"));
+$hasil = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 
 
 // ambil setting aktif dari halaman Perumusan Risiko (aktif per user/divisi)
@@ -242,14 +242,14 @@ if (table_exists_local($conn, 'frame_perumusan') && column_exists_local($conn, '
 
     // fallback: jika laporan bukan setting divisi spesifik atau kolom divisi belum sinkron
     if (empty($frame_perumusan_aktif)) {
-        $q_frame_perumusan_aktif = mysqli_query($conn, "
+        $q_frame_perumusan_aktif = simpro_db_query($conn, "
             SELECT *
             FROM frame_perumusan
-            WHERE user_id = '$jenis_pr'
+            WHERE user_id = ?
               AND is_aktif = '1'
             ORDER BY id_frame_perumusan DESC
             LIMIT 1
-        ");
+        ", [$jenis_pr]);
         if ($q_frame_perumusan_aktif && mysqli_num_rows($q_frame_perumusan_aktif) > 0) {
             $frame_perumusan_aktif = mysqli_fetch_assoc($q_frame_perumusan_aktif);
         }
@@ -259,10 +259,10 @@ if (table_exists_local($conn, 'frame_perumusan') && column_exists_local($conn, '
 if (!empty($frame_perumusan_aktif)) {
     $id_frame_perumusan_aktif = (int)$frame_perumusan_aktif['id_frame_perumusan'];
 
-    $q_perumusan_header = mysqli_query($conn, "
+    $q_perumusan_header = simpro_db_query($conn, "
         SELECT *
         FROM perumusan_inheren
-        WHERE id_frame_perumusan = '$id_frame_perumusan_aktif'
+        WHERE id_frame_perumusan = ?
           AND (
                 UPPER(nama_risiko) = 'RISIKO KREDIT'
              OR UPPER(nama_risiko) = 'KREDIT'
@@ -271,7 +271,7 @@ if (!empty($frame_perumusan_aktif)) {
           )
         ORDER BY id_perumusan_inheren DESC
         LIMIT 1
-    ");
+    ", [$id_frame_perumusan_aktif]);
     if ($q_perumusan_header && mysqli_num_rows($q_perumusan_header) > 0) {
         $perumusan_header = mysqli_fetch_assoc($q_perumusan_header);
 
@@ -301,20 +301,20 @@ if (!empty($frame_perumusan_aktif)) {
     }
 }
 
-$ket_inhern_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_inheren_kredit WHERE id_profil_risiko = '$id'"));
+$ket_inhern_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 
 
-$ambang_batas_kredit = mysqli_fetch_array(mysqli_query($conn, "
+$ambang_batas_kredit = mysqli_fetch_array(simpro_db_query($conn, "
     SELECT *
     FROM ambang_batas_kredit
-    WHERE user = '$jenis_pr'
+    WHERE user = ?
       AND is_active = '1'
     ORDER BY id_ambang_batas_kredit DESC
     LIMIT 1
-"));
+", [$jenis_pr]));
 $has_ambang_active = is_array($ambang_batas_kredit) && !empty($ambang_batas_kredit);
 
-$bobot_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
+$bobot_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
 
 $info_kuantitatif_kredit = [];
 $cek_info_kuantitatif_kredit = mysqli_query($conn, "SHOW TABLES LIKE 'info_kuantitatif_inheren'");
@@ -436,15 +436,15 @@ function setris_display_html_kredit($id, $mode, $metode, $bobot){
 }
 
 // ambil setting bobot berdasarkan tahun + user/profil risiko dari id_profil_risiko
-$pembobotan = mysqli_fetch_array(mysqli_query($conn, "
+$pembobotan = mysqli_fetch_array(simpro_db_query($conn, "
     SELECT bkp.*
     FROM frame_bobot fb
     INNER JOIN bobot_kredit_per_parameter bkp ON fb.id_bobot = bkp.id_bobot
-    WHERE fb.user  = '$jenis_pr'
+    WHERE fb.user  = ?
       AND fb.is_aktif = '1'
     ORDER BY fb.id_bobot DESC
     LIMIT 1
-"));
+", [$jenis_pr]));
 
 $has_bobot_active = is_array($pembobotan) && !empty($pembobotan);
 
@@ -1831,7 +1831,7 @@ function pv($key, $default = ''){
 
 if (isset($_POST['submit']) || pv('autosave') == '1') {
     $is_autosave = (pv('autosave') == '1');
-    include "../conn/conn.php";
+    require dirname(__DIR__, 3).'/conn/conn.php';
 
     ensure_id_profil_risiko_row_local($conn, 'inheren_kredit_pilar1', $id);
     ensure_id_profil_risiko_row_local($conn, 'inheren_kredit_pilar2', $id);

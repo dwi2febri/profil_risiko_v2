@@ -1,9 +1,9 @@
 <?php
 $id = $_GET['idbobot'];
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 
-$bobot_inhern_kredit_per_pilar = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM bobot_kredit_per_pilar WHERE id_bobot = '$id'"));
-$bobot_kpmr_kredit_per_parameter = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM bobot_kredit_per_parameter WHERE id_bobot = '$id'"));
+$bobot_inhern_kredit_per_pilar = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM bobot_kredit_per_pilar WHERE id_bobot = ?", [$id]));
+$bobot_kpmr_kredit_per_parameter = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM bobot_kredit_per_parameter WHERE id_bobot = ?", [$id]));
 
 
 if (isset($_POST['submit'])) {
@@ -37,31 +37,31 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE bobot_kredit_per_pilar SET 
-    pilar1 = '$pilar1',
-    pilar2 = '$pilar2',
-    pilar3 = '$pilar3',
-    pilar4 = '$pilar4',
-    lainnya = '$lainnya' WHERE id_bobot_kredit_per_pilar = '$id'");
+    simpro_db_query($conn, "UPDATE bobot_kredit_per_pilar SET 
+    pilar1 = ?,
+    pilar2 = ?,
+    pilar3 = ?,
+    pilar4 = ?,
+    lainnya = ? WHERE id_bobot_kredit_per_pilar = ?", [$pilar1, $pilar2, $pilar3, $pilar4, $lainnya, $id]);
 
 
 
 
 
-    mysqli_query($conn, "UPDATE bobot_kredit_per_parameter SET
-    parameter1 = '$parameter1',
-    parameter2 = '$parameter2',
-    parameter3 = '$parameter3',
-    parameter4 = '$parameter4',
-    parameter5 = '$parameter5',
-    parameter6 = '$parameter6',
-    parameter7 = '$parameter7',
-    parameter8 = '$parameter8',
-    parameter9 = '$parameter9',
-    parameter10 = '$parameter10',
-    parameter11 = '$parameter11',
-    parameter12 = '$parameter12',
-    parameter13 = '$parameter13' WHERE id_bobot_kredit_per_parameter = '$id'");
+    simpro_db_query($conn, "UPDATE bobot_kredit_per_parameter SET
+    parameter1 = ?,
+    parameter2 = ?,
+    parameter3 = ?,
+    parameter4 = ?,
+    parameter5 = ?,
+    parameter6 = ?,
+    parameter7 = ?,
+    parameter8 = ?,
+    parameter9 = ?,
+    parameter10 = ?,
+    parameter11 = ?,
+    parameter12 = ?,
+    parameter13 = ? WHERE id_bobot_kredit_per_parameter = ?", [$parameter1, $parameter2, $parameter3, $parameter4, $parameter5, $parameter6, $parameter7, $parameter8, $parameter9, $parameter10, $parameter11, $parameter12, $parameter13, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

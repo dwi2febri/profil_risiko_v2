@@ -1,5 +1,5 @@
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 include "../fungsi/fungsi.php";
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -131,7 +131,7 @@ if (isset($_POST['submit'])) {
 
     $frameDipilih = null;
     if ($frame_perumusan_id > 0) {
-        $qFrameDipilih = mysqli_query($conn, "
+        $qFrameDipilih = simpro_db_query($conn, "
             SELECT
                 fp.id_frame_perumusan,
                 fp.tahun,
@@ -141,7 +141,7 @@ if (isset($_POST['submit'])) {
             FROM frame_perumusan fp
             INNER JOIN user_profil_risiko upr
                 ON fp.user_id = upr.id_user_profil_risiko
-            WHERE fp.id_frame_perumusan = '$frame_perumusan_id'
+            WHERE fp.id_frame_perumusan = ?
               AND (
                     EXISTS (
                         SELECT 1 FROM perumusan_inheren pi
@@ -155,7 +155,7 @@ if (isset($_POST['submit'])) {
                     )
                   )
             LIMIT 1
-        ");
+        ", [$frame_perumusan_id]);
         if ($qFrameDipilih && mysqli_num_rows($qFrameDipilih) > 0) {
             $frameDipilih = mysqli_fetch_assoc($qFrameDipilih);
         }
@@ -277,7 +277,7 @@ $dataPeriode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko 
 /* =========================================================
    DATA TABEL
 ========================================================= */
-$queryList = mysqli_query($conn, "
+$queryList = simpro_db_query($conn, "
     SELECT
         f.*,
         p.periode_laporan,
@@ -293,9 +293,9 @@ $queryList = mysqli_query($conn, "
         ON f.user = upr.id_user_profil_risiko
     LEFT JOIN user u
         ON f.dibuat_by = u.user_id
-    WHERE f.kantor_cabang = '$lokasiSession'
+    WHERE f.kantor_cabang = ?
     ORDER BY f.id_profil_risiko DESC
-");
+", [$lokasiSession]);
 
 $queryListCabang = mysqli_query($conn, "
     SELECT

@@ -862,7 +862,7 @@ $analisaTertinggiKepatuhan = op_get_highest_analysis_kepatuhan($conn, $id);
 $definisiTingkatRisikoKepatuhan = op_lookup_kualitas_mr_kepatuhan($conn, (string)($inheren['hasil_peringkat'] ?? ''));
 
 if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 3).'/conn/conn.php';
     if (!headers_sent()) header('Content-Type: application/json; charset=utf-8');
 
     op_ensure_respon_cabang_column($conn);
@@ -908,7 +908,7 @@ if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
 }
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 3).'/conn/conn.php';
     op_ensure_respon_cabang_column($conn);
     $cekKet = mysqli_query($conn, "SELECT id_profil_risiko FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '".(int)$id."' LIMIT 1");
     if (!$cekKet || mysqli_num_rows($cekKet) == 0) {

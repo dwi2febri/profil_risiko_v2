@@ -1,7 +1,7 @@
 <?php include "verif.php"; ?>
 
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 1).'/conn/conn.php';
 
 function tgl_indo($tanggal)
 {
@@ -33,9 +33,9 @@ $currentbln = date("m");
 
 
 $id = $_SESSION['user_id'] ?? null;
-$get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
+$get_data_user = mysqli_fetch_array(simpro_db_query($conn, "SELECT nama FROM user
 
-WHERE user_id = '$id'"));
+WHERE user_id = ?", [$id]));
 
 ?>
 
@@ -54,55 +54,55 @@ $kode_kantor = (int)($_GET['kode_kantor'] ?? 0);
 $tahun = (int)($_GET['tahun'] ?? 0);
 $periode = (int)($_GET['periode'] ?? 0);
 
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE kantor_cabang = '$kode_kantor' AND tahun ='$tahun' AND periode ='$periode'"));
-$abk = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = '$start_year'"));
-$abl = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = '$start_year'"));
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT id_profil_risiko,data_pembanding FROM frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun =? AND periode =?", [$kode_kantor, $tahun, $periode]));
+$abk = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = ?", [$start_year]));
+$abl = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ambang_batas_likuiditas WHERE tahun = ?", [$start_year]));
 
 
 $id_pro = $frame['id_profil_risiko'] ?? 0;
 $dp = $frame['data_pembanding'] ?? 0;
 
-$triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-$triwulan2_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-$triwulan3_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-$triwulan4_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+$triwulan1_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
+$triwulan2_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
+$triwulan3_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
+$triwulan4_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
 
-$triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-$triwulan2_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-$triwulan3_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-$triwulan4_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+$triwulan1_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
+$triwulan2_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
+$triwulan3_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
+$triwulan4_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
        
-$triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-$triwulan2_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-$triwulan3_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-$triwulan4_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+$triwulan1_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
+$triwulan2_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
+$triwulan3_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
+$triwulan4_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
          
-$triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-$triwulan2_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-$triwulan3_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-$triwulan4_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+$triwulan1_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
+$triwulan2_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
+$triwulan3_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
+$triwulan4_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
 
-$triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-$triwulan2_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-$triwulan3_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-$triwulan4_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+$triwulan1_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
+$triwulan2_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
+$triwulan3_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
+$triwulan4_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
 
-$triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
-$triwulan2_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
-$triwulan3_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
-$triwulan4_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+$triwulan1_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
+$triwulan2_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
+$triwulan3_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
+$triwulan4_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
       
 
 
-$frame_wak = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame_wak = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
 INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang
-WHERE kantor_cabang = '$kode_kantor' AND tahun ='$tahun' AND periode ='$periode'"));
+WHERE kantor_cabang = ? AND tahun =? AND periode =?", [$kode_kantor, $tahun, $periode]));
 
-$frame_wak2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame_wak2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
 INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang
-WHERE frame_laporan_profil_risiko.id_profil_risiko = '$dp'"));
+WHERE frame_laporan_profil_risiko.id_profil_risiko = ?", [$dp]));
 
 //tren
 if ($currentbln >= 1 && $currentbln <= 3 ) {
@@ -117,10 +117,10 @@ if ($currentbln >= 1 && $currentbln <= 3 ) {
     $tw=null;
 }
 
-$tren1 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nilai_profil.total_nilai) AS tn1 from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28) AND user =3 AND periode = '$tw'"));
+$tren1 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT SUM(nilai_profil.total_nilai) AS tn1 from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = ? AND kantor_cabang IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28) AND user =3 AND periode = ?", [$currentYear, $tw]));
 
 $nilai_per = $tw - 1;
-$tren2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nilai_profil.total_nilai) AS tn2 from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = '$currentYear' AND kantor_cabang IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28) AND user =3 AND periode = '$nilai_per'"));
+$tren2 = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT SUM(nilai_profil.total_nilai) AS tn2 from frame_laporan_profil_risiko INNER JOIN nilai_profil ON frame_laporan_profil_risiko.id_profil_risiko = nilai_profil.id_profil_risiko WHERE  tahun = ? AND kantor_cabang IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28) AND user =3 AND periode = ?", [$currentYear, $nilai_per]));
 
 $tn1 = $tren1['tn1'] ?? null;
 $tn2 = $tren2['tn2'] ?? null;
@@ -131,15 +131,15 @@ $tr2 = $tn2/28;
 
 
 //tren per risiko
-$tren1_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode ='$periode'"));
+$tren1_kre = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode =?", [$tahun, $kode_kantor, $periode]));
 
 $nilai_per_kre = $periode - 1;
 if ($nilai_per_kre == 0) {
     $yy_kre = $tahun-1;
-    $tren2_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$yy_kre' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = 4"));
+    $tren2_kre = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = 4", [$yy_kre, $kode_kantor]));
     $tr2_kre = $tren2_kre['inheren_kredit'] ?? null;
 }  else {
-    $tren2_kre = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = '$nilai_per_kre'"));
+    $tren2_kre = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = ?", [$tahun, $kode_kantor, $nilai_per_kre]));
     $tr2_kre = $tren2_kre['inheren_kredit'] ?? null;
 }
 
@@ -148,74 +148,74 @@ $tr1_kre = $tren1_kre['inheren_kredit'] ?? null;
 
 
 
-$tren1_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode ='$periode'"));
+$tren1_op = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode =?", [$tahun, $kode_kantor, $periode]));
 
 $nilai_per_op = $periode - 1;
 if ($nilai_per_op == 0) {
     $yy_op = $tahun-1;
-    $tren2_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$yy_op' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = 4"));
+    $tren2_op = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = 4", [$yy_op, $kode_kantor]));
     $tr2_op = $tren2_op['inheren_operasional'] ?? null;
 }  else {
-    $tren2_op = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = '$nilai_per_op'"));
+    $tren2_op = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = ?", [$tahun, $kode_kantor, $nilai_per_op]));
     $tr2_op = $tren2_op['inheren_operasional'] ?? null;
 }
 $tr1_op = $tren1_op['inheren_operasional'] ?? null;
 
 
 
-$tren1_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode ='$periode'"));
+$tren1_kep = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode =?", [$tahun, $kode_kantor, $periode]));
 
 $nilai_per_kep = $periode - 1;
 if ($nilai_per_kep == 0) {
     $yy_kep = $tahun-1;
-    $tren2_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$yy_kep' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = 4"));
+    $tren2_kep = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = 4", [$yy_kep, $kode_kantor]));
     $tr2_kep = $tren2_kep['inheren_kepatuhan'] ?? null;
 }  else {
-    $tren2_kep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = '$nilai_per_kep'"));
+    $tren2_kep = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = ?", [$tahun, $kode_kantor, $nilai_per_kep]));
     $tr2_kep = $tren2_kep['inheren_kepatuhan'] ?? null;
 }
 $tr1_kep = $tren1_kep['inheren_kepatuhan'] ?? null;
 
 
 
-$tren1_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode ='$periode'"));
+$tren1_lik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode =?", [$tahun, $kode_kantor, $periode]));
 
 $nilai_per_lik = $periode - 1;
 if ($nilai_per_lik == 0) {
     $yy_lik = $tahun-1;
-    $tren2_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$yy_lik' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = 4"));
+    $tren2_lik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = 4", [$yy_lik, $kode_kantor]));
     $tr2_lik = $tren2_lik['inheren_likuiditas'] ?? null;
 }  else {
-    $tren2_lik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = '$nilai_per_lik'"));
+    $tren2_lik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = ?", [$tahun, $kode_kantor, $nilai_per_lik]));
     $tr2_lik = $tren2_lik['inheren_likuiditas'] ?? null;
 }
 $tr1_lik = $tren1_lik['inheren_likuiditas'] ?? null;
 
 
-$tren1_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode ='$periode'"));
+$tren1_rep = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode =?", [$tahun, $kode_kantor, $periode]));
 
 $nilai_per_rep = $periode - 1;
 if ($nilai_per_rep == 0) {
     $yy_rep = $tahun-1;
-    $tren2_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$yy_rep' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = 4"));
+    $tren2_rep = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = 4", [$yy_rep, $kode_kantor]));
     $tr2_rep = $tren2_rep['inheren_reputasi'] ?? null;
 }  else {
-    $tren2_rep = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = '$nilai_per_rep'"));
+    $tren2_rep = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = ?", [$tahun, $kode_kantor, $nilai_per_rep]));
     $tr2_rep = $tren2_rep['inheren_reputasi'] ?? null;
 }
 $tr1_rep = $tren1_rep['inheren_reputasi'] ?? null;
 
 
 
-$tren1_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode ='$periode'"));
+$tren1_stra = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode =?", [$tahun, $kode_kantor, $periode]));
 
 $nilai_per_stra = $periode - 1;
 if ($nilai_per_stra == 0) {
     $yy_stra = $tahun-1;
-    $tren2_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$yy_stra' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = 4"));
+    $tren2_stra = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = 4", [$yy_stra, $kode_kantor]));
     $tr2_stra = $tren2_stra['inheren_stratejik'] ?? null;
 }  else {
-    $tren2_stra = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND user =3 AND periode = '$nilai_per_stra'"));
+    $tren2_stra = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT * from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE  tahun = ? AND kantor_cabang = ? AND user =3 AND periode = ?", [$tahun, $kode_kantor, $nilai_per_stra]));
     $tr2_stra = $tren2_stra['inheren_stratejik'] ?? null;
 }
 $tr1_stra = $tren1_stra['inheren_stratejik'] ?? null;
@@ -224,71 +224,71 @@ $tr1_stra = $tren1_stra['inheren_stratejik'] ?? null;
 
 
 
-$ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id_pro'"));
-$ket2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = '$id_pro'"));
-$ket3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
-$ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$id_pro'"));
-$ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$id_pro'"));
-$ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = '$id_pro'"));
+$ket1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id_pro]));
+$ket2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = ?", [$id_pro]));
+$ket3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$id_pro]));
+$ket4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$id_pro]));
+$ket5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$id_pro]));
+$ket6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$id_pro]));
 
-$pembanding_ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = '$dp'"));
-
-
-$peringkat_ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id_pro'"));
-$peringkat_ket2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = '$id_pro'"));
-$peringkat_ket3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
-$peringkat_ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$id_pro'"));
-$peringkat_ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$id_pro'"));
-$peringkat_ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = '$id_pro'"));
-
-$inheren1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$id_pro'"));
-$inheren2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = '$id_pro'"));
-$inheren3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
-$inheren4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$id_pro'"));
-$inheren5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = '$id_pro'"));
-$inheren6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = '$id_pro'"));
-
-$kpmr1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = '$id_pro'"));
-$kpmr2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_operasional WHERE id_profil_risiko = '$id_pro'"));
-$kpmr3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
-$kpmr4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_likuiditas WHERE id_profil_risiko = '$id_pro'"));
-$kpmr5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = '$id_pro'"));
-$kpmr6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_stratejik WHERE id_profil_risiko = '$id_pro'"));
+$pembanding_ket1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$dp]));
 
 
-$peringkat_pembanding_ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$dp'"));
-$peringkat_pembanding_ket2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = '$dp'"));
-$peringkat_pembanding_ket3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '$dp'"));
-$peringkat_pembanding_ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$dp'"));
-$peringkat_pembanding_ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$dp'"));
-$peringkat_pembanding_ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = '$dp'"));
+$peringkat_ket1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id_pro]));
+$peringkat_ket2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = ?", [$id_pro]));
+$peringkat_ket3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$id_pro]));
+$peringkat_ket4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$id_pro]));
+$peringkat_ket5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$id_pro]));
+$peringkat_ket6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$id_pro]));
 
-$pembanding_inheren1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = '$dp'"));
+$inheren1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$id_pro]));
+$inheren2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = ?", [$id_pro]));
+$inheren3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = ?", [$id_pro]));
+$inheren4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = ?", [$id_pro]));
+$inheren5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = ?", [$id_pro]));
+$inheren6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = ?", [$id_pro]));
 
-$pembanding_kpmr1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = '$dp'"));
-$pembanding_kpmr2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_operasional WHERE id_profil_risiko = '$dp'"));
-$pembanding_kpmr3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kepatuhan WHERE id_profil_risiko = '$dp'"));
-$pembanding_kpmr4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_likuiditas WHERE id_profil_risiko = '$dp'"));
-$pembanding_kpmr5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = '$dp'"));
-$pembanding_kpmr6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_stratejik WHERE id_profil_risiko = '$dp'"));
+$kpmr1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = ?", [$id_pro]));
+$kpmr2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_operasional WHERE id_profil_risiko = ?", [$id_pro]));
+$kpmr3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kepatuhan WHERE id_profil_risiko = ?", [$id_pro]));
+$kpmr4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_likuiditas WHERE id_profil_risiko = ?", [$id_pro]));
+$kpmr5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = ?", [$id_pro]));
+$kpmr6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_stratejik WHERE id_profil_risiko = ?", [$id_pro]));
+
+
+$peringkat_pembanding_ket1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$dp]));
+$peringkat_pembanding_ket2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = ?", [$dp]));
+$peringkat_pembanding_ket3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
+$peringkat_pembanding_ket4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$dp]));
+$peringkat_pembanding_ket5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$dp]));
+$peringkat_pembanding_ket6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$dp]));
+
+$pembanding_inheren1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = ?", [$dp]));
+
+$pembanding_kpmr1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_kpmr2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_operasional WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_kpmr3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_kpmr4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_likuiditas WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_kpmr5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_kpmr6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_stratejik WHERE id_profil_risiko = ?", [$dp]));
 
 
 
 $get_data = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risiko) AS total FROM frame_laporan_profil_risiko WHERE user =3 AND status_korwil =1"));
 $get_data2 = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(id_profil_risiko) AS total FROM frame_laporan_profil_risiko WHERE user =3 AND status_korwil =1 AND status_skmr =1"));
 
-$ket_nilai = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = '$id_pro'"));
-$pembanding_ket_nilai = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = '$dp'"));
+$ket_nilai = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = ?", [$id_pro]));
+$pembanding_ket_nilai = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = ?", [$dp]));
 
 
 if (isset($_POST['submit'])) {
@@ -1114,7 +1114,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         <select class="form-select mb-3" name="kode_kantor" id="kode_kantor" required="">
                                                         <option value=" " selected> </option>
                                                             <?php
-                                                            include "../conn/conn.php";
+                                                            require dirname(__DIR__, 1).'/conn/conn.php';
                                                             $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang WHERE id_cabang IN(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28)");
                                                             while ($data = mysqli_fetch_array($query_cabang)) { ?>
                                                                 <option value="<?= $data['id_cabang'] ?? '' ?>" <?= $data['id_cabang'] == $kode_kantor ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>
@@ -1148,7 +1148,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                         <select class="form-select mb-3" name="periode" id="periode" required="">
                                                         <option value=" " selected> </option>
                                                                     <?php
-                                                                    include "../conn/conn.php";
+                                                                    require dirname(__DIR__, 1).'/conn/conn.php';
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
                                                                         <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
@@ -1354,7 +1354,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                                                                 <select class="form-select mb-3" name="kode_kantor_tren" id="kode_kantor_tren" required="">
                                                                                 <option value=" " selected> </option>
                                                                                     <?php
-                                                                                    include "../conn/conn.php";
+                                                                                    require dirname(__DIR__, 1).'/conn/conn.php';
                                                                                     $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang WHERE id_cabang IN(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28)");
                                                                                     while ($data = mysqli_fetch_array($query_cabang)) { ?>
                                                                                         <option value="<?= $data['id_cabang'] ?? '' ?>" <?= $data['id_cabang'] == $kode_kantor_tren ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>
@@ -1390,7 +1390,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         <select class="form-select mb-3" name="start_quarter" id="start_quarter">
                                         <option value=" " selected> </option>
                                                                                                 <?php
-                                                                                                include "../conn/conn.php";
+                                                                                                require dirname(__DIR__, 1).'/conn/conn.php';
                                                                                                 $query_start_quarter = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                                                 while ($data = mysqli_fetch_array($query_start_quarter)) { ?>
                                                                                                     <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $start_quarter ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
@@ -1426,7 +1426,7 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         <select class="form-select mb-1" name="end_quarter" id="end_quarter">
                                         <option value=" " selected> </option>
                                                                                                 <?php
-                                                                                                include "../conn/conn.php";
+                                                                                                require dirname(__DIR__, 1).'/conn/conn.php';
                                                                                                 $query_end_quarter = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                                                 while ($data = mysqli_fetch_array($query_end_quarter)) { ?>
                                                                                                     <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $end_quarter ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>
@@ -14197,19 +14197,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Kredit',
                                         data: [
                                                 <?php
-                                                $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
+                                                $triwulan1_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan1_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
-                                                $triwulan2_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
+                                                $triwulan2_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan2_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
-                                                $triwulan3_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
+                                                $triwulan3_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan3_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                  <?php
-                                                $triwulan4_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+                                                $triwulan4_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kredit.inheren_kredit AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kredit ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kredit.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan4_kredit['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
@@ -14226,19 +14226,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Operasional',
                                         data: [
                                                 <?php
-                                                $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
+                                                $triwulan1_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan1_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan2_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
+                                                $triwulan2_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan2_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                <?php
-                                                $triwulan3_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
+                                                $triwulan3_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan3_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan4_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+                                                $triwulan4_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_operasional.inheren_operasional AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_operasional ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_operasional.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan4_operasional['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                                 ],
@@ -14253,19 +14253,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Kepatuhan',
                                         data: [
                                             <?php
-                                                $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
+                                                $triwulan1_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan1_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan2_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
+                                                $triwulan2_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan2_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan3_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
+                                                $triwulan3_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan3_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan4_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+                                                $triwulan4_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_kepatuhan.inheren_kepatuhan AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_kepatuhan ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_kepatuhan.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan4_kepatuhan['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
@@ -14280,19 +14280,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Likuiditas',
                                         data: [
                                             <?php
-                                                $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
+                                                $triwulan1_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan1_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan2_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
+                                                $triwulan2_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan2_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan3_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
+                                                $triwulan3_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan3_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan4_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+                                                $triwulan4_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_likuiditas.inheren_likuiditas AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_likuiditas ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_likuiditas.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan4_likuiditas['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
@@ -14307,19 +14307,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Reputasi',
                                         data: [
                                             <?php
-                                                $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
+                                                $triwulan1_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan1_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan2_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
+                                                $triwulan2_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan2_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan3_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
+                                                $triwulan3_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan3_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan4_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+                                                $triwulan4_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_reputasi.inheren_reputasi AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_reputasi ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_reputasi.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan4_reputasi['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
@@ -14334,19 +14334,19 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Stratejik',
                                         data: [
                                                 <?php
-                                                $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 1"));
+                                                $triwulan1_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 1", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan1_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan2_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 2"));
+                                                $triwulan2_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 2", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan2_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan3_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 3"));
+                                                $triwulan3_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 3", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan3_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan4_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = '$tahun' AND kantor_cabang = '$kode_kantor' AND periode = 4"));
+                                                $triwulan4_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT keterangan_profil_stratejik.inheren_stratejik AS tingkat_risiko from frame_laporan_profil_risiko INNER JOIN keterangan_profil_stratejik ON frame_laporan_profil_risiko.id_profil_risiko = keterangan_profil_stratejik.id_profil_risiko WHERE tahun = ? AND kantor_cabang = ? AND periode = 4", [$tahun, $kode_kantor]));
                                                 echo json_encode($triwulan4_stratejik['tingkat_risiko'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
@@ -14399,27 +14399,27 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Periode Sebelumnya',
                                         data: [
                                                 <?php
-                                                $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  inheren_kredit from keterangan_profil_kredit WHERE id_profil_risiko = '$dp'"));
+                                                $triwulan1_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  inheren_kredit from keterangan_profil_kredit WHERE id_profil_risiko = ?", [$dp]));
                                                 echo json_encode($triwulan1_kredit['inheren_kredit'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_operasional from keterangan_profil_operasional WHERE id_profil_risiko = '$dp'"));
+                                                $triwulan1_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_operasional from keterangan_profil_operasional WHERE id_profil_risiko = ?", [$dp]));
                                                 echo json_encode($triwulan1_operasional['inheren_operasional'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_kepatuhan from keterangan_profil_kepatuhan WHERE id_profil_risiko = '$dp'"));
+                                                $triwulan1_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_kepatuhan from keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
                                                 echo json_encode($triwulan1_kepatuhan['inheren_kepatuhan'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_likuiditas from keterangan_profil_likuiditas WHERE id_profil_risiko = '$dp'"));
+                                                $triwulan1_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_likuiditas from keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$dp]));
                                                 echo json_encode($triwulan1_likuiditas['inheren_likuiditas'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_reputasi from keterangan_profil_reputasi WHERE id_profil_risiko = '$dp'"));
+                                                $triwulan1_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_reputasi from keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$dp]));
                                                 echo json_encode($triwulan1_reputasi['inheren_reputasi'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_stratejik from keterangan_profil_stratejik WHERE id_profil_risiko = '$dp'"));
+                                                $triwulan1_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_stratejik from keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$dp]));
                                                 echo json_encode($triwulan1_stratejik['inheren_stratejik'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],
@@ -14436,27 +14436,27 @@ $lik_p15d[] = $row2['lik_p15d'] ?? "-";
                                         label: 'Profil Risiko Saat Ini (yang dipilih)',
                                         data: [
                                                 <?php
-                                                $triwulan1_kredit = mysqli_fetch_assoc(mysqli_query($conn, "SELECT  inheren_kredit from keterangan_profil_kredit WHERE id_profil_risiko = '$id_pro'"));
+                                                $triwulan1_kredit = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT  inheren_kredit from keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id_pro]));
                                                 echo json_encode($triwulan1_kredit['inheren_kredit'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_operasional = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_operasional from keterangan_profil_operasional WHERE id_profil_risiko = '$id_pro'"));
+                                                $triwulan1_operasional = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_operasional from keterangan_profil_operasional WHERE id_profil_risiko = ?", [$id_pro]));
                                                 echo json_encode($triwulan1_operasional['inheren_operasional'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_kepatuhan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_kepatuhan from keterangan_profil_kepatuhan WHERE id_profil_risiko = '$id_pro'"));
+                                                $triwulan1_kepatuhan = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_kepatuhan from keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$id_pro]));
                                                 echo json_encode($triwulan1_kepatuhan['inheren_kepatuhan'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_likuiditas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_likuiditas from keterangan_profil_likuiditas WHERE id_profil_risiko = '$id_pro'"));
+                                                $triwulan1_likuiditas = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_likuiditas from keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$id_pro]));
                                                 echo json_encode($triwulan1_likuiditas['inheren_likuiditas'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_reputasi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_reputasi from keterangan_profil_reputasi WHERE id_profil_risiko = '$id_pro'"));
+                                                $triwulan1_reputasi = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_reputasi from keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$id_pro]));
                                                 echo json_encode($triwulan1_reputasi['inheren_reputasi'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>,
                                                 <?php
-                                                $triwulan1_stratejik = mysqli_fetch_assoc(mysqli_query($conn, "SELECT inheren_stratejik from keterangan_profil_stratejik WHERE id_profil_risiko = '$id_pro'"));
+                                                $triwulan1_stratejik = mysqli_fetch_assoc(simpro_db_query($conn, "SELECT inheren_stratejik from keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$id_pro]));
                                                 echo json_encode($triwulan1_stratejik['inheren_stratejik'] ?? null, JSON_NUMERIC_CHECK);
                                                 ?>
                                         ],

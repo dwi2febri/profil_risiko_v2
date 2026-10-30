@@ -49,7 +49,7 @@ if ($id <= 0) {
     master_upload_flash($uploadType, 0, false, 'ID laporan profil risiko tidak ditemukan.');
     master_upload_redirect($redirectPage, 0);
 }
-$frameCheck = mysqli_query($conn, "SELECT 1 FROM frame_laporan_profil_risiko WHERE id_profil_risiko='$id' LIMIT 1");
+$frameCheck = simpro_db_query($conn, "SELECT 1 FROM frame_laporan_profil_risiko WHERE id_profil_risiko=? LIMIT 1", [$id]);
 if (!$frameCheck || mysqli_num_rows($frameCheck) === 0) {
     master_upload_flash($uploadType, $id, false, 'Laporan profil risiko tidak ditemukan.');
     master_upload_redirect($redirectPage, $id);

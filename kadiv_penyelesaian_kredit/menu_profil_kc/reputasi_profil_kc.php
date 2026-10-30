@@ -49,24 +49,24 @@ include "../fungsi/fungsi.php";
 $id = $_GET['id'];
 
 
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $dp = $frame['data_pembanding'];
 
-$pembanding_inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = '$dp'"));
+$pembanding_inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = ?", [$dp]));
 
-$pembanding_kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = '$dp'"));
+$pembanding_kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = ?", [$dp]));
 
 $pem_i = $pembanding_inheren['hasil_peringkat'];
 $pem_k = $pembanding_kpmr['hasil_peringkat'];
 
 
-$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = '$id'"));
+$inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = ?", [$id]));
 
-$kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = '$id'"));
+$kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_reputasi WHERE id_profil_risiko = ?", [$id]));
 
-$ket = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$id'"));
+$ket = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$id]));
 
 $i = $inheren['hasil_peringkat'];
 $k =  $kpmr['hasil_peringkat'];
@@ -380,7 +380,7 @@ else {
 
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $inheren_reputasi = $inheren['hasil_tingkat_risiko'];
     $ket_profil_inheren = $_POST['ket_profil_inheren'];
     $tingkat_risiko = $tingkat_risiko;
@@ -389,13 +389,13 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE keterangan_profil_reputasi SET 
-    inheren_reputasi = '$inheren_reputasi',
-    tingkat_risiko = '$tingkat_risiko',
-    peringkat_tingkat_risiko = '$ket_tingkat_risiko',
-    tingkat_kualitas_mr = '$tingkat_kualitas_mr',
-    ket_profil_inheren = '$ket_profil_inheren'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE keterangan_profil_reputasi SET 
+    inheren_reputasi = ?,
+    tingkat_risiko = ?,
+    peringkat_tingkat_risiko = ?,
+    tingkat_kualitas_mr = ?,
+    ket_profil_inheren = ?
+    WHERE id_profil_risiko = ?", [$inheren_reputasi, $tingkat_risiko, $ket_tingkat_risiko, $tingkat_kualitas_mr, $ket_profil_inheren, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -411,8 +411,8 @@ if (isset($_POST['submit'])) {
 
 
 <?php
-    $length = mysqli_fetch_array(mysqli_query($conn, "SELECT 
-    CHAR_LENGTH(ket_profil_inheren) AS l1 FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$id'"));
+    $length = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
+    CHAR_LENGTH(ket_profil_inheren) AS l1 FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$id]));
 ?>
 <script>
         $(document).ready(function() {

@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $lokasi_kerja = $_POST['lokasi_kerja'];
     $tahun = $_POST['tahun'];
     $bulan = $_POST['bulan'];
@@ -11,15 +11,15 @@ if (isset($_POST['submit'])) {
 
     $dibuat_at = date('Y-m-d');
     $dibuat_by = $_SESSION['user_id'];
-    $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE kantor_cabang = '$lokasi_kerja' AND tahun = '$tahun' AND bulan = '$bulan' ");
+    $query = simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE kantor_cabang = ? AND tahun = ? AND bulan = ? ", [$lokasi_kerja, $tahun, $bulan]);
     $cek_user = mysqli_num_rows($query);
     if ($cek_user > 0) {
         echo '
         <script>$.NotificationApp.send("Gagal","Your awesome message text","Position","Background color","Icon")</script>
         ';
     } else {
-        mysqli_query($conn, "INSERT INTO frame_laporan_profil_risiko(id_profil_risiko,kantor_cabang,tahun,bulan,modal_inti,total_aset,keterangan,dibuat_at,dibuat_by)
-        VALUES ('0','$lokasi_kerja','$tahun','$bulan','$modal_inti','$total_aset','$keterangan','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO frame_laporan_profil_risiko(id_profil_risiko,kantor_cabang,tahun,bulan,modal_inti,total_aset,keterangan,dibuat_at,dibuat_by)
+        VALUES ('0',?,?,?,?,?,?,?,?)", [$lokasi_kerja, $tahun, $bulan, $modal_inti, $total_aset, $keterangan, $dibuat_at, $dibuat_by]);
         echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
         ';

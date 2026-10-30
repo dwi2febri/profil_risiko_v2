@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $username = $_POST['username'];
     $nama = $_POST['nama'];
     $gender = $_POST['gender'];
@@ -8,7 +8,7 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     $tipe = $_POST['tipe'];
     $lokasi_kerja = $_POST['lokasi_kerja'];
-    $query = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
+    $query = simpro_db_query($conn, "SELECT * FROM user WHERE username = ?", [$username]);
     $cek_user = mysqli_num_rows($query);
     if ($cek_user > 0) {
         echo '
@@ -29,8 +29,8 @@ if (isset($_POST['submit'])) {
         </script>
         ';
     } else {
-        mysqli_query($conn, "INSERT INTO user(user_id,username,password,nama,gender,jabatan,tipe,lokasi_kerja)
-        VALUES ('0','$username','$password','$nama','$gender','$jabatan','$tipe','$lokasi_kerja')");
+        simpro_db_query($conn, "INSERT INTO user(user_id,username,password,nama,gender,jabatan,tipe,lokasi_kerja)
+        VALUES ('0',?,?,?,?,?,?,?)", [$username, $password, $nama, $gender, $jabatan, $tipe, $lokasi_kerja]);
         echo '
         <script type="text/javascript">
         
@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $query = mysqli_query($conn, "SELECT * FROM user order by user_id desc");
                                             while ($data = mysqli_fetch_array($query)) { ?>
@@ -230,7 +230,7 @@ if (isset($_POST['submit'])) {
 
                                         <select class="form-select mb-3" name="lokasi_kerja" id="validationCustom07">
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang");
                                             while ($data = mysqli_fetch_array($query_cabang)) { ?>
                                                 <option value="<?= $data['id_cabang'] ?>"><?= ucwords($data['cabang']) ?></option>

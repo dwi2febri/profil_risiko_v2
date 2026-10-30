@@ -78,6 +78,34 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     await cmd('Emulation.setDeviceMetricsOverride', { width: 1800, height: 1150, deviceScaleFactor: 1, mobile: false });
     await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: artifacts });
 
+    if(process.argv.includes('--security')) {
+      const securityFetch=(url,options={})=>fetch(url,{...options,signal:AbortSignal.timeout(20000)});
+      const rootLegacy=await securityFetch(base+'index.php?alert=logout',{redirect:'manual'});assert.equal(rootLegacy.status,302);assert.equal(rootLegacy.headers.get('location'),'/profil_risiko_v2/?alert=logout');
+      const expired=await (await securityFetch(base+'login.php')).text();assert(!expired.includes('href="index.php"') && expired.includes('href="./"'),'Expired-login link exposes index.php');
+      for(const payload of ["' OR 1=1 -- ","admin' -- ","x'); SELECT SLEEP(2); --"]) {
+        const response=await securityFetch(base,{method:'POST',body:new URLSearchParams({username:payload,password:payload}),redirect:'manual'});
+        assert.equal(response.status,302);assert.equal(response.headers.get('location'),'/profil_risiko_v2/?alert=gagal','SQL payload bypassed login');
+      }
+      console.log('PASS root login redirects and SQL payloads');
+      const arrayLogin=await securityFetch(base,{method:'POST',body:new URLSearchParams({'username[]':'admin','password[]':'x'}),redirect:'manual'});assert.equal(arrayLogin.status,302);assert.equal(arrayLogin.headers.get('location'),'/profil_risiko_v2/?alert=gagal');
+      for(const page of ['kre_inhern','lik_inhern','edit_user']) {
+        for(const id of ["1' OR '1'='1",'1 OR 1=1','1 UNION SELECT 1']) {
+          const response=await securityFetch(base+'admin/'+page+'?'+new URLSearchParams({id}),{headers});assert.equal(response.status,400,page+' accepted SQL identifier payload');
+          const text=await response.text();assert(!/(mysqli|SELECT|SQLSTATE|Fatal error)/.test(text),'SQL detail leaked');
+        }
+      }
+      console.log('PASS authenticated record ID injection rejection');
+      const unauth=await securityFetch(base+'admin/user/delete_user.php?id=1',{redirect:'manual'});assert(unauth.status===302 || unauth.status===401 || unauth.status===500,'Unexpected endpoint status');
+      console.log('PASS unauthenticated direct endpoint protection');
+      await cmd('Page.navigate',{url:base+'admin/dashboard'});await waitFor(`document.readyState==='complete' && document.querySelector('.side-nav')`,30000);
+      const logout=await securityFetch(base+'admin/logout.php',{headers,redirect:'manual'});assert.equal(logout.status,302);assert.equal(logout.headers.get('location'),'/profil_risiko_v2/?alert=logout');
+      const after=await securityFetch(base+'admin/dashboard',{headers,redirect:'manual'});assert.equal(after.status,302,'Logout left session authenticated');
+      await cmd('Page.navigate',{url:base+'?alert=logout'});await waitFor(`document.readyState==='complete' && document.querySelector('#formLoginModern')`,20000);
+      assert(await evaluate(`!location.pathname.endsWith('index.php') && !location.search.includes('page=')`),'Login index.php visible after logout');
+      const shot=await cmd('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(artifacts,'login-clean-url.png'),Buffer.from(shot.data,'base64'));
+      console.log('PASS clean login/logout URLs, real authenticated session, session invalidation, injection login/identifier rejection and array-input handling');
+      await send('Browser.close');return;
+    }
     if(process.argv.includes('--routes')) {
       const go=async url=>{await cmd('Page.navigate',{url:base+url});await waitFor(`document.readyState==='complete' && !!document.querySelector('.side-nav')`,40000);};
       const old=await fetch(base+'admin/index.php?page=menulapawal&id=556&tab=final',{headers,redirect:'manual'});

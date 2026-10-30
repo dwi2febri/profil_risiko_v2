@@ -674,7 +674,7 @@ function delete_setting_with_children($conn, $setting_id)
         return false;
     }
 
-    $cek = mysqli_query($conn, "SELECT id FROM pr_inheren_periode WHERE id='$setting_id' LIMIT 1");
+    $cek = simpro_db_query($conn, "SELECT id FROM pr_inheren_periode WHERE id=? LIMIT 1", [$setting_id]);
     if (!$cek || mysqli_num_rows($cek) === 0) {
         return false;
     }

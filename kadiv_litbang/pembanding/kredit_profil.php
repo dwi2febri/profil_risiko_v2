@@ -47,39 +47,39 @@ include "../fungsi/fungsi.php";
 
 
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $dp = $frame['data_pembanding'];
 $jenis_pr = $frame['user'];
 $tahun = $frame['tahun'];
 $periode = $frame['periode'];
 
-$pembanding_inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_inheren_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode'"));
+$pembanding_inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_inheren_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ?", [$tahun, $periode]));
 
-$pembanding_kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_kpmr_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode'"));
+$pembanding_kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_kpmr_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ?", [$tahun, $periode]));
 
 $pem_i = $pembanding_inheren['hasil_peringkat'];
 $pem_k = $pembanding_kpmr['hasil_peringkat'];
 
-$pembanding_div_inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_inheren_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
+$pembanding_div_inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_inheren_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
 
-$pembanding_div_kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_kpmr_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND frame_laporan_profil_risiko.dibuat_by = 132"));
+$pembanding_div_kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit INNER JOIN frame_laporan_profil_risiko ON hasil_kpmr_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND frame_laporan_profil_risiko.dibuat_by = 132", [$tahun, $periode]));
 
 $pem_div_i = $pembanding_div_inheren['hasil_peringkat'];
 $pem_div_k = $pembanding_div_kpmr['hasil_peringkat'];
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
-$pil2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
-$pil3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
-$pil4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM kpmr_kredit_pilar4 WHERE id_profil_risiko = '$id'"));
-$kpmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$pil2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$pil3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
+$pil4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM kpmr_kredit_pilar4 WHERE id_profil_risiko = ?", [$id]));
+$kpmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_kpmr_kredit WHERE id_profil_risiko = ?", [$id]));
 
-$inheren = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$id'"));
+$inheren = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
 
-$ket = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id'"));
-$ket_skmr = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit INNER JOIN frame_laporan_profil_risiko ON keterangan_profil_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = '$tahun' AND periode = '$periode'"));
-$ket_div = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit INNER JOIN frame_laporan_profil_risiko ON keterangan_profil_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = '$tahun' AND periode = '$periode' AND dibuat_by = 132"));
+$ket = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id]));
+$ket_skmr = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit INNER JOIN frame_laporan_profil_risiko ON keterangan_profil_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=1 AND tahun = ? AND periode = ?", [$tahun, $periode]));
+$ket_div = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit INNER JOIN frame_laporan_profil_risiko ON keterangan_profil_kredit.id_profil_risiko = frame_laporan_profil_risiko.id_profil_risiko WHERE user=2 AND tahun = ? AND periode = ? AND dibuat_by = 132", [$tahun, $periode]));
 
 $i = $inheren['hasil_peringkat'];
 $k =  $kpmr['hasil_peringkat'];
@@ -394,7 +394,7 @@ else {
 
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
 
 
@@ -409,16 +409,16 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE keterangan_profil_kredit SET 
-    inheren_kredit = '$inheren_kredit',
-    kpmr_kredit = '$kpmr_kredit',
-    tingkat_risiko = '$tingkat_risiko',
-    peringkat_tingkat_risiko = '$ket_tingkat_risiko',
-    tingkat_kualitas_mr = '$tingkat_kualitas_mr',
-    ket_profil_risiko = '$ket_profil_risiko',
-    ket_profil_inheren = '$ket_profil_inheren',
-    ket_profil_kpmr = '$ket_profil_kpmr'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE keterangan_profil_kredit SET 
+    inheren_kredit = ?,
+    kpmr_kredit = ?,
+    tingkat_risiko = ?,
+    peringkat_tingkat_risiko = ?,
+    tingkat_kualitas_mr = ?,
+    ket_profil_risiko = ?,
+    ket_profil_inheren = ?,
+    ket_profil_kpmr = ?
+    WHERE id_profil_risiko = ?", [$inheren_kredit, $kpmr_kredit, $tingkat_risiko, $ket_tingkat_risiko, $tingkat_kualitas_mr, $ket_profil_risiko, $ket_profil_inheren, $ket_profil_kpmr, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

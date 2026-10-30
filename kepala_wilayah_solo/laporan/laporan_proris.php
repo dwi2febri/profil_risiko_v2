@@ -57,7 +57,7 @@ include "../fungsi/fungsi.php";
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
                                             $query = mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 

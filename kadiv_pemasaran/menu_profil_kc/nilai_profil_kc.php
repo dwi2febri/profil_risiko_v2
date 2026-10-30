@@ -46,42 +46,42 @@ include "../fungsi/fungsi.php";
 
 
 $id = $_GET['id'];
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $dp = $frame['data_pembanding'];
 
 
 
-$ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$id'"));
-$ket2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = '$id'"));
-$ket3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '$id'"));
-$ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$id'"));
-$ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$id'"));
-$ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = '$id'"));
+$ket1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$id]));
+$ket2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = ?", [$id]));
+$ket3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$id]));
+$ket4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$id]));
+$ket5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$id]));
+$ket6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$id]));
 
-$inheren1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$id'"));
-$inheren2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = '$id'"));
-$inheren3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = '$id'"));
-$inheren4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$id'"));
-$inheren5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = '$id'"));
-$inheren6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = '$id'"));
+$inheren1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$id]));
+$inheren2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = ?", [$id]));
+$inheren3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = ?", [$id]));
+$inheren4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = ?", [$id]));
+$inheren5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = ?", [$id]));
+$inheren6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = ?", [$id]));
 
-$pembanding_inheren1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = '$dp'"));
-$pembanding_inheren6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = '$dp'"));
+$pembanding_inheren1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kredit WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_operasional WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_reputasi WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_inheren6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM hasil_inheren_stratejik WHERE id_profil_risiko = ?", [$dp]));
 
-$pembanding_ket1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket4 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket5 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = '$dp'"));
-$pembanding_ket6 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = '$dp'"));
+$pembanding_ket1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kredit WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_operasional WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_kepatuhan WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket4 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket5 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_reputasi WHERE id_profil_risiko = ?", [$dp]));
+$pembanding_ket6 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM keterangan_profil_stratejik WHERE id_profil_risiko = ?", [$dp]));
 
-$ket = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = '$id'"));
+$ket = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM nilai_profil WHERE id_profil_risiko = ?", [$id]));
 
 
 
@@ -315,7 +315,7 @@ if ($pembanding_total_nilai < 1.00) {
 
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $total_nilai = $total_nilai;
     $ket_total_nilai = $ket_total_nilai;
     $ket_nilai_risiko = $_POST['ket_nilai_risiko'];
@@ -323,11 +323,11 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE nilai_profil SET 
-    total_nilai = '$total_nilai',
-    ket_total_nilai = '$ket_total_nilai',
-    ket_nilai_risiko = '$ket_nilai_risiko'
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE nilai_profil SET 
+    total_nilai = ?,
+    ket_total_nilai = ?,
+    ket_nilai_risiko = ?
+    WHERE id_profil_risiko = ?", [$total_nilai, $ket_total_nilai, $ket_nilai_risiko, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -344,8 +344,8 @@ if (isset($_POST['submit'])) {
 
 
 <?php
-    $length = mysqli_fetch_array(mysqli_query($conn, "SELECT 
-    CHAR_LENGTH(ket_nilai_risiko) AS l1 FROM nilai_profil WHERE id_profil_risiko = '$id'"));
+    $length = mysqli_fetch_array(simpro_db_query($conn, "SELECT 
+    CHAR_LENGTH(ket_nilai_risiko) AS l1 FROM nilai_profil WHERE id_profil_risiko = ?", [$id]));
 ?>
 <script>
         $(document).ready(function() {

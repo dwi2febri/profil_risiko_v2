@@ -1,3 +1,3 @@
 
 <?php
-$conn = mysqli_connect("localhost", "root", "", "profil_risiko");
+require dirname(__DIR__, 2).'/conn/conn.php';

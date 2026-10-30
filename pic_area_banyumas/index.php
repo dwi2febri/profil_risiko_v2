@@ -19,13 +19,13 @@ if ($cek != "pic banyumas") {
 ?>
 
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 1).'/conn/conn.php';
 $user_id = $_SESSION['user_id'];
-$data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM user WHERE user_id = '$user_id'"));
+$data_user = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM user WHERE user_id = ?", [$user_id]));
 
 
 $id = $_GET['id'];
-$get_data = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+$get_data = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ?", [$id]));
 
 date_default_timezone_set('Asia/Jakarta');
 ?>

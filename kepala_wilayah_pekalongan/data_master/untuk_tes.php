@@ -4,16 +4,16 @@ include "../fungsi/fungsi.php";
 
 $id = $_GET['id'];
 
-$frame_laporan_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = '$id'"));
+$frame_laporan_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko = ?", [$id]));
 
 $tahun = $frame_laporan_kredit['tahun'];
 
-$master_kredit_P1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = '$id'"));
-$master_kredit_P2 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar2 WHERE id_profil_risiko = '$id'"));
-$master_kredit_P3 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
+$master_kredit_P1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar1 WHERE id_profil_risiko = ?", [$id]));
+$master_kredit_P2 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar2 WHERE id_profil_risiko = ?", [$id]));
+$master_kredit_P3 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
 
-$ambang_batas_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = '$tahun'"));
-$bobot_kredit = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = '$id'"));
+$ambang_batas_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM ambang_batas_kredit WHERE tahun = ?", [$tahun]));
+$bobot_kredit = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_kredit_pilar3 WHERE id_profil_risiko = ?", [$id]));
 
 
 
@@ -82,7 +82,7 @@ $p4 = round(($kredit_3sektor_ekonomi_terbesar * 100) / $kyd, 2);
 
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
 
 
@@ -98,18 +98,18 @@ if (isset($_POST['submit'])) {
 
 
 
-    mysqli_query($conn, "UPDATE master_kredit_pilar1 SET 
+    simpro_db_query($conn, "UPDATE master_kredit_pilar1 SET 
    
-    WHERE id_profil_risiko = '$id'");
+    WHERE id_profil_risiko = ?", [$id]);
 
 
 
-    mysqli_query($conn, "UPDATE master_kredit_pilar2 SET 
-    WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE master_kredit_pilar2 SET 
+    WHERE id_profil_risiko = ?", [$id]);
 
 
-    mysqli_query($conn, "UPDATE master_kredit_pilar3 SET 
-   WHERE id_profil_risiko = '$id'");
+    simpro_db_query($conn, "UPDATE master_kredit_pilar3 SET 
+   WHERE id_profil_risiko = ?", [$id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

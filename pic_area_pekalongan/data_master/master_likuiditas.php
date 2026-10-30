@@ -110,18 +110,18 @@ window.onclick = null;
 </div>
 
 <?php
-$frame = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
+$frame = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM frame_laporan_profil_risiko 
 INNER JOIN periode_laporan_profil_risiko ON frame_laporan_profil_risiko.periode = periode_laporan_profil_risiko.id_periode
-INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = '$id'"));
+INNER JOIN jenis_cabang ON frame_laporan_profil_risiko.kantor_cabang = jenis_cabang.id_cabang WHERE id_profil_risiko = ?", [$id]));
 $jenis_pr = $frame['user'];
 $tahun = $frame['tahun'];
 $periode = $frame['periode'];
 $dp = $frame['data_pembanding'];
 
-$pil1 = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = '$id'"));
+$pil1 = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM master_likuiditas_pilar1 WHERE id_profil_risiko = ?", [$id]));
 if (isset($_POST['submit']) || (isset($_POST['autosave']) && $_POST['autosave'] === '1')) {
     $is_autosave = (isset($_POST['autosave']) && $_POST['autosave'] === '1');
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
     $num = function($key){
         $v = isset($_POST[$key]) ? (string)$_POST[$key] : '0';

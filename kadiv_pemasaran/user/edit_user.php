@@ -1,7 +1,7 @@
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 $id = $_GET['id'];
-$call_data = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM user WHERE user_id = '$id'"));
+$call_data = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM user WHERE user_id = ?", [$id]));
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $nama = $_POST['nama'];
@@ -10,7 +10,7 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     $tipe = $_POST['tipe'];
     $lokasi_kerja = $_POST['lokasi_kerja'];
-    $query = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
+    $query = simpro_db_query($conn, "SELECT * FROM user WHERE username = ?", [$username]);
     $cek_user = mysqli_num_rows($query);
     if ($cek_user > 0) {
         echo '
@@ -31,8 +31,8 @@ if (isset($_POST['submit'])) {
             </script>
             ';
     } else {
-        mysqli_query($conn, "UPDATE user SET username='$username',nama='$nama',gender='$gender',jabatan='$jabatan',
-        password='$password',tipe='$tipe',lokasi_kerja='$lokasi_kerja' WHERE user_id = '$id'");
+        simpro_db_query($conn, "UPDATE user SET username=?,nama=?,gender=?,jabatan=?,
+        password=?,tipe=?,lokasi_kerja=? WHERE user_id = ?", [$username, $nama, $gender, $jabatan, $password, $tipe, $lokasi_kerja, $id]);
         header("Location: index.php?page=list_user");
         exit();
     }
@@ -112,7 +112,7 @@ if (isset($_POST['submit'])) {
 
                                         <select class="form-select mb-3" name="lokasi_kerja" id="validationCustom07">
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $query_cabang = mysqli_query($conn, "SELECT * FROM jenis_cabang");
                                             while ($data = mysqli_fetch_array($query_cabang)) { ?>
                                                 <option value="<?= $data['id_cabang'] ?>" <?= $data['id_cabang'] == $call_data['lokasi_kerja'] ? ' selected' : '' ?>><?= ucwords($data['cabang']) ?></option>

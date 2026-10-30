@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 include "../fungsi/fungsi.php";
 
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
@@ -1886,9 +1886,9 @@ function lik_table_exists($conn, $table){
 function lik_ensure_ket_row($conn, $id){
     $id = (int)$id;
     if ($id <= 0) return;
-    $cek = mysqli_query($conn, "SELECT id_profil_risiko FROM keterangan_profil_likuiditas WHERE id_profil_risiko = '$id' LIMIT 1");
+    $cek = simpro_db_query($conn, "SELECT id_profil_risiko FROM keterangan_profil_likuiditas WHERE id_profil_risiko = ? LIMIT 1", [$id]);
     if (!$cek || mysqli_num_rows($cek) == 0) {
-        mysqli_query($conn, "INSERT INTO keterangan_profil_likuiditas (id_profil_risiko) VALUES ('$id')");
+        simpro_db_query($conn, "INSERT INTO keterangan_profil_likuiditas (id_profil_risiko) VALUES (?)", [$id]);
     }
 }
 

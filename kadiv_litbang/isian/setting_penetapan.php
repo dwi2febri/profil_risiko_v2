@@ -4,26 +4,26 @@ include "../fungsi/fungsi.php";
 
 $id = $_GET['id'];
 
-$inheren_kre = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_kredit WHERE id_frame_setris_ditetapkan = '$id'"));
-$kpmr_kre = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_kpmr_kredit WHERE id_frame_setris_ditetapkan = '$id'"));
+$inheren_kre = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_kredit WHERE id_frame_setris_ditetapkan = ?", [$id]));
+$kpmr_kre = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_kpmr_kredit WHERE id_frame_setris_ditetapkan = ?", [$id]));
 
-$inheren_op = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_operasional WHERE id_frame_setris_ditetapkan = '$id'"));
-$kpmr_op = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_kpmr_operasional WHERE id_frame_setris_ditetapkan = '$id'"));
+$inheren_op = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_operasional WHERE id_frame_setris_ditetapkan = ?", [$id]));
+$kpmr_op = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_kpmr_operasional WHERE id_frame_setris_ditetapkan = ?", [$id]));
 
-$inheren_kep = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_kepatuhan WHERE id_frame_setris_ditetapkan = '$id'"));
-$kpmr_kep = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_kpmr_kepatuhan WHERE id_frame_setris_ditetapkan = '$id'"));
+$inheren_kep = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_kepatuhan WHERE id_frame_setris_ditetapkan = ?", [$id]));
+$kpmr_kep = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_kpmr_kepatuhan WHERE id_frame_setris_ditetapkan = ?", [$id]));
 
-$inheren_lik = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE id_frame_setris_ditetapkan = '$id'"));
-$kpmr_lik = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_kpmr_likuiditas WHERE id_frame_setris_ditetapkan = '$id'"));
+$inheren_lik = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_likuiditas WHERE id_frame_setris_ditetapkan = ?", [$id]));
+$kpmr_lik = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_kpmr_likuiditas WHERE id_frame_setris_ditetapkan = ?", [$id]));
 
-$inheren_rep = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_reputasi WHERE id_frame_setris_ditetapkan = '$id'"));
-$kpmr_rep = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_kpmr_reputasi WHERE id_frame_setris_ditetapkan = '$id'"));
+$inheren_rep = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_reputasi WHERE id_frame_setris_ditetapkan = ?", [$id]));
+$kpmr_rep = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_kpmr_reputasi WHERE id_frame_setris_ditetapkan = ?", [$id]));
 
-$inheren_stra = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_inheren_stratejik WHERE id_frame_setris_ditetapkan = '$id'"));
-$kpmr_stra = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM setting_risiko_kpmr_stratejik WHERE id_frame_setris_ditetapkan = '$id'"));
+$inheren_stra = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_inheren_stratejik WHERE id_frame_setris_ditetapkan = ?", [$id]));
+$kpmr_stra = mysqli_fetch_array(simpro_db_query($conn, "SELECT * FROM setting_risiko_kpmr_stratejik WHERE id_frame_setris_ditetapkan = ?", [$id]));
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
 
     //kredit
     $inheren_kre_set_pil1 = $_POST['inheren_kre_set_pil1'];
@@ -125,132 +125,132 @@ if (isset($_POST['submit'])) {
 
 
     //sql kre
-    mysqli_query($conn, "UPDATE setting_risiko_inheren_kredit SET 
-    inheren_kre_set_pil1 = '$inheren_kre_set_pil1',
-    inheren_kre_set_pil2 = '$inheren_kre_set_pil2',
-    inheren_kre_set_pil3 = '$inheren_kre_set_pil3',
-    inheren_kre_set_tingkat_risiko = '$inheren_kre_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_inheren_kredit SET 
+    inheren_kre_set_pil1 = ?,
+    inheren_kre_set_pil2 = ?,
+    inheren_kre_set_pil3 = ?,
+    inheren_kre_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$inheren_kre_set_pil1, $inheren_kre_set_pil2, $inheren_kre_set_pil3, $inheren_kre_set_tingkat_risiko, $id]);
 
 
-    mysqli_query($conn, "UPDATE setting_risiko_kpmr_kredit SET 
-    kpmr_kre_set_pil1 = '$kpmr_kre_set_pil1',
-    kpmr_kre_set_pil2 = '$kpmr_kre_set_pil2',
-    kpmr_kre_set_pil3 = '$kpmr_kre_set_pil3',
-    kpmr_kre_set_pil4 = '$kpmr_kre_set_pil4',
-    kpmr_kre_set_tingkat_risiko = '$kpmr_kre_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_kpmr_kredit SET 
+    kpmr_kre_set_pil1 = ?,
+    kpmr_kre_set_pil2 = ?,
+    kpmr_kre_set_pil3 = ?,
+    kpmr_kre_set_pil4 = ?,
+    kpmr_kre_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$kpmr_kre_set_pil1, $kpmr_kre_set_pil2, $kpmr_kre_set_pil3, $kpmr_kre_set_pil4, $kpmr_kre_set_tingkat_risiko, $id]);
 
 
     //sql op
-    mysqli_query($conn, "UPDATE setting_risiko_inheren_operasional SET 
-    inheren_op_set_pil1_par2 = '$inheren_op_set_pil1_par2',
-    inheren_op_set_pil1_par3 = '$inheren_op_set_pil1_par3',
-    inheren_op_set_pil1_par4 = '$inheren_op_set_pil1_par4',
-    inheren_op_set_pil1 = '$inheren_op_set_pil1',
-    inheren_op_set_pil2_par1 = '$inheren_op_set_pil2_par1',
-    inheren_op_set_pil2 = '$inheren_op_set_pil2',
-    inheren_op_set_pil3_par1 = '$inheren_op_set_pil3_par1',
-    inheren_op_set_pil4_par1 = '$inheren_op_set_pil4_par1',
-    inheren_op_set_pil5_par1 = '$inheren_op_set_pil5_par1',
-    inheren_op_set_pil6_par1 = '$inheren_op_set_pil6_par1',
-    inheren_op_set_tingkat_risiko = '$inheren_op_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_inheren_operasional SET 
+    inheren_op_set_pil1_par2 = ?,
+    inheren_op_set_pil1_par3 = ?,
+    inheren_op_set_pil1_par4 = ?,
+    inheren_op_set_pil1 = ?,
+    inheren_op_set_pil2_par1 = ?,
+    inheren_op_set_pil2 = ?,
+    inheren_op_set_pil3_par1 = ?,
+    inheren_op_set_pil4_par1 = ?,
+    inheren_op_set_pil5_par1 = ?,
+    inheren_op_set_pil6_par1 = ?,
+    inheren_op_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$inheren_op_set_pil1_par2, $inheren_op_set_pil1_par3, $inheren_op_set_pil1_par4, $inheren_op_set_pil1, $inheren_op_set_pil2_par1, $inheren_op_set_pil2, $inheren_op_set_pil3_par1, $inheren_op_set_pil4_par1, $inheren_op_set_pil5_par1, $inheren_op_set_pil6_par1, $inheren_op_set_tingkat_risiko, $id]);
 
 
-    mysqli_query($conn, "UPDATE setting_risiko_kpmr_operasional SET 
-    kpmr_op_set_pil1 = '$kpmr_op_set_pil1',
-    kpmr_op_set_pil2 = '$kpmr_op_set_pil2',
-    kpmr_op_set_pil3 = '$kpmr_op_set_pil3',
-    kpmr_op_set_pil4 = '$kpmr_op_set_pil4',
-    kpmr_op_set_tingkat_risiko = '$kpmr_op_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_kpmr_operasional SET 
+    kpmr_op_set_pil1 = ?,
+    kpmr_op_set_pil2 = ?,
+    kpmr_op_set_pil3 = ?,
+    kpmr_op_set_pil4 = ?,
+    kpmr_op_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$kpmr_op_set_pil1, $kpmr_op_set_pil2, $kpmr_op_set_pil3, $kpmr_op_set_pil4, $kpmr_op_set_tingkat_risiko, $id]);
 
 
     //sql kep
-    mysqli_query($conn, "UPDATE setting_risiko_inheren_kepatuhan SET 
-    inheren_kep_set_pil1_par1 = '$inheren_kep_set_pil1_par1',
-    inheren_kep_set_pil1_par2 = '$inheren_kep_set_pil1_par2',
-    inheren_kep_set_pil1 = '$inheren_kep_set_pil1',
-    inheren_kep_set_pil2_par1 = '$inheren_kep_set_pil2_par1',
-    inheren_kep_set_pil2_par2 = '$inheren_kep_set_pil2_par2',
-    inheren_kep_set_pil2_par3 = '$inheren_kep_set_pil2_par3',
-    inheren_kep_set_pil2 = '$inheren_kep_set_pil2',
-    inheren_kep_set_pil3_par1 = '$inheren_kep_set_pil3_par1',
-    inheren_kep_set_tingkat_risiko = '$inheren_kep_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_inheren_kepatuhan SET 
+    inheren_kep_set_pil1_par1 = ?,
+    inheren_kep_set_pil1_par2 = ?,
+    inheren_kep_set_pil1 = ?,
+    inheren_kep_set_pil2_par1 = ?,
+    inheren_kep_set_pil2_par2 = ?,
+    inheren_kep_set_pil2_par3 = ?,
+    inheren_kep_set_pil2 = ?,
+    inheren_kep_set_pil3_par1 = ?,
+    inheren_kep_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$inheren_kep_set_pil1_par1, $inheren_kep_set_pil1_par2, $inheren_kep_set_pil1, $inheren_kep_set_pil2_par1, $inheren_kep_set_pil2_par2, $inheren_kep_set_pil2_par3, $inheren_kep_set_pil2, $inheren_kep_set_pil3_par1, $inheren_kep_set_tingkat_risiko, $id]);
 
 
-    mysqli_query($conn, "UPDATE setting_risiko_kpmr_kepatuhan SET 
-    kpmr_kep_set_pil1 = '$kpmr_kep_set_pil1',
-    kpmr_kep_set_pil2 = '$kpmr_kep_set_pil2',
-    kpmr_kep_set_pil3 = '$kpmr_kep_set_pil3',
-    kpmr_kep_set_pil4 = '$kpmr_kep_set_pil4',
-    kpmr_kep_set_tingkat_risiko = '$kpmr_kep_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_kpmr_kepatuhan SET 
+    kpmr_kep_set_pil1 = ?,
+    kpmr_kep_set_pil2 = ?,
+    kpmr_kep_set_pil3 = ?,
+    kpmr_kep_set_pil4 = ?,
+    kpmr_kep_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$kpmr_kep_set_pil1, $kpmr_kep_set_pil2, $kpmr_kep_set_pil3, $kpmr_kep_set_pil4, $kpmr_kep_set_tingkat_risiko, $id]);
 
     //sql lik
-    mysqli_query($conn, "UPDATE setting_risiko_inheren_likuiditas SET 
-    inheren_lik_set_pil1 = '$inheren_lik_set_pil1',
-    inheren_lik_set_pil2 = '$inheren_lik_set_pil2',
-    inheren_lik_set_pil3 = '$inheren_lik_set_pil3',
-    inheren_lik_set_tingkat_risiko = '$inheren_lik_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_inheren_likuiditas SET 
+    inheren_lik_set_pil1 = ?,
+    inheren_lik_set_pil2 = ?,
+    inheren_lik_set_pil3 = ?,
+    inheren_lik_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$inheren_lik_set_pil1, $inheren_lik_set_pil2, $inheren_lik_set_pil3, $inheren_lik_set_tingkat_risiko, $id]);
 
 
-    mysqli_query($conn, "UPDATE setting_risiko_kpmr_likuiditas SET 
-    kpmr_lik_set_pil1 = '$kpmr_lik_set_pil1',
-    kpmr_lik_set_pil2 = '$kpmr_lik_set_pil2',
-    kpmr_lik_set_pil3 = '$kpmr_lik_set_pil3',
-    kpmr_lik_set_pil4 = '$kpmr_lik_set_pil4',
-    kpmr_lik_set_tingkat_risiko = '$kpmr_lik_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_kpmr_likuiditas SET 
+    kpmr_lik_set_pil1 = ?,
+    kpmr_lik_set_pil2 = ?,
+    kpmr_lik_set_pil3 = ?,
+    kpmr_lik_set_pil4 = ?,
+    kpmr_lik_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$kpmr_lik_set_pil1, $kpmr_lik_set_pil2, $kpmr_lik_set_pil3, $kpmr_lik_set_pil4, $kpmr_lik_set_tingkat_risiko, $id]);
 
     //sql rep
-    mysqli_query($conn, "UPDATE setting_risiko_inheren_reputasi SET 
-    inheren_rep_set_pil1_par1 = '$inheren_rep_set_pil1_par1',
-    inheren_rep_set_pil1_par2 = '$inheren_rep_set_pil1_par2',
-    inheren_rep_set_pil1 = '$inheren_rep_set_pil1',
-    inheren_rep_set_pil2_par1 = '$inheren_rep_set_pil2_par1',
-    inheren_rep_set_pil2_par2 = '$inheren_rep_set_pil2_par2',
-    inheren_rep_set_pil2 = '$inheren_rep_set_pil2',
-    inheren_rep_set_pil3_par1 = '$inheren_rep_set_pil3_par1',
-    inheren_rep_set_pil3_par2 = '$inheren_rep_set_pil3_par2',
-    inheren_rep_set_pil3 = '$inheren_rep_set_pil3',
-    inheren_rep_set_pil4_par1 = '$inheren_rep_set_pil4_par1',
-    inheren_rep_set_tingkat_risiko = '$inheren_rep_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_inheren_reputasi SET 
+    inheren_rep_set_pil1_par1 = ?,
+    inheren_rep_set_pil1_par2 = ?,
+    inheren_rep_set_pil1 = ?,
+    inheren_rep_set_pil2_par1 = ?,
+    inheren_rep_set_pil2_par2 = ?,
+    inheren_rep_set_pil2 = ?,
+    inheren_rep_set_pil3_par1 = ?,
+    inheren_rep_set_pil3_par2 = ?,
+    inheren_rep_set_pil3 = ?,
+    inheren_rep_set_pil4_par1 = ?,
+    inheren_rep_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$inheren_rep_set_pil1_par1, $inheren_rep_set_pil1_par2, $inheren_rep_set_pil1, $inheren_rep_set_pil2_par1, $inheren_rep_set_pil2_par2, $inheren_rep_set_pil2, $inheren_rep_set_pil3_par1, $inheren_rep_set_pil3_par2, $inheren_rep_set_pil3, $inheren_rep_set_pil4_par1, $inheren_rep_set_tingkat_risiko, $id]);
 
 
-    mysqli_query($conn, "UPDATE setting_risiko_kpmr_reputasi SET 
-    kpmr_rep_set_pil1 = '$kpmr_rep_set_pil1',
-    kpmr_rep_set_pil2 = '$kpmr_rep_set_pil2',
-    kpmr_rep_set_pil3 = '$kpmr_rep_set_pil3',
-    kpmr_rep_set_pil4 = '$kpmr_rep_set_pil4',
-    kpmr_rep_set_tingkat_risiko = '$kpmr_rep_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_kpmr_reputasi SET 
+    kpmr_rep_set_pil1 = ?,
+    kpmr_rep_set_pil2 = ?,
+    kpmr_rep_set_pil3 = ?,
+    kpmr_rep_set_pil4 = ?,
+    kpmr_rep_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$kpmr_rep_set_pil1, $kpmr_rep_set_pil2, $kpmr_rep_set_pil3, $kpmr_rep_set_pil4, $kpmr_rep_set_tingkat_risiko, $id]);
 
     //sql stra
-    mysqli_query($conn, "UPDATE setting_risiko_inheren_stratejik SET 
-    inheren_stra_set_pil1_par1 = '$inheren_stra_set_pil1_par1',
-    inheren_stra_set_pil2_par1 = '$inheren_stra_set_pil2_par1',
-    inheren_stra_set_pil2_par2 = '$inheren_stra_set_pil2_par2',
-    inheren_stra_set_pil2 = '$inheren_stra_set_pil2',
-    inheren_stra_set_pil3_par1 = '$inheren_stra_set_pil3_par1',
-    inheren_stra_set_pil3_par2 = '$inheren_stra_set_pil3_par2',
-    inheren_stra_set_pil3 = '$inheren_stra_set_pil3',
-    inheren_stra_set_pil4_par1 = '$inheren_stra_set_pil4_par1',
-    inheren_stra_set_tingkat_risiko = '$inheren_stra_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_inheren_stratejik SET 
+    inheren_stra_set_pil1_par1 = ?,
+    inheren_stra_set_pil2_par1 = ?,
+    inheren_stra_set_pil2_par2 = ?,
+    inheren_stra_set_pil2 = ?,
+    inheren_stra_set_pil3_par1 = ?,
+    inheren_stra_set_pil3_par2 = ?,
+    inheren_stra_set_pil3 = ?,
+    inheren_stra_set_pil4_par1 = ?,
+    inheren_stra_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$inheren_stra_set_pil1_par1, $inheren_stra_set_pil2_par1, $inheren_stra_set_pil2_par2, $inheren_stra_set_pil2, $inheren_stra_set_pil3_par1, $inheren_stra_set_pil3_par2, $inheren_stra_set_pil3, $inheren_stra_set_pil4_par1, $inheren_stra_set_tingkat_risiko, $id]);
 
 
-    mysqli_query($conn, "UPDATE setting_risiko_kpmr_stratejik SET 
-    kpmr_stra_set_pil1 = '$kpmr_stra_set_pil1',
-    kpmr_stra_set_pil2 = '$kpmr_stra_set_pil2',
-    kpmr_stra_set_pil3 = '$kpmr_stra_set_pil3',
-    kpmr_stra_set_pil4 = '$kpmr_stra_set_pil4',
-    kpmr_stra_set_tingkat_risiko = '$kpmr_stra_set_tingkat_risiko'
-    WHERE id_frame_setris_ditetapkan = '$id'");
+    simpro_db_query($conn, "UPDATE setting_risiko_kpmr_stratejik SET 
+    kpmr_stra_set_pil1 = ?,
+    kpmr_stra_set_pil2 = ?,
+    kpmr_stra_set_pil3 = ?,
+    kpmr_stra_set_pil4 = ?,
+    kpmr_stra_set_tingkat_risiko = ?
+    WHERE id_frame_setris_ditetapkan = ?", [$kpmr_stra_set_pil1, $kpmr_stra_set_pil2, $kpmr_stra_set_pil3, $kpmr_stra_set_pil4, $kpmr_stra_set_tingkat_risiko, $id]);
 
     echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>

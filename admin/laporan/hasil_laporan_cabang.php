@@ -1,5 +1,5 @@
 <?php
-include "../conn/conn.php";
+require dirname(__DIR__, 2).'/conn/conn.php';
 
 function tgl_indo($tanggal)
 {
@@ -27,9 +27,9 @@ function tgl_indo($tanggal)
 }
 
 $id = $_SESSION['user_id'] ?? null;
-$get_data_user = mysqli_fetch_array(mysqli_query($conn, "SELECT nama FROM user
+$get_data_user = mysqli_fetch_array(simpro_db_query($conn, "SELECT nama FROM user
 
-WHERE user_id = '$id'"));
+WHERE user_id = ?", [$id]));
 
 ?>
 
@@ -138,7 +138,7 @@ $pekalongan_cnt = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(DISTINCT 
                                                         <select class="form-select mb-3" name="periode" id="periode" required="">
                                                         <option value=" " selected> </option>
                                                                     <?php
-                                                                    include "../conn/conn.php";
+                                                                    require dirname(__DIR__, 2).'/conn/conn.php';
                                                                     $query_periode = mysqli_query($conn, "SELECT * FROM periode_laporan_profil_risiko");
                                                                     while ($data = mysqli_fetch_array($query_periode)) { ?>
                                                                         <option value="<?= $data['id_periode'] ?? '' ?>" <?= $data['id_periode'] == $periode ? ' selected' : '' ?>><?= ucwords($data['periode_laporan']) ?></option>

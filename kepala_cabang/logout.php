@@ -1,5 +1,2 @@
 <?php
-session_start();
-session_destroy();
-
-header("location:../index.php?alert=logout");
+require dirname(__DIR__).'/fungsi/logout.php';

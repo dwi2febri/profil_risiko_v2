@@ -914,7 +914,7 @@ $definisiTingkatRisikoOperasional = op_lookup_kualitas_mr_operasional($conn, (st
 
 
 if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 3).'/conn/conn.php';
     if (!headers_sent()) header('Content-Type: application/json; charset=utf-8');
 
     $inheren_operasional = (float)$inheren['hasil_tingkat_risiko'];
@@ -957,7 +957,7 @@ if (isset($_POST['autosave_profil']) && $_POST['autosave_profil'] == '1') {
 }
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 3).'/conn/conn.php';
     $inheren_operasional = (float)$inheren['hasil_tingkat_risiko'];
     $kpmr_operasional = (float)$kpmr['hasil_tingkat_risiko'];
     $ket_profil_risiko_input = array_key_exists('ket_profil_risiko', $_POST) ? (string)$_POST['ket_profil_risiko'] : (string)($ket['ket_profil_risiko'] ?? '');

@@ -1,12 +1,12 @@
 <?php
 
 if (isset($_POST['submit'])) {
-    include "../conn/conn.php";
+    require dirname(__DIR__, 2).'/conn/conn.php';
     $tahun = $_POST['tahun'];
 
     $dibuat_at = date('Y-m-d');
     $dibuat_by = $_SESSION['user_id'];
-    $query = mysqli_query($conn, "SELECT * FROM frame_bobot WHERE tahun = '$tahun' ");
+    $query = simpro_db_query($conn, "SELECT * FROM frame_bobot WHERE tahun = ? ", [$tahun]);
     $cek_user = mysqli_num_rows($query);
     if ($cek_user > 0) {
         echo '
@@ -14,53 +14,53 @@ if (isset($_POST['submit'])) {
         ';
     } else {
 
-        mysqli_query($conn, "INSERT INTO frame_bobot(id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0','$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO frame_bobot(id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',?,?,?)", [$tahun, $dibuat_at, $dibuat_by]);
 
 
 
 
 
-        mysqli_query($conn, "INSERT INTO bobot_kredit_per_pilar(id_bobot_kredit_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_kredit_per_pilar(id_bobot_kredit_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO bobot_kredit_per_parameter(id_bobot_kredit_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
-
-
-        mysqli_query($conn, "INSERT INTO bobot_operasional_per_pilar(id_bobot_operasional_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO bobot_operasional_per_parameter(id_bobot_operasional_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_kredit_per_parameter(id_bobot_kredit_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
 
-        mysqli_query($conn, "INSERT INTO bobot_kepatuhan_per_pilar(id_bobot_kepatuhan_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_operasional_per_pilar(id_bobot_operasional_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO bobot_kepatuhan_per_parameter(id_bobot_kepatuhan_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
-
-
-        mysqli_query($conn, "INSERT INTO bobot_likuiditas_per_pilar(id_bobot_likuiditas_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
-
-        mysqli_query($conn, "INSERT INTO bobot_likuiditas_per_parameter(id_bobot_likuiditas_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_operasional_per_parameter(id_bobot_operasional_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
 
-        mysqli_query($conn, "INSERT INTO bobot_reputasi_per_pilar(id_bobot_reputasi_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_kepatuhan_per_pilar(id_bobot_kepatuhan_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO bobot_reputasi_per_parameter(id_bobot_reputasi_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_kepatuhan_per_parameter(id_bobot_kepatuhan_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
 
-        mysqli_query($conn, "INSERT INTO bobot_stratejik_per_pilar(id_bobot_stratejik_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_likuiditas_per_pilar(id_bobot_likuiditas_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
-        mysqli_query($conn, "INSERT INTO bobot_stratejik_per_parameter(id_bobot_stratejik_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
-        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = '$dibuat_by' AND tahun = '$tahun' AND dibuat_at = '$dibuat_at' ),'$tahun','$dibuat_at','$dibuat_by')");
+        simpro_db_query($conn, "INSERT INTO bobot_likuiditas_per_parameter(id_bobot_likuiditas_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
+
+
+        simpro_db_query($conn, "INSERT INTO bobot_reputasi_per_pilar(id_bobot_reputasi_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO bobot_reputasi_per_parameter(id_bobot_reputasi_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
+
+
+        simpro_db_query($conn, "INSERT INTO bobot_stratejik_per_pilar(id_bobot_stratejik_per_pilar,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
+
+        simpro_db_query($conn, "INSERT INTO bobot_stratejik_per_parameter(id_bobot_stratejik_per_parameter,id_bobot,tahun,dibuat_at,dibuat_by)
+        VALUES ('0',(select id_bobot from frame_bobot WHERE dibuat_by = ? AND tahun = ? AND dibuat_at = ? ),?,?,?)", [$dibuat_by, $tahun, $dibuat_at, $tahun, $dibuat_at, $dibuat_by]);
 
         echo '
         <script>$.NotificationApp.send("Title","Your awesome message text","Position","Background color","Icon")</script>
@@ -170,7 +170,7 @@ if (isset($_POST['submit'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            include "../conn/conn.php";
+                                            require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
                                             $kode_kantor = $_SESSION['lokasi_kerja'];
                                             $query = mysqli_query($conn, "SELECT * FROM frame_bobot
