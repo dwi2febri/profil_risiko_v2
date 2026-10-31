@@ -52,6 +52,12 @@ function simpro_routes_bootstrap(): array
     }
     // Legacy includes occasionally read REQUEST rather than GET.
     foreach (['page', 'id', 'tab'] as $key) if (isset($_GET[$key])) $_REQUEST[$key] = $_GET[$key];
+    // Progress Excel is dispatched by the existing role controller after its
+    // layout. Hold that layout so the download can discard it before XML output,
+    // including on PHP-FPM installations with output_buffering disabled/small.
+    if (($_GET['page'] ?? '') === 'progress_pengisian' && ($_GET['cetak_excel'] ?? '') === '1') {
+        ob_start();
+    }
     header_register_callback(static function() use ($roleBase): void {
         foreach (headers_list() as $header) {
             if (stripos($header, 'Location:') !== 0) continue;

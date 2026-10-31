@@ -780,7 +780,8 @@ $divisiCandidates = [
    2) Profil Risiko Divisi
    ========================================================= */
 function pg_xls_text($v){
-    return htmlspecialchars((string)$v, ENT_QUOTES | ENT_XML1, 'UTF-8');
+    $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', (string)$v);
+    return htmlspecialchars($text, ENT_QUOTES | ENT_XML1 | ENT_SUBSTITUTE, 'UTF-8');
 }
 function pg_xls_cell($value, $style='Data', $type='String'){
     if ($type === 'Number') {
@@ -789,7 +790,9 @@ function pg_xls_cell($value, $style='Data', $type='String'){
     }
     return '<Cell ss:StyleID="'.pg_xls_text($style).'"><Data ss:Type="String">'.pg_xls_text($value).'</Data></Cell>';
 }
-function pg_xls_row($cells, $height=null){
+function pg_xls_row($cells, $height=null, $startColumn=1){
+    // Columns A/B are occupied by the preceding header's MergeDown cells.
+    if ($startColumn > 1 && $cells) $cells[0] = preg_replace('/<Cell\b/', '<Cell ss:Index="'.(int)$startColumn.'"', $cells[0], 1);
     $h = $height ? ' ss:Height="'.((float)$height).'"' : '';
     return '<Row'.$h.'>'.implode('', $cells).'</Row>';
 }
@@ -808,7 +811,7 @@ function pg_xls_worksheet($name, $rows, $colWidths){
     return $xml;
 }
 function pg_xls_download($filename, $worksheets){
-    if (ob_get_level()) { @ob_end_clean(); }
+    while (ob_get_level() > 0) { if (!@ob_end_clean()) break; }
     header('Content-Type: application/vnd.ms-excel; charset=utf-8');
     header('Content-Disposition: attachment; filename="'.$filename.'"');
     header('Cache-Control: max-age=0');
@@ -849,7 +852,7 @@ function pg_build_excel_cabang_sheet($conn, $cabangRows, $risks, $selectedTahun,
         $cells[] = pg_xls_cell('Profil '.$rl, $style);
     }
     $cells[] = pg_xls_cell('Profil Nilai', 'HGray');
-    $rows[] = pg_xls_row($cells, 32);
+    $rows[] = pg_xls_row($cells, 32, 3);
     foreach($cabangRows as $cb){
         $cid = (int)$cb['id_cabang'];
         $where = "f.kantor_cabang='$cid' AND f.tahun='$tahunSql' AND f.periode='$periodeSql' AND (f.`user`='3' OR UPPER(COALESCE(upr.tipe_user,'')) LIKE '%KANTOR CABANG%' OR UPPER(COALESCE(upr.tipe_user,'')) LIKE '%CABANG%')";
@@ -879,7 +882,7 @@ function pg_build_excel_divisi_sheet($conn, $divisiCandidates, $risks, $selected
         $cells[] = pg_xls_cell('Profil '.$rl, $style);
     }
     $cells[] = pg_xls_cell('Profil Nilai', 'HGray');
-    $rows[] = pg_xls_row($cells, 32);
+    $rows[] = pg_xls_row($cells, 32, 3);
     foreach($divisiCandidates as $dv){
         $uid = (int)$dv['id_user_profil_risiko'];
         $label = trim((string)$dv['tipe_user']);
