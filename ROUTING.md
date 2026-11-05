@@ -318,7 +318,17 @@ parameter utama tersimpan di isian inheren. Bila beberapa pilar atau parameter
 seri, seluruhnya dicantumkan. Pilar kosong tidak dimasukkan sebagai nol;
 peringkat tertinggi hanya dibandingkan dari nilai pilar yang tersedia.
 
-Excel menghasilkan satu sheet per risiko. PDF landscape A3 mengulang judul,
+Web dan Excel mengikuti format rekap contoh: satu laporan dengan keenam tabel
+risiko tersusun vertikal, judul bank/periode di atas, serta header tiga tingkat
+Risiko → Inheren → Pilar/Tingkat Risiko. Kredit memakai header hijau,
+Operasional biru, Kepatuhan ungu; header identitas selain Kredit berwarna
+kuning, identitas cabang hijau muda, dan rata-rata memakai warna risiko dengan
+teks putih. Angka badan tabel berlatar putih, sedangkan peringkat dan dua kolom
+analisis memakai warna teks risiko. Filter dan data tidak berubah.
+
+Excel menghasilkan satu sheet `Rekap per Risiko KC` dengan header gabungan,
+identitas cabang beku di kiri, serta jeda cetak antarjenis risiko. Kolom
+parameter tertinggi tetap di paling kanan. PDF landscape A3 mengulang judul,
 legenda dan header kolom di setiap halaman serta menjaga baris tetap utuh.
 Kolom deskripsi membungkus teks panjang. Rata-rata mengikuti wilayah, sedangkan
 pencarian menyaring cabang saja, sama dengan tampilan web.
@@ -341,3 +351,7 @@ php tests/rekap_risiko_kc_data_test.php
 node tests/rekap_risiko_kc_browser_test.cjs
 python tests/rekap_risiko_kc_files_test.py
 ```
+
+Untuk perubahan format ini, unggah `admin/laporan/rekap_risiko_kc.php`,
+`assets/css/rekap-risiko-kc.css`, dan `assets/js/rekap-risiko-kc.js` bersama.
+Versi URL CSS/JS dinaikkan agar browser mengambil tampilan terbaru.

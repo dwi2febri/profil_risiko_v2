@@ -34,17 +34,23 @@ function login(){
   await cmd('Page.enable');await cmd('Network.enable');await cmd('Network.setCookie',{name:'PHPSESSID',value:cookie,domain:'127.0.0.1',path:'/'});
   await send('Browser.setDownloadBehavior',{behavior:'deny'});
   await cmd('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
-  const cases=[{name:'all',query:'tahun=2026&periode=2&wilayah=semua'},{name:'filtered',query:'tahun=2026&periode=3&wilayah=solo',risk:'stratejik',search:'Wonogiri'},{name:'empty',query:'tahun=2099&periode=1&wilayah=solo'}];
+  const cases=[{name:'all',query:'tahun=2026&periode=2&wilayah=semua'},{name:'solo',query:'tahun=2026&periode=2&wilayah=solo'},{name:'filtered',query:'tahun=2026&periode=3&wilayah=solo',risk:'stratejik',search:'Wonogiri'},{name:'empty',query:'tahun=2099&periode=1&wilayah=solo'}];
   for(const item of cases){
    await cmd('Page.navigate',{url:base+'admin/rekap_risiko_kc?'+item.query});await waitFor(`!!window.RiskRecapExport`);
    await waitFor(`document.readyState==='complete'&&!document.body.classList.contains('loading')&&!!document.querySelector('.side-nav a.oai-active-menu[href*="rekap_risiko_kc"]')`);
+   await waitFor(`(()=>{let element=document.querySelector('.risk-recap-report');while(element){const style=getComputedStyle(element);if(Number(style.opacity)<.99||style.visibility==='hidden')return false;element=element.parentElement;}return true;})()`);
    if(item.risk)await evaluate(`document.getElementById('risk-recap-view').value=${JSON.stringify(item.risk)};document.getElementById('risk-recap-view').dispatchEvent(new Event('change'));`);
    if(item.search)await evaluate(`document.getElementById('risk-recap-search').value=${JSON.stringify(item.search)};document.getElementById('risk-recap-search').dispatchEvent(new Event('input'));`);
    const expected=await evaluate('RiskRecapExport.snapshot()');assert.equal(expected.sections.length,item.risk?1:6);
+   const layout=await evaluate(`[...document.querySelectorAll('.risk-recap-section')].filter(s=>!s.hidden).map(s=>({key:s.dataset.recapRisk,header:getComputedStyle(s.querySelector('thead tr:first-child th:nth-child(3)')).backgroundColor,mean:getComputedStyle(s.querySelector('.risk-recap-average td')).backgroundColor,meanInk:getComputedStyle(s.querySelector('.risk-recap-average td')).color,identity:getComputedStyle(s.querySelector('tbody tr[data-branch] th')).backgroundColor,levels:s.querySelectorAll('thead tr').length}))`);
+   const themeColours={kredit:'rgb(49, 131, 84)',operasional:'rgb(0, 112, 192)',kepatuhan:'rgb(153, 84, 204)',likuiditas:'rgb(242, 151, 39)',reputasi:'rgb(213, 79, 121)',stratejik:'rgb(89, 89, 89)'};
+   layout.forEach(s=>{assert.equal(s.header,themeColours[s.key]);assert.equal(s.mean,themeColours[s.key]);assert.equal(s.meanInk,'rgb(255, 255, 255)');assert.equal(s.identity,'rgb(198, 224, 180)');assert.equal(s.levels,3);});
    for(const section of expected.sections){assert.equal(section.headers.at(-1),'Parameter Tertinggi di Pilar Tersebut');assert.equal(section.headers.at(-2),'Pilar Tertinggi');assert.equal(section.rows.length,item.search?2:item.name==='all'?29:8);assert(section.rows.every(row=>row.cells.length===section.headers.length));}
    if(item.risk){const row=expected.sections[0].rows[1];assert(row.cells.at(-1).text!=='?');assert.equal(row.cells.find(c=>c.value===4.07).value,4.07);}
    assert(!await evaluate(`document.documentElement.scrollWidth>innerWidth`),'Desktop page width overflow');
    fs.writeFileSync(path.join(output,item.name+'.expected.json'),JSON.stringify(expected,null,2));
+   await cmd('Page.bringToFront');await delay(350);
+   if(item.name==='solo')await evaluate(`window.scrollTo(0,document.querySelector('.risk-recap-report').getBoundingClientRect().top+scrollY-90)`);
    const screenshot=await cmd('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(output,item.name+'.png'),Buffer.from(screenshot.data,'base64'));
    await evaluate(`(()=>{window.__exports=[];const original=URL.createObjectURL.bind(URL);URL.createObjectURL=function(blob){blob.arrayBuffer().then(buffer=>{let text='';const bytes=new Uint8Array(buffer);for(let i=0;i<bytes.length;i+=8192)text+=String.fromCharCode.apply(null,bytes.subarray(i,i+8192));window.__exports.push({kind:blob.type.includes('pdf')?'pdf':'xlsx',data:btoa(text)});});return original(blob);};document.getElementById('risk-recap-excel').click();})()`);
    await waitFor(`window.__exports.some(e=>e.kind==='xlsx')||document.getElementById('risk-recap-export-status').textContent.includes('gagal')`);
