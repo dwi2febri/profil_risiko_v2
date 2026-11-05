@@ -3,7 +3,7 @@
     var sections=Array.from(document.querySelectorAll('.risk-recap-section')),context=window.riskRecapContext;if(!sections.length||!context)return;
     var view=document.getElementById('risk-recap-view'),search=document.getElementById('risk-recap-search');
     var bands={blue:['Sangat rendah','E7F1FF','1746A2'],green:['Rendah','E9F8ED','176534'],yellow:['Sedang','FFF7CC','735400'],orange:['Tinggi','FFF0DC','943C09'],red:['Sangat tinggi','FDE7E7','A61E25']};
-    var headerColour='CFE2F3';
+    var themes={kredit:'318354',operasional:'0070C0',kepatuhan:'9954CC',likuiditas:'F29727',reputasi:'D54F79',stratejik:'595959'};
     var note='Nilai seri ditampilkan seluruhnya. Parameter utama bersubparameter memakai rata-rata subparameter terpilih. —: nilai belum tersedia.';
     var legendNote='Inheren: 1–1,25; >1,25–2,25; >2,25–3,25; >3,25–4,25; >4,25–5. Pilar berbobot menunjukkan kontribusi.';
     function filter(){var term=search.value.trim().toLocaleLowerCase('id'),count=0;sections.forEach(function(section,index){section.hidden=view.value!=='semua'&&section.dataset.recapRisk!==view.value;section.querySelectorAll('tr[data-branch]').forEach(function(row){row.hidden=!row.dataset.branch.toLocaleLowerCase('id').includes(term);if(index===0&&!row.hidden)count++;});});document.getElementById('risk-recap-count').textContent='Menampilkan '+count+' cabang per risiko, tanpa pembagian halaman. Rata-rata tetap mengikuti filter wilayah.';}
@@ -45,8 +45,8 @@
         data.sections.forEach(function(section,index){
             if(index)breaks.push(row-1);
             span(0,last,row,section.number+'. '+section.name.toUpperCase(),titleStyle);heights[row]=21;row++;
-            var p=section.headers.length-6,score=2+p,rank=3+p,top=4+p,head=row,colour=headerColour;
-            var themed=style(colour,'000000',true,'center',false,2),identity=themed;
+            var p=section.headers.length-6,score=2+p,rank=3+p,top=4+p,head=row,colour=themes[section.key];
+            var themed=style(colour,'FFFFFF',true,'center',false,2),identity=themed;
             for(var r=head;r<head+3;r++){
                 put(0,r,r===head?'Kode\nCabang':'',identity);put(1,r,r===head?'Nama Cabang':'',identity);
                 for(var c=2;c<=rank;c++)put(c,r,'',themed);
@@ -66,10 +66,10 @@
                     dataCell(0,0,record.cells[0],style('C6E0B4','000000',false,'center',false));dataCell(1,1,record.cells[1],style('C6E0B4','000000',false,'left',false));
                 }
                 for(var c=2;c<=rank;c++){
-                    var item=record.cells[c],id=record.average?style(colour,'000000',true,'center',item.value!==null,2):style(null,'000000',false,'center',item.value!==null);
+                    var item=record.cells[c],id=record.average?style(colour,'FFFFFF',true,'center',item.value!==null,2):style(null,c>=score?colour:'000000',false,'center',item.value!==null);
                     dataCell(c,c,item,id);
                 }
-                var descriptionStyle=record.average?themed:style(null,'000000',false,'left',false);
+                var descriptionStyle=record.average?themed:style(null,colour,false,'left',false);
                 dataCell(top,highest,record.cells[section.headers.length-2],descriptionStyle);dataCell(last,last,record.cells[section.headers.length-1],descriptionStyle);
                 heights[row]=Math.min(409,Math.max(record.average?20:18,height));row++;
             });
@@ -90,9 +90,9 @@
         return zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',compression:'DEFLATE'});
     }
     function pdf(data){return {pageSize:'A3',pageOrientation:'landscape',pageMargins:[20,20,20,24],defaultStyle:{fontSize:8,color:'#000000'},content:data.sections.map(function(section,index){
-        var length=section.headers.length,heading={colSpan:length,stack:[{text:'Rekap Penilaian Inheren KC — '+section.name,bold:true,fontSize:14,margin:[0,0,0,5]},{text:data.metadata,fontSize:8,margin:[0,0,0,5]},{table:{widths:['*','*','*','*','*'],body:[Object.keys(bands).map(function(key){return {text:bands[key][0],fillColor:'#'+bands[key][1],color:'#000000',fontSize:8,margin:[3,3,3,3]};})]},layout:'noBorders'},{text:legendNote+'\n'+note,fontSize:7,margin:[0,5,0,7]}]};
-        var body=[[heading].concat(Array.from({length:length-1},function(){return {};})),section.headers.map(function(header){return {text:header,bold:true,fillColor:'#'+headerColour,alignment:'center'};})];
-        section.rows.forEach(function(row){body.push(row.cells.map(function(cell,c){var band=cell.band?bands[cell.band]:null;return {text:cell.text+(cell.sample?'\n'+cell.sample:''),alignment:c===1||c>=length-2?'left':'center',bold:!!band||row.average,fillColor:row.average?'#'+headerColour:'#ffffff',color:'#000000'};}));});
+        var colour=themes[section.key],length=section.headers.length,heading={colSpan:length,stack:[{text:'Rekap Penilaian Inheren KC — '+section.name,bold:true,fontSize:14,margin:[0,0,0,5]},{text:data.metadata,fontSize:8,margin:[0,0,0,5]},{table:{widths:['*','*','*','*','*'],body:[Object.keys(bands).map(function(key){return {text:bands[key][0],fillColor:'#'+bands[key][1],color:'#000000',fontSize:8,margin:[3,3,3,3]};})]},layout:'noBorders'},{text:legendNote+'\n'+note,fontSize:7,margin:[0,5,0,7]}]};
+        var body=[[heading].concat(Array.from({length:length-1},function(){return {};})),section.headers.map(function(header){return {text:header,bold:true,fillColor:'#'+colour,color:'#ffffff',alignment:'center'};})];
+        section.rows.forEach(function(row){body.push(row.cells.map(function(cell,c){var band=cell.band?bands[cell.band]:null;return {text:cell.text+(cell.sample?'\n'+cell.sample:''),alignment:c===1||c>=length-2?'left':'center',bold:!!band||row.average,fillColor:row.average?'#'+colour:c<2?'#c6e0b4':'#ffffff',color:row.average?'#ffffff':c>=length-4?'#'+colour:'#000000'};}));});
         return {...(index?{pageBreak:'before'}:{}),table:{headerRows:2,dontBreakRows:true,widths:section.headers.map(function(_,c){return c===0?28:c===1?95:c===length-1?255:c===length-2?170:c===length-3?65:'*';}),body:body},layout:{hLineWidth:function(){return .4;},vLineWidth:function(){return .4;},hLineColor:function(){return '#d8e1eb';},vLineColor:function(){return '#d8e1eb';},paddingLeft:function(){return 4;},paddingRight:function(){return 4;},paddingTop:function(){return 4;},paddingBottom:function(){return 4;}}};
     }),footer:function(page,total){return {text:'Halaman '+page+' dari '+total,fontSize:7,alignment:'right',margin:[20,8,20,0]};}};}
     function download(blob,extension){var url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=context.filename+'.'+extension;document.body.appendChild(link);link.click();link.remove();setTimeout(function(){URL.revokeObjectURL(url);},30000);}

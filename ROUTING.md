@@ -320,11 +320,14 @@ peringkat tertinggi hanya dibandingkan dari nilai pilar yang tersedia.
 
 Web dan Excel mengikuti format rekap contoh: satu laporan dengan keenam tabel
 risiko tersusun vertikal, judul bank/periode di atas, serta header tiga tingkat
-Risiko → Inheren → Pilar/Tingkat Risiko. Semua risiko memakai header dan
-baris rata-rata biru muda `#CFE2F3`, termasuk kolom kode/nama cabang. Identitas
-cabang pada badan tabel tetap hijau muda. Seluruh teks tabel, termasuk nilai,
-peringkat dan dua kolom analisis, berwarna hitam pada web, Excel dan PDF.
-Angka badan tabel berlatar putih. Filter dan data tidak berubah.
+Risiko → Inheren → Pilar/Tingkat Risiko. Warna dibedakan per risiko: Kredit
+hijau, Operasional biru, Kepatuhan ungu, Likuiditas oranye, Reputasi merah muda,
+dan Stratejik abu-abu. Seluruh header dalam satu tabel (termasuk Kode/Nama
+Cabang) dan baris rata-rata memakai warna risiko yang sama dengan teks putih;
+tidak ada lagi header identitas kuning. Identitas cabang pada badan tabel tetap
+hijau muda. Teks tingkat risiko, peringkat, pilar tertinggi dan parameter
+tertinggi mengikuti warna risiko di web, Excel dan PDF. Nilai pilar dan
+identitas tetap hitam agar mudah dibaca. Angka badan tabel berlatar putih.
 
 Excel menghasilkan satu sheet `Rekap per Risiko KC` dengan header gabungan,
 identitas cabang beku di kiri, serta jeda cetak antarjenis risiko. Kolom

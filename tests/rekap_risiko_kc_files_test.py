@@ -18,7 +18,7 @@ def letters(index):
 def value(cell):
     return ''.join(cell.itertext()) if cell.get('t') == 'inlineStr' else float(cell.findtext('s:v', '', ns))
 
-themes = dict.fromkeys(['kredit','operasional','kepatuhan','likuiditas','reputasi','stratejik'], 'CFE2F3')
+themes = {'kredit':'318354','operasional':'0070C0','kepatuhan':'9954CC','likuiditas':'F29727','reputasi':'D54F79','stratejik':'595959'}
 for name in ['all', 'solo', 'filtered', 'empty']:
     expected = json.loads((directory / (name + '.expected.json')).read_text(encoding='utf-8'))
     with zipfile.ZipFile(directory / (name + '.xlsx')) as package:
@@ -30,7 +30,7 @@ for name in ['all', 'solo', 'filtered', 'empty']:
         assert len(workbook.find('s:sheets', ns)) == 1
         styles = ET.fromstring(package.read('xl/styles.xml'))
         xfs, fills = styles.find('s:cellXfs', ns), styles.find('s:fills', ns)
-        assert all(font.find('s:color', ns).get('rgb') == 'FF000000' for font in styles.find('s:fonts', ns))
+        fonts = styles.find('s:fonts', ns)
         sheet = ET.fromstring(package.read('xl/worksheets/sheet1.xml'))
         cells = {cell.get('r'): cell for cell in sheet.findall('.//s:sheetData/s:row/s:c', ns)}
         merges = {merge.get('ref') for merge in sheet.find('s:mergeCells', ns)}
@@ -44,6 +44,8 @@ for name in ['all', 'solo', 'filtered', 'empty']:
             style = xfs[int(cells[address].get('s'))]
             colour = fills[int(style.get('fillId'))].find('s:patternFill/s:fgColor', ns)
             return colour.get('rgb')[2:] if colour is not None else None
+        def font(address):
+            return fonts[int(xfs[int(cells[address].get('s'))].get('fontId'))].find('s:color', ns).get('rgb')[2:]
         for section in expected['sections']:
             title = str(section['number'])+'. '+section['name'].upper()
             title_row = next(int(re.search(r'\d+', address).group()) for address, cell in cells.items() if value(cell) == title)
@@ -57,6 +59,8 @@ for name in ['all', 'solo', 'filtered', 'empty']:
             assert f'{letters(top)}{header}:{letters(highest)}{header+2}' in merges
             assert fill('C'+str(header)) == themes[section['key']]
             assert fill('A'+str(header)) == themes[section['key']]
+            assert font('A'+str(header)) == 'FFFFFF'
+            assert font('C'+str(header)) == 'FFFFFF'
             for column in range(2,pillars+3):
                 assert value(cells[letters(column)+str(header+2)]) == section['headers'][column]
             for offset, row in enumerate(section['rows']):
@@ -73,6 +77,10 @@ for name in ['all', 'solo', 'filtered', 'empty']:
                     physical = last if column==len(row['cells'])-1 else column
                     cell = cells[letters(physical)+str(row_number)]
                     assert value(cell) == (expected_cell['value'] if expected_cell.get('value') is not None else expected_cell['text'])
+                    if row['average']:
+                        assert font(letters(physical)+str(row_number)) == 'FFFFFF'
+                    elif column >= len(row['cells'])-4:
+                        assert font(letters(physical)+str(row_number)) == themes[section['key']]
                     if not row['average'] and 2 <= column < len(row['cells'])-3:
                         assert fill(letters(physical)+str(row_number)) is None
     pdf = fitz.open(directory / (name + '.pdf'))
@@ -84,7 +92,7 @@ for name in ['all', 'solo', 'filtered', 'empty']:
             for cell in row['cells']:
                 assert re.sub(r'\s+', '', cell['text']) in compact, (name, cell['text'])
     for page in pdf:
-        assert all(span['color'] == 0 for block in page.get_text('dict')['blocks'] if 'lines' in block for line in block['lines'] for span in line['spans'])
+        assert all(span['color'] in {0,0xFFFFFF,*[int(c,16) for c in themes.values()]} for block in page.get_text('dict')['blocks'] if 'lines' in block for line in block['lines'] for span in line['spans'])
         text = page.get_text()
         assert 'Parameter Tertinggi di Pilar Tersebut' in ' '.join(text.split())
         assert 'Sangat rendah' in text
