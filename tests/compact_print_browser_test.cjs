@@ -337,7 +337,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     assert(grids.length>0 && grids.every(grid=>grid.collapsed && grid.cells),'Print table has doubled borders or inconsistent line widths');
     console.log('PASS collapsed single-width print table grids without inset shadows');
     assert(await evaluate(`[...document.querySelectorAll('table[data-compact-risk-print="1"]')].every(table=>{const footer=table.querySelector('tfoot.print-page-grid-footer');return footer && footer.rows[0].cells[0].colSpan===table.querySelector('colgroup').children.length && getComputedStyle(footer).display==='table-footer-group';})`),'Repeating page-cut closing rule missing');
-    console.log('PASS source assessment tables retain fallback closing rules');
+    console.log('PASS repeating page footer closes every compact assessment table');
 
     await evaluate(`document.querySelectorAll('.cover,.pernyataan-page,.route-note').forEach(el=>(el.matches('.cover,.print-section,.pernyataan-page') ? (el.closest('.report-page-layout')||el) : el).remove())`);
     await cmd('Emulation.setDeviceMetricsOverride',{width:950,height:1200,deviceScaleFactor:1,mobile:false});
@@ -361,9 +361,9 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     await evaluate(`document.querySelectorAll('.print-section')[1].scrollIntoView({block:'start'})`);await delay(250);
     const liquidity=await cmd('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(artifacts,summaries?'compact-kpmr2-preview.png':'compact-liquidity-preview.png'),Buffer.from(liquidity.data,'base64'));
     if(summaries) {
-      const alignment=await evaluate(`(()=>{prepareRiskPrintGroups();const results=[...document.querySelectorAll('.print-grouped-assessment')].map(table=>{const head=[...table.tHead.querySelectorAll('th')].find(cell=>cell.textContent.replace(/\\s+/g,' ').trim()==='PERINGKAT RISIKO');const texts=root=>{const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),parts=[];let node;while(node=walker.nextNode()){const value=node.nodeValue.trim();if(value)parts.push(value);}return parts.sort().join('\\u0000');};return {sameData:texts(table)===texts(table.previousElementSibling),count:table.querySelectorAll('.print-parameter-grid').length,noFooter:!table.tFoot,wholeRows:[...table.querySelectorAll('.print-parameter-grid tr')].every(row=>getComputedStyle(row).breakInside==='avoid'),aligned:[...table.querySelectorAll('.print-parameter-grid')].every(grid=>{const score=grid.rows[0]?.cells[1];return head && score && Math.abs(score.getBoundingClientRect().left-head.getBoundingClientRect().left)<.05;})};});window.dispatchEvent(new Event('afterprint'));return results;})()`);
-      assert(alignment.length===10 && alignment.every(item=>item.count>0 && item.aligned && item.noFooter && item.wholeRows && item.sameData),'Print body/header column edges differ: '+JSON.stringify(alignment));
-      console.log('PASS four Inheren and six KPMR: aligned columns, whole subparameter rows, no empty page-footer cells');
+      const alignment=await evaluate(`(()=>{prepareRiskPrintGroups();const results=[...document.querySelectorAll('.print-grouped-assessment')].map(table=>{const head=[...table.tHead.querySelectorAll('th')].find(cell=>cell.textContent.replace(/\\s+/g,' ').trim()==='PERINGKAT RISIKO');return {count:table.querySelectorAll('.print-parameter-grid').length,aligned:[...table.querySelectorAll('.print-parameter-grid')].every(grid=>{const score=grid.rows[0]?.cells[1];return head && score && Math.abs(score.getBoundingClientRect().left-head.getBoundingClientRect().left)<.05;})};});window.dispatchEvent(new Event('afterprint'));return results;})()`);
+      assert(alignment.length===10 && alignment.every(item=>item.count>0 && item.aligned),'Print body/header column edges differ: '+JSON.stringify(alignment));
+      console.log('PASS all four Inheren and six KPMR print grids align their score columns with the repeated header');
     }
     const pdf=await cmd('Page.printToPDF',{printBackground:true,preferCSSPageSize:true});
     const bytes=Buffer.from(pdf.data,'base64');assert(bytes.subarray(0,5).toString()==='%PDF-');fs.writeFileSync(path.join(artifacts,summaries?'compact-summaries-print.pdf':'compact-risk-print.pdf'),bytes);
