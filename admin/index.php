@@ -165,7 +165,7 @@ date_default_timezone_set('Asia/Jakarta');
     <link href="../assets/css/vendor/buttons.bootstrap5.css" rel="stylesheet" type="text/css">
     <link href="../assets/css/vendor/select.bootstrap5.css" rel="stylesheet" type="text/css">
     <!-- third party css end -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="../assets/js/vendor/jszip.min.js?v=3.10.1"></script>
     <!-- App css -->
     <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="../assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">

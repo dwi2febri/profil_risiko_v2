@@ -1,10 +1,15 @@
+    <script src="../assets/js/vendor/pdfmake.min.js?v=0.2.20"></script>
+    <script src="../assets/js/vendor/pdfmake-vfs-fonts.js?v=0.2.20"></script>
+    <script src="../assets/js/risk-table-export.js?v=20261105-01"></script>
                         <script>
         $(document).ready(function() {
             var tableOptions = {
                 dom: 'Bfrti',
-                buttons: ['copy', 'csv', 'excel', 'print'].map(function(type) {
-                    return {extend:type, exportOptions:{columns:':visible'}, text:{copy:'Salin', csv:'CSV', excel:'Excel', print:'Cetak'}[type]};
-                }),
+                buttons: HasilRiskExport.buttons(function(){return table;}, <?= json_encode([
+                    'title' => $hasilTableTitle ?? 'Profil Risiko Kantor Cabang',
+                    'year' => (int)$tahun, 'period' => (int)$periode, 'status' => $status_laporan,
+                    'filename' => (isset($hasilRegions) ? 'rekap_korwil' : 'hasil_laporan_kc').'_'.$tahun.'_tw'.$periode,
+                ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS | JSON_THROW_ON_ERROR) ?>),
                 language: {search:'Cari cabang:', info:'Menampilkan _START_ sampai _END_ dari _TOTAL_ cabang', infoEmpty:'Tidak ada laporan', zeroRecords:'Tidak ada cabang yang cocok', emptyTable:'Tidak ada laporan pada filter ini', paginate:{previous:'Sebelumnya', next:'Berikutnya'}},
                 scrollX: true,
                 scrollY: '',

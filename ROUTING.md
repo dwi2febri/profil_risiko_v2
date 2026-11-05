@@ -165,3 +165,36 @@ URL filter, form GET tunggal, pilihan tahun/periode, dan HTML sampai penutup ser
 script layout; mencakup status semua/diterima dan periode tanpa data. Pengujian
 lokal juga dijalankan pada server PHP dengan `output_buffering=4096` dan
 `short_open_tag=1` untuk meniru perbedaan konfigurasi production.
+
+### Ekspor tabel hasil KC dan rekap Korwil
+
+Kedua halaman admin memakai komponen tabel bersama
+`admin/includes/hasil_laporan_cabang_table.php`. Tombol Excel, PDF, dan Cetak
+menyalin warna peringkat dari sel tabel, sesuai kolom yang terlihat, hasil
+pencarian, pilihan area dan urutan saat ekspor. Sel kosong tidak diberi warna
+peringkat. Legenda lima warna disertakan; batas pilar/inheren dan komposit
+dituliskan terpisah mengikuti aturan yang sudah dipakai pada tampilan web.
+
+PDF/cetak dengan lebih dari 18 kolom dibagi per jenis risiko. Identitas cabang,
+status laporan, nilai risiko dan peringkat komposit diulang pada masing-masing
+bagian, sehingga kolom terakhir tidak terpotong. Ekspor Excel tetap satu tabel
+utuh, dengan legenda di bawahnya dan pengaturan cetak landscape selebar satu
+halaman.
+
+File deployment untuk fitur ini:
+
+- `admin/index.php`
+- `admin/includes/hasil_laporan_cabang_table.php`
+- `assets/js/risk-table-export.js`
+- `assets/js/vendor/jszip.min.js` (JSZip 3.10.1)
+- `assets/js/vendor/pdfmake.min.js` (pdfmake 0.2.20)
+- `assets/js/vendor/pdfmake-vfs-fonts.js` (font bawaan pdfmake 0.2.20)
+
+Library disimpan lokal dan versinya dikunci agar fitur tidak bergantung pada
+ketersediaan CDN di browser production. Semua file di atas perlu diunggah
+bersama. Pengujian berkas hasil ekspor:
+
+```text
+node tests/risk_export_browser_test.cjs
+python tests/risk_export_files_test.py
+```
