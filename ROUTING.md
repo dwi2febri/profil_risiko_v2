@@ -198,3 +198,35 @@ bersama. Pengujian berkas hasil ekspor:
 node tests/risk_export_browser_test.cjs
 python tests/risk_export_files_test.py
 ```
+
+### Tren Profil KC (admin)
+
+Submenu Rekap → Tren Profil KC memakai rute `/admin/tren_profil_kc`.
+Filter GET `start_year`, `start_quarter`, `end_year`, `end_quarter`, dan
+`wilayah` mencakup rentang triwulan inklusif, maksimum 40 triwulan. Wilayah
+yang tersedia sama dengan rekap Korwil: Semarang, Solo, Banyumas, Pekalongan.
+Rute generik Apache/Nginx yang sudah ada tidak memerlukan aturan tambahan.
+
+Halaman menampilkan semua cabang wilayah terpilih tanpa paging, enam nilai
+inheren per periode dengan sparkline, lalu nilai komposit di kelompok paling
+kanan. Pemilihan laporan terbaru per cabang/periode dan sumber nilai memakai
+loader yang sama dengan Hasil Laporan KC. Nilai kosong tidak menjadi nol dan
+memutus garis tren. Delta hanya tersedia jika kedua ujung rentang memiliki
+nilai. Rata-rata wilayah hanya menghitung nilai yang tersedia, dengan jumlah
+sampel per periode; angka ini bukan penetapan risiko wilayah.
+
+File untuk deployment halaman baru:
+
+- `admin/index.php`
+- `admin/laporan/tren_profil_kc.php`
+- `admin/includes/tren_profil_kc_data.php`
+- `assets/css/tren-profil-kc.css`
+- `assets/js/tren-profil-kc.js`
+
+Memerlukan komponen `admin/includes/hasil_laporan_cabang_data.php` yang sudah
+dipakai halaman Hasil Laporan KC. Pengujian baca saja:
+
+```text
+php tests/tren_kc_data_test.php
+node tests/tren_kc_browser_test.cjs
+```

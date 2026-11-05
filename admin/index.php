@@ -677,6 +677,9 @@ body{zoom:0.72!important;font-size:14px!important;}
                                         <a href="index.php?page=hasil_lapkc">Hasil laporan KC</a>
                                     </li>
                                     <li>
+                                        <a href="index.php?page=tren_profil_kc">Tren Profil KC</a>
+                                    </li>
+                                    <li>
                                         <a href="index.php?page=progress_pengisian">Progress Pengisian</a>
                                     </li>
                                    
@@ -1665,6 +1668,9 @@ body{zoom:0.72!important;font-size:14px!important;}
 
                             case 'hasil_lapkc':
                                 include "laporan/hasil_laporan_cabang.php";
+                                break;
+                            case 'tren_profil_kc':
+                                include "laporan/tren_profil_kc.php";
                                 break;
                             case 'progress_pengisian':
                                 include "laporan/progress_pengisian.php";
