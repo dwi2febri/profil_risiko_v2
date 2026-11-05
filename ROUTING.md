@@ -320,11 +320,11 @@ peringkat tertinggi hanya dibandingkan dari nilai pilar yang tersedia.
 
 Web dan Excel mengikuti format rekap contoh: satu laporan dengan keenam tabel
 risiko tersusun vertikal, judul bank/periode di atas, serta header tiga tingkat
-Risiko → Inheren → Pilar/Tingkat Risiko. Kredit memakai header hijau,
-Operasional biru, Kepatuhan ungu; header identitas selain Kredit berwarna
-kuning, identitas cabang hijau muda, dan rata-rata memakai warna risiko dengan
-teks putih. Angka badan tabel berlatar putih, sedangkan peringkat dan dua kolom
-analisis memakai warna teks risiko. Filter dan data tidak berubah.
+Risiko → Inheren → Pilar/Tingkat Risiko. Semua risiko memakai header dan
+baris rata-rata biru muda `#CFE2F3`, termasuk kolom kode/nama cabang. Identitas
+cabang pada badan tabel tetap hijau muda. Seluruh teks tabel, termasuk nilai,
+peringkat dan dua kolom analisis, berwarna hitam pada web, Excel dan PDF.
+Angka badan tabel berlatar putih. Filter dan data tidak berubah.
 
 Excel menghasilkan satu sheet `Rekap per Risiko KC` dengan header gabungan,
 identitas cabang beku di kiri, serta jeda cetak antarjenis risiko. Kolom
@@ -355,3 +355,27 @@ python tests/rekap_risiko_kc_files_test.py
 Untuk perubahan format ini, unggah `admin/laporan/rekap_risiko_kc.php`,
 `assets/css/rekap-risiko-kc.css`, dan `assets/js/rekap-risiko-kc.js` bersama.
 Versi URL CSS/JS dinaikkan agar browser mengambil tampilan terbaru.
+
+### Scroll horizontal Tren Profil KC
+
+Scroll tabel tetap native. Sinkronisasi scrollbar atas/bawah menandai posisi
+hasil penulisan program, lalu mengabaikan event balasan pada posisi tersebut.
+Selisih subpixel di bawah satu CSS pixel tidak dikoreksi bolak-balik, sehingga
+scrollbar asal tidak ditulis ulang saat pengguna menggeser atau memakai wheel.
+Pengukuran ukuran digabung per frame hanya saat layout/filter berubah;
+pergerakan scroll sendiri disalin langsung tanpa animasi tambahan.
+
+Gutter scrollbar vertikal dicadangkan agar rentang horizontal tidak berubah
+saat jumlah baris berubah. Batas kolom tetap memakai garis, menggantikan
+bayangan yang perlu digambar ulang saat tabel bergerak.
+
+Unggah bersama:
+
+- `admin/laporan/tren_profil_kc.php`
+- `assets/js/tren-profil-kc.js` (versi URL `20261105-02`)
+- `assets/css/tren-profil-kc.css` (versi URL `20261105-03`)
+
+`node tests/tren_kc_scroll_test.cjs` memeriksa kedua scrollbar pada zoom
+90/100/110/125%, pergerakan maju/mundur, pembulatan fractional, kolom tetap,
+akhir tabel, wheel horizontal native dan alur event pointer saat drag. Pemeriksaan
+filter/data tetap tersedia di `node tests/tren_kc_browser_test.cjs`.

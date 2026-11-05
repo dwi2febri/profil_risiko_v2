@@ -18,7 +18,7 @@ def letters(index):
 def value(cell):
     return ''.join(cell.itertext()) if cell.get('t') == 'inlineStr' else float(cell.findtext('s:v', '', ns))
 
-themes = {'kredit':'318354','operasional':'0070C0','kepatuhan':'9954CC','likuiditas':'F29727','reputasi':'D54F79','stratejik':'595959'}
+themes = dict.fromkeys(['kredit','operasional','kepatuhan','likuiditas','reputasi','stratejik'], 'CFE2F3')
 for name in ['all', 'solo', 'filtered', 'empty']:
     expected = json.loads((directory / (name + '.expected.json')).read_text(encoding='utf-8'))
     with zipfile.ZipFile(directory / (name + '.xlsx')) as package:
@@ -30,6 +30,7 @@ for name in ['all', 'solo', 'filtered', 'empty']:
         assert len(workbook.find('s:sheets', ns)) == 1
         styles = ET.fromstring(package.read('xl/styles.xml'))
         xfs, fills = styles.find('s:cellXfs', ns), styles.find('s:fills', ns)
+        assert all(font.find('s:color', ns).get('rgb') == 'FF000000' for font in styles.find('s:fonts', ns))
         sheet = ET.fromstring(package.read('xl/worksheets/sheet1.xml'))
         cells = {cell.get('r'): cell for cell in sheet.findall('.//s:sheetData/s:row/s:c', ns)}
         merges = {merge.get('ref') for merge in sheet.find('s:mergeCells', ns)}
@@ -55,7 +56,7 @@ for name in ['all', 'solo', 'filtered', 'empty']:
             assert f'B{header}:B{header+2}' in merges
             assert f'{letters(top)}{header}:{letters(highest)}{header+2}' in merges
             assert fill('C'+str(header)) == themes[section['key']]
-            assert fill('A'+str(header)) == (themes[section['key']] if section['key']=='kredit' else 'FFFF00')
+            assert fill('A'+str(header)) == themes[section['key']]
             for column in range(2,pillars+3):
                 assert value(cells[letters(column)+str(header+2)]) == section['headers'][column]
             for offset, row in enumerate(section['rows']):
@@ -83,6 +84,7 @@ for name in ['all', 'solo', 'filtered', 'empty']:
             for cell in row['cells']:
                 assert re.sub(r'\s+', '', cell['text']) in compact, (name, cell['text'])
     for page in pdf:
+        assert all(span['color'] == 0 for block in page.get_text('dict')['blocks'] if 'lines' in block for line in block['lines'] for span in line['spans'])
         text = page.get_text()
         assert 'Parameter Tertinggi di Pilar Tersebut' in ' '.join(text.split())
         assert 'Sangat rendah' in text

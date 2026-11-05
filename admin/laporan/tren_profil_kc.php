@@ -23,7 +23,7 @@ while ($branch = mysqli_fetch_assoc($trenBranchQuery)) $trenBranches[(int)$branc
 $trenYearOptions = range(min(2024, max(2000, min($trenStartYear, $trenEndYear))), max((int)date('Y')+1, min(2100, max($trenStartYear, $trenEndYear, $trenDefaultYear))));
 $trenBase = $simproRouteConfig['roleBase'];
 ?>
-<link rel="stylesheet" href="../assets/css/tren-profil-kc.css?v=20261105-02">
+<link rel="stylesheet" href="../assets/css/tren-profil-kc.css?v=20261105-03">
 <div class="content-page"><div class="content"><div class="container-fluid tren-kc-page">
     <div class="page-title-box"><div class="page-title-right"><ol class="breadcrumb m-0"><li class="breadcrumb-item">Rekap</li><li class="breadcrumb-item active">Tren Profil KC</li></ol></div><h4 class="page-title">Tren Profil KC</h4></div>
     <div class="card"><div class="card-body">
@@ -77,7 +77,7 @@ $trenBase = $simproRouteConfig['roleBase'];
         <?php endif; ?>
     </div></div>
 </div></div></div>
-<script src="../assets/js/tren-profil-kc.js?v=20261105-01"></script>
+<script src="../assets/js/tren-profil-kc.js?v=20261105-02"></script>
 <?php if (!$trenError): ?>
 <script>window.trenKCExportContext=<?= json_encode(['region'=>$trenRegions[$trenRegion][0], 'range'=>'TW '.$trenStartQuarter.' '.$trenStartYear.' sampai TW '.$trenEndQuarter.' '.$trenEndYear, 'filename'=>'tren_profil_kc_'.$trenRegion.'_'.$trenStartYear.'_tw'.$trenStartQuarter.'_'.$trenEndYear.'_tw'.$trenEndQuarter], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR) ?>;</script>
 <script src="../assets/js/vendor/pdfmake.min.js?v=0.2.20"></script>

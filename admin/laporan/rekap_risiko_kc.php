@@ -21,7 +21,7 @@ $periodTitle='Periode Triwulan '.($romanQuarters[$periode]??'-').' '.$tahun;
 $yearOptions=range(min(2024,$tahun?:2024),max((int)date('Y')+1,$tahun));
 function rekap_risk_mean(array $values): ?float {$values=array_filter($values,fn($v)=>is_numeric($v));return $values?round(array_sum($values)/count($values),2):null;}
 ?>
-<link rel="stylesheet" href="../assets/css/rekap-risiko-kc.css?v=20261105-02">
+<link rel="stylesheet" href="../assets/css/rekap-risiko-kc.css?v=20261105-03">
 <div class="content-page"><div class="content"><div class="container-fluid risk-recap-page">
     <div class="page-title-box"><div class="page-title-right"><ol class="breadcrumb m-0"><li class="breadcrumb-item">Rekap</li><li class="breadcrumb-item active">Rekap per Risiko KC</li></ol></div><h4 class="page-title">Rekap per Risiko KC</h4></div>
     <div class="card"><div class="card-body">
@@ -66,4 +66,4 @@ function rekap_risk_mean(array $values): ?float {$values=array_filter($values,fn
     <p class="risk-recap-note" id="risk-recap-count" aria-live="polite"></p><p class="risk-recap-note">Rata-rata menggunakan cabang dengan nilai tersedia dan mengikuti filter wilayah; pencarian hanya menyaring baris cabang. Nilai parameter kredit dan likuiditas memakai hasil parameter tersimpan pada isian inheren. Nilai dan kontribusi pilar tidak mengubah penetapan tingkat risiko.</p>
 </div></div></div>
 <script>window.riskRecapContext=<?= json_encode(['reportTitle'=>$reportTitle,'periodTitle'=>$periodTitle,'metadata'=>$regions[$wilayah][0].' | Triwulan '.$periode.' '.$tahun,'filename'=>'rekap_per_risiko_kc_'.$wilayah.'_'.$tahun.'_tw'.$periode],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR) ?>;</script>
-<script src="../assets/js/vendor/pdfmake.min.js?v=0.2.20"></script><script src="../assets/js/vendor/pdfmake-vfs-fonts.js?v=0.2.20"></script><script src="../assets/js/rekap-risiko-kc.js?v=20261105-02"></script>
+<script src="../assets/js/vendor/pdfmake.min.js?v=0.2.20"></script><script src="../assets/js/vendor/pdfmake-vfs-fonts.js?v=0.2.20"></script><script src="../assets/js/rekap-risiko-kc.js?v=20261105-03"></script>
