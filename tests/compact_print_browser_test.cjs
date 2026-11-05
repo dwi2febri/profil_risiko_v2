@@ -201,7 +201,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     await waitFor(`document.readyState==='complete' && document.querySelector('.leftside-menu')`);
     let liveHtml;
     for(const report of [555,545]){
-      const response=await fetch(base+'admin/laporan/cetak_laporan_profil_risiko.php?id='+report,{headers});
+      const response=await fetch(base+'admin/laporan/cetak_laporan_profil_risiko.php?id='+report+(process.argv.includes('--modal')?'&modal_view=1':''),{headers});
       assert.equal(response.status,200);
       const html=await response.text();
       const titles=[...html.matchAll(/class="print-section"[^>]*data-title="([^"]+)"/g)].map(match=>match[1]);
@@ -225,6 +225,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     liveHtml=liveHtml.replace("const sections = Array.from(document.querySelectorAll('.print-section'));", "document.querySelectorAll('.print-section').forEach(el=>{if(!new RegExp("+JSON.stringify(pattern)+").test(el.dataset.title))(el.closest('.report-page-layout')||el).remove();});const sections = Array.from(document.querySelectorAll('.print-section'));");
     const tree=await cmd('Page.getFrameTree');
     await cmd('Page.setDocumentContent',{frameId:tree.frameTree.frame.id,html:liveHtml});
+    if(process.argv.includes('--modal')) assert(await evaluate(`document.body.classList.contains('modal-view')`),'Modal print styles were not exercised');
     if(profiles) {
       await waitFor(`document.querySelectorAll('.section-content .profile-score-rows').length===12 && !document.querySelector('.section-content.loading')`,60000);
       const profileTables=await evaluate(`[...document.querySelectorAll('.profile-score-rows')].map(table=>({rows:table.tBodies[0].rows.length,values:table.querySelectorAll('.profile-score-values .valrank').length,ranks:table.querySelectorAll('.profile-score-ranks .valrank').length,spans:[...table.querySelectorAll('td[rowspan]')].map(cell=>cell.rowSpan),numbers:[...table.querySelectorAll('.profile-score-values .valrank')].every(cell=>/^\\d+\\.\\d{2}$/.test(cell.textContent.trim())),rank:[...table.querySelectorAll('.profile-score-ranks .valrank')].every(cell=>cell.textContent.trim().length>0)}))`);

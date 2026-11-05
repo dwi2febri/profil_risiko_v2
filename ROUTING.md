@@ -404,7 +404,7 @@ kelompok parameter, sehingga garis terakhir mengikuti tinggi keterangan
 setelah pemisahan halaman. Pengukuran dilakukan pada lebar isi F4 dan
 dikembalikan sesudah dialog cetak ditutup. Unggah `assets/js/print-risk-compact.js`,
 `assets/css/print-table-grid.css`, serta controller cetak pada 20 folder role
-(versi script `20261105-06`). Setelah tes browser `--summaries`, jalankan
+(versi script `20261105-07`). Setelah tes browser `--summaries`, jalankan
 `python tests/print_parameter_grid_test.py` untuk memeriksa garis PDF pada
 subparameter TI Operasional dan batasnya terhadap rekap serta kop.
 
@@ -417,3 +417,10 @@ menggunakan posisi absolut agar tidak melewati kop halaman berikutnya.
 Tes browser `--summaries` juga membandingkan posisi kolom nilai dengan header
 pada empat Inheren dan enam KPMR. Tes garis PDF membaca raster untuk mencakup
 batas asli dan pengisi garis pada bagian lanjutan.
+
+Pemeriksaan cetak modal: `node tests/compact_print_browser_test.cjs --summaries --modal`.
+Mode modal sebelumnya mengubah `table-layout` ke `auto`. Override cetak sekarang
+mengunci `fixed` pada tabel pembungkus kelompok dan grid subparameternya, sehingga
+header berulang dan isi memakai lebar yang sama. Tinggi grid mengikuti isinya;
+tidak ada lagi `height:calc(100% - 16px)` yang dapat memotong baris teks.
+Tes PDF garis juga memeriksa teks parameter terhadap garis horizontal.

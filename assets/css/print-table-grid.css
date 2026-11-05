@@ -79,6 +79,15 @@ html body .report-wrap .clean-page :is(.kpmr-keterangan-merged, .inheren-keteran
 @media print {
     html body .report-wrap .clean-page table.print-group-source { display: none !important; }
     html body .report-wrap .clean-page table.print-grouped-assessment { display: table !important; }
+    /* Modal report pages previously override all tables with layout:auto.
+       Both levels must use the same fixed geometry during pagination. */
+    html body .report-wrap .clean-page table.print-grouped-assessment,
+    html body .report-wrap .clean-page table.print-parameter-grid {
+        table-layout: fixed !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
     html body .report-wrap .clean-page table.print-grouped-assessment :is(tr, td, th) {
         break-inside: auto !important;
         page-break-inside: auto !important;
@@ -86,7 +95,6 @@ html body .report-wrap .clean-page :is(.kpmr-keterangan-merged, .inheren-keteran
     html body .report-wrap .clean-page table.print-grouped-assessment td.print-group-details {
         padding: 0 !important;
         vertical-align: top !important;
-        height: 1px !important;
         /* One clipped stroke per divider, independent of nested-grid height. */
         background-image: linear-gradient(#111, #111), linear-gradient(#111, #111) !important;
         background-size: 1px 100%, 1px 100% !important;
