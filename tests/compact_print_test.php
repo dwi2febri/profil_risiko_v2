@@ -4,6 +4,11 @@ require __DIR__ . '/../fungsi/cetak_ringkas.php';
 $files = glob(__DIR__ . '/../*/laporan/cetak_laporan_profil_risiko.php');
 foreach ($files as $file) {
     $source = file_get_contents($file);
+    if (!str_contains($source, 'cetak_ringkas_letterhead($frame, $__projectRoot)')
+        || str_contains($source, '<b>Jenis Profil Risiko</b>') || str_contains($source, '<b>Tanggal Cetak</b>')
+        || !str_contains($source, 'class="report-page-layout"')) {
+        throw new RuntimeException('Letterhead or cover metadata incorrect: ' . $file);
+    }
     $start = strpos($source, '$sections = [');
     $end = strpos($source, '];', $start) + 2;
     eval(substr($source, $start, $end - $start));

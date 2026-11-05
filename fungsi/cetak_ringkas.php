@@ -1,4 +1,26 @@
 <?php
+/** Shared letterhead repeated by the outer print table on every physical page. */
+function cetak_ringkas_letterhead(array $frame, string $projectRoot): string
+{
+    $esc = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    $logo = '';
+    foreach (['admin/laporan/logo.png', 'admin/pembanding/logo.png', 'admin_kc/laporan/logo.png', 'admin/logo.png', 'logo.png', 'pic_area_semarang/logo.png', 'pic_area_semarang/assets/logo.png'] as $relative) {
+        $path = $projectRoot . '/' . $relative;
+        if (is_file($path)) {
+            $bytes = file_get_contents($path);
+            if ($bytes !== false && $bytes !== '') {
+                $logo = '<img class="report-letterhead-logo" src="data:image/png;base64,' . base64_encode($bytes) . '" alt="Logo BKK Jateng">';
+                break;
+            }
+        }
+    }
+    $office = strtoupper(trim((string)($frame['cabang'] ?? '')));
+    return '<header class="report-letterhead">' . $logo
+        . '<div class="report-letterhead-title">HASIL PELAPORAN PROFIL RISIKO' . ($office !== '' ? ' ' . $esc($office) : '')
+        . '<br>PT. BPR BKK JATENG (PERSERODA)</div>'
+        . '<div class="report-letterhead-address">Jl. Tanjung No.11-A Sekayu, Semarang Tengah, Kota Semarang 50132 - info@bprbkkinfo.com - (024) 86405241 - 0815 1400 0400</div></header>';
+}
+
 /** Keep the assessment summaries used by the compact complete report. */
 function cetak_ringkas_sections(array $sections, bool $isCabang = false): array
 {

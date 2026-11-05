@@ -332,7 +332,7 @@ function pdf_fallback_stratejik_html($conn, $id, $type){
     $uraianKpmr = trim((string)($ket['ket_profil_kpmr'] ?? ''));
     $uraianProfil = trim((string)($ket['ket_profil_risiko'] ?? ''));
     if ($type === 'kpmr') {
-        return '<div class="clean-page"><h4>Risiko Stratejik - KPMR</h4><table class="table table-bordered" style="width:100%;border-collapse:collapse;"><thead><tr><th>Komponen</th><th>Nilai</th><th>Peringkat</th><th>Keterangan</th></tr></thead><tbody><tr><td>KPMR Stratejik</td><td>'.esc_pdf(pdf_num($nilaiKp)).'</td><td>'.esc_pdf($rankKp).'</td><td>'.esc_pdf($uraianKpmr).'</td></tr></tbody></table></div>';
+        return '<div class="clean-page"><h4>Risiko Stratejik - KPMR</h4><table class="table table-bordered" style="width:100%;border-collapse:collapse;"><thead><tr><th>Komponen</th><th>Nilai</th><th>Peringkat</th><th>Keterangan</th></tr></thead><tbody><tr><td>KPMR Stratejik</td><td>'.esc_pdf(pdf_num($nilaiKp)).'</td><td>'.esc_pdf($rankKp).'</td><td>'.esc_pdf($uraianKpmr).'</td></tr></div>';
     }
     return '<div class="clean-page"><h4>Profil Risiko Stratejik</h4><table class="table table-bordered" style="width:100%;border-collapse:collapse;"><thead><tr><th>Jenis Risiko</th><th>Tingkat Risiko Inheren</th><th>Tingkat KPMR</th><th>Tingkat Risiko</th><th>Tingkat Kualitas Manajemen Risiko</th></tr></thead><tbody><tr><td>Risiko Stratejik</td><td>'.esc_pdf(pdf_num($nilaiIn)).'<br>'.esc_pdf($rankIn).'</td><td>'.esc_pdf(pdf_num($nilaiKp)).'<br>'.esc_pdf($rankKp).'</td><td>'.esc_pdf(pdf_num($nilaiT)).'<br>'.esc_pdf($rankT).'</td><td>'.esc_pdf($kualitas ?: $uraianProfil).'</td></tr></tbody></table></div>';
 }
@@ -2477,24 +2477,16 @@ body.modal-view .clean-page table.print-keterangan-kanan .row-ket-detail{
 
 <div class="report-wrap">
     <?php if (!$cetakProfilPerRisikoOnly || $onlyTindakLanjut): ?>
-    <div class="cover">
-        <div class="cover-title">
-            <img src="<?= esc_pdf($__logoCoverSrc) ?>" class="cover-logo" alt="Logo" onerror="this.style.display='none'">
-            <div class="cover-title-text">
-                <h1>LAPORAN PROFIL RISIKO</h1>
-                <h1>PT BPR BKK JATENG (PERSERODA)</h1>
-            </div>
-        </div>
+    <table class="report-page-layout"><thead><tr><td><?= cetak_ringkas_letterhead($frame, $__projectRoot) ?></td></tr></thead><tbody><tr><td class="report-page-body"><div class="cover">
+        <h1 class="cover-report-heading">HASIL LAPORAN PROFIL RISIKO</h1>
         <table>
             <tr><td style="width:190px;"><b>Kantor</b></td><td><?= esc_pdf($frame['cabang'] ?? '-') ?></td></tr>
             <tr><td><b>Tahun</b></td><td><?= esc_pdf($frame['tahun'] ?? '-') ?></td></tr>
             <tr><td><b>Periode</b></td><td><?= esc_pdf($frame['periode_laporan'] ?? '-') ?></td></tr>
-            <tr><td><b>Jenis Profil Risiko</b></td><td><?= esc_pdf($frame['tipe_user'] ?? '-') ?></td></tr>
-            <tr><td><b>Tanggal Cetak</b></td><td><?= date('d-m-Y H:i') ?></td></tr>
         </table>
         <?= pdf_cover_profil_nilai_peringkat_html($conn, $id, $frame) ?>
         <?= cetak_ringkas_cover_uraian($conn, $id) ?>
-    </div>
+    </div></td></tr></tbody></table>
     <?php endif; ?>
 
     <?php foreach($sections as $idx => $s):
@@ -2511,7 +2503,7 @@ body.modal-view .clean-page table.print-keterangan-kanan .row-ket-detail{
         $fallbackHtml = $fallbacks[$s['title']] ?? '';
         $pakaiFallbackLangsung = (($cetakProfilPerRisikoOnly || $onlyTindakLanjut) && trim((string)$fallbackHtml) !== '');
     ?>
-    <section class="print-section" data-section="<?= (int)$idx ?>" data-title="<?= esc_pdf($s['title']) ?>" data-fallback="<?= esc_pdf($fallbackHtml) ?>" data-direct-fallback="<?= $pakaiFallbackLangsung ? '1' : '0' ?>">
+    <table class="report-page-layout"><thead><tr><td><?= cetak_ringkas_letterhead($frame, $__projectRoot) ?></td></tr></thead><tbody><tr><td class="report-page-body"><section class="print-section" data-section="<?= (int)$idx ?>" data-title="<?= esc_pdf($s['title']) ?>" data-fallback="<?= esc_pdf($fallbackHtml) ?>" data-direct-fallback="<?= $pakaiFallbackLangsung ? '1' : '0' ?>">
         <div class="section-title"><?= esc_pdf(strtoupper(preg_replace('/\b(KPMR|INHEREN)\s+2\b/i', '$1', preg_replace('/^\d+\./', ($idx + 1) . '.', $s['title'])))) ?></div>
         <?php if ($pakaiFallbackLangsung): ?>
             <div class="section-content"><?= $fallbackHtml ?></div>
@@ -2522,7 +2514,7 @@ body.modal-view .clean-page table.print-keterangan-kanan .row-ket-detail{
             <iframe class="source-frame" data-candidates='<?= esc_pdf(json_encode($urls)) ?>' data-title="<?= esc_pdf($s['title']) ?>"></iframe>
             <div class="route-note">Route: <?= esc_pdf(implode(' / ', $pages)) ?></div>
         <?php endif; ?>
-    </section>
+    </section></td></tr></tbody></table>
     <?php endforeach; ?>
 
     <?php 
@@ -2535,9 +2527,9 @@ body.modal-view .clean-page table.print-keterangan-kanan .row-ket-detail{
     */
     if (!$cetakProfilPerRisikoOnly || $onlyTindakLanjut): 
     ?>
-        <?= pdf_pernyataan_ttd_html($conn, $frame) ?>
+        <table class="report-page-layout"><thead><tr><td><?= cetak_ringkas_letterhead($frame, $__projectRoot) ?></td></tr></thead><tbody><tr><td class="report-page-body"><?= pdf_pernyataan_ttd_html($conn, $frame) ?></td></tr></tbody></table>
     <?php endif; ?>
-</div>
+</tbody></table></div>
 
 <script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261030-07"></script>
 <script>

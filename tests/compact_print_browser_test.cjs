@@ -222,7 +222,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     const summaries=process.argv.includes('--summaries') || reputation;
     const profiles=process.argv.includes('--profiles');
     const pattern=reputation ? 'Risiko Reputasi - Inheren 2$' : profiles ? '- Profil$' : summaries ? '(?:Inheren 2|KPMR 2)$' : 'Risiko (Kredit|Likuiditas) - Inheren';
-    liveHtml=liveHtml.replace("const sections = Array.from(document.querySelectorAll('.print-section'));", "document.querySelectorAll('.print-section').forEach(el=>{if(!new RegExp("+JSON.stringify(pattern)+").test(el.dataset.title))el.remove();});const sections = Array.from(document.querySelectorAll('.print-section'));");
+    liveHtml=liveHtml.replace("const sections = Array.from(document.querySelectorAll('.print-section'));", "document.querySelectorAll('.print-section').forEach(el=>{if(!new RegExp("+JSON.stringify(pattern)+").test(el.dataset.title))(el.closest('.report-page-layout')||el).remove();});const sections = Array.from(document.querySelectorAll('.print-section'));");
     const tree=await cmd('Page.getFrameTree');
     await cmd('Page.setDocumentContent',{frameId:tree.frameTree.frame.id,html:liveHtml});
     if(profiles) {
@@ -231,7 +231,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
       assert(profileTables.length===12 && profileTables.every(table=>table.rows===2 && table.values===3 && table.ranks===3 && JSON.stringify(table.spans)==='[2,2]' && table.numbers && table.rank),'Profile score/rank row layout incorrect: '+JSON.stringify(profileTables));
       await evaluate(`document.querySelector('.print-section').scrollIntoView({block:'start'})`);await delay(250);
       const shot=await cmd('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(artifacts,'profile-score-rows.png'),Buffer.from(shot.data,'base64'));
-      await evaluate(`document.querySelectorAll('.cover,.pernyataan-page,.route-note').forEach(el=>el.remove())`);
+      await evaluate(`document.querySelectorAll('.cover,.pernyataan-page,.route-note').forEach(el=>(el.matches('.cover,.print-section,.pernyataan-page') ? (el.closest('.report-page-layout')||el) : el).remove())`);
       const pdf=await cmd('Page.printToPDF',{printBackground:true,preferCSSPageSize:true});fs.writeFileSync(path.join(artifacts,'profile-score-rows.pdf'),Buffer.from(pdf.data,'base64'));
       console.log('PASS all six risk profiles: current and previous scores above grades in separate bordered rows');
       await send('Browser.close');return;
@@ -309,9 +309,21 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     console.log('PASS justified narrative and recap text in actual print output');
     assert(await evaluate(`[...document.querySelectorAll('.section-content .print-note-normal,.section-content .print-note-normal *')].every(el=>Number(getComputedStyle(el).fontWeight)===400)`),'Narrative text is still bold');
     console.log('PASS normal-weight narrative text; recap labels and numeric styles retained');
+    if(process.argv.includes('--letterhead')) {
+      assert(await evaluate(`document.querySelectorAll('.report-letterhead').length===document.querySelectorAll('.report-page-layout').length && document.querySelector('.report-letterhead img').naturalWidth>0`),'Letterhead or BKK logo missing');
+      assert(await evaluate(`![...document.querySelectorAll('.cover > table tr')].some(row=>/Jenis Profil Risiko|Tanggal Cetak/.test(row.textContent))`),'Removed metadata still printed');
+      await cmd('Emulation.setEmulatedMedia',{media:'print'});
+      for(const orientation of ['portrait','landscape']) {
+        await evaluate(`setPrintOrientation(${JSON.stringify(orientation)})`);
+        const pdf=await cmd('Page.printToPDF',{printBackground:true,preferCSSPageSize:true});
+        fs.writeFileSync(path.join(artifacts,'letterhead-'+orientation+'.pdf'),Buffer.from(pdf.data,'base64'));
+      }
+      console.log('PASS actual cover and multi-page credit/liquidity PDFs with shared letterhead in both orientations');
+      await send('Browser.close');return;
+    }
     if(process.argv.includes('--cover')) {
       assert(await evaluate(`document.querySelector('.cover-narrative-text')?.textContent.trim().length>0`),'Saved profile narrative missing from cover');
-      await evaluate(`document.querySelectorAll('.print-section,.pernyataan-page,.route-note').forEach(el=>el.remove())`);
+      await evaluate(`document.querySelectorAll('.print-section,.pernyataan-page,.route-note').forEach(el=>(el.matches('.cover,.print-section,.pernyataan-page') ? (el.closest('.report-page-layout')||el) : el).remove())`);
       await cmd('Emulation.setDeviceMetricsOverride',{width:950,height:1300,deviceScaleFactor:1,mobile:false});
       await cmd('Emulation.setEmulatedMedia',{media:'print'});
       await evaluate(`window.scrollTo(0,0)`);await delay(250);
@@ -326,7 +338,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     assert(await evaluate(`[...document.querySelectorAll('table[data-compact-risk-print="1"]')].every(table=>{const footer=table.querySelector('tfoot.print-page-grid-footer');return footer && footer.rows[0].cells[0].colSpan===table.querySelector('colgroup').children.length && getComputedStyle(footer).display==='table-footer-group';})`),'Repeating page-cut closing rule missing');
     console.log('PASS repeating page footer closes every compact assessment table');
 
-    await evaluate(`document.querySelectorAll('.cover,.pernyataan-page,.route-note').forEach(el=>el.remove())`);
+    await evaluate(`document.querySelectorAll('.cover,.pernyataan-page,.route-note').forEach(el=>(el.matches('.cover,.print-section,.pernyataan-page') ? (el.closest('.report-page-layout')||el) : el).remove())`);
     await cmd('Emulation.setDeviceMetricsOverride',{width:950,height:1200,deviceScaleFactor:1,mobile:false});
     await cmd('Emulation.setEmulatedMedia',{media:'print'});
     await evaluate(`document.querySelector('.print-section').scrollIntoView({block:'start'})`);await delay(250);

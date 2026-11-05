@@ -382,3 +382,19 @@ Unggah bersama:
 90/100/110/125%, pergerakan maju/mundur, pembulatan fractional, kolom tetap,
 akhir tabel, wheel horizontal native dan alur event pointer saat drag. Pemeriksaan
 filter/data tetap tersedia di `node tests/tren_kc_browser_test.cjs`.
+
+### Kop cetak laporan profil risiko
+
+Cetak laporan lengkap dan tindak lanjut memakai kop logo BKK, judul kantor,
+alamat, dan garis ganda. Kop berada pada header tabel pembungkus sehingga
+berulang pada setiap halaman fisik, termasuk halaman lanjutan tabel panjang.
+Jenis Profil Risiko dan Tanggal Cetak dihapus dari identitas halaman awal;
+Kantor, Tahun, dan Periode tetap ditampilkan. Uraian tetap di bawah ringkasan.
+
+Unggah `fungsi/cetak_ringkas.php`, `assets/css/print-cover-summary.css`, dan
+`laporan/cetak_laporan_profil_risiko.php` pada seluruh folder role bersama-sama.
+CSS dibaca inline sehingga tidak memerlukan penggantian versi URL cache.
+Pemeriksaan: `php tests/compact_print_test.php`,
+`node tests/compact_print_browser_test.cjs --letterhead`, lalu
+`python tests/print_letterhead_pdf_test.py` untuk memeriksa setiap halaman
+PDF F4 vertikal dan horizontal.

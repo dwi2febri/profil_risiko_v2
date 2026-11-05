@@ -1,4 +1,14 @@
+.report-page-layout { width: 215mm; max-width: 100%; margin: 0 auto; border: 0; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.report-page-layout > thead > tr > td, .report-page-layout > tbody > tr > td { border: 0; padding: 0; vertical-align: top; }
+.report-page-layout > tbody > tr > td { font-size: 0; line-height: 0; }
+.report-page-body > * { font-size: 14px; line-height: normal; }
+@media print { html body .report-page-layout { width: 100% !important; max-width: 100% !important; margin: 0 !important; } }
 /* Reserve space for the saved profile narrative on the opening F4 page. */
+.report-letterhead { position: relative; width: 191mm; max-width: calc(100% - 24mm); margin: 7mm auto 4mm; padding: 2mm 0 2mm; min-height: 27mm; border-bottom: 4px double #000; color: #000; font-family: Arial, Helvetica, sans-serif; background: #fff; }
+.report-letterhead-logo { position: absolute; top: 0; left: 1mm; width: 20mm; height: 20mm; object-fit: contain; }
+.report-letterhead-title { min-height: 19mm; padding: 0 22mm; text-align: center; font-size: 15px; font-weight: 700; line-height: 1.25; }
+.report-letterhead-address { text-align: center; font-size: 9px; font-weight: 400; line-height: 1.3; }
+.cover .cover-report-heading { margin: 0 0 3mm !important; text-align: center; font-size: 15px !important; font-weight: 700; }
 .cover, body.modal-view .cover { padding: 7mm 13mm 0 !important; }
 .cover .cover-title { margin: 0 0 3mm !important; min-height: 14mm !important; }
 .cover .cover-logo { max-width: 14mm !important; max-height: 14mm !important; }
@@ -14,5 +24,14 @@
 .cover .cover-narrative h2 { margin: 0; border: 1px solid #111; padding: 5px; background: #e6e6e6; font-size: 12px !important; text-align: center; }
 .cover .cover-narrative-text { border: 1px solid #111; border-top: 0; padding: 7px; font-size: 12px !important; font-weight: 400 !important; line-height: 1.35 !important; white-space: pre-wrap; text-align: justify; text-align-last: left; overflow-wrap: break-word; }
 @media print {
+    /* The outer table reserves and repeats the complete letterhead on continuations. */
+    .report-page-layout > thead { display: table-header-group !important; }
+    .report-page-layout > thead > tr { break-inside: avoid; }
+    .report-letterhead { width: 100% !important; max-width: none !important; margin: 0 0 3mm !important; }
+    /* A single break before the next section avoids an empty page after a full table. */
+    .report-page-body .cover, .report-page-body .print-section { break-after: auto !important; page-break-after: auto !important; }
+    .report-wrap > .report-page-layout + .report-page-layout { break-before: page !important; page-break-before: always !important; }
+    .report-page-body .pernyataan-page { break-before: auto !important; page-break-before: auto !important; }
+    html body.print-portrait .report-wrap, html body.print-landscape .report-wrap, html body.modal-view .report-wrap { width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
     .cover, body.modal-view .cover { padding: 0 3mm !important; }
 }
