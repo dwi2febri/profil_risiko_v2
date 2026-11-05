@@ -25,6 +25,18 @@ window.prepareRiskPrintGroups=function(){
         Array.from(table.rows).filter(function(row){return row.closest('table')===table;}).forEach(function(row){Array.from(row.cells).forEach(function(cell){if(cell.colSpan===5)cell.colSpan=4;else if(cell.colSpan===3)cell.colSpan=2;else if(row.parentElement===table.tHead&&cell.colSpan===2)cell.colSpan=1;});});
         table.querySelectorAll('th,td').forEach(function(cell){cell.removeAttribute('width');['width','min-width','max-width'].forEach(function(property){cell.style.setProperty(property,property==='min-width'?'0':property==='max-width'?'none':'auto','important');});});
         source.classList.add('print-group-source');source.after(table);table.style.setProperty('display','table','important');
+        // Percent backgrounds and nested collapsed borders round differently.
+        // Use the repeated header's actual edge for both grid and divider paint.
+        var scoreHeading=Array.from(table.tHead.querySelectorAll('th')).find(function(cell){return cell.textContent.replace(/\s+/g,' ').trim()==='PERINGKAT RISIKO';});
+        if(scoreHeading)table.querySelectorAll('.print-parameter-grid').forEach(function(inner){
+            var details=inner.parentElement,gridRect=inner.getBoundingClientRect(),cellRect=details.getBoundingClientRect();
+            var scoreStart=scoreHeading.getBoundingClientRect().left-gridRect.left;
+            var letterWidth=table.getBoundingClientRect().width*.04;
+            var columns=inner.querySelector('colgroup').children;
+            [letterWidth,scoreStart-letterWidth,gridRect.width-scoreStart].forEach(function(width,index){columns[index].style.width=width+'px';});
+            details.style.setProperty('--print-letter-divider',(gridRect.left+letterWidth-cellRect.left-.5)+'px');
+            details.style.setProperty('--print-score-divider',(scoreHeading.getBoundingClientRect().left-cellRect.left-.5)+'px');
+        });
         // Let text determine row heights. The parent cell owns the full-height
         // dividers, so neither measured nor percentage heights are needed here.
     });

@@ -2531,7 +2531,7 @@ body.modal-view .clean-page table.print-keterangan-kanan .row-ket-detail{
     <?php endif; ?>
 </tbody></table></div>
 
-<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261105-07"></script>
+<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261105-08"></script>
 <script>
 (function(){
     window.setPrintOrientation = function(mode){

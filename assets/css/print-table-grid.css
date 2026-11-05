@@ -98,7 +98,8 @@ html body .report-wrap .clean-page :is(.kpmr-keterangan-merged, .inheren-keteran
         /* One clipped stroke per divider, independent of nested-grid height. */
         background-image: linear-gradient(#111, #111), linear-gradient(#111, #111) !important;
         background-size: 1px 100%, 1px 100% !important;
-        background-position: 7.0175% 0, 78.9473% 0 !important;
+        background-origin: border-box !important;
+        background-position: var(--print-letter-divider, 7.0175%) 0, var(--print-score-divider, 78.9473%) 0 !important;
         background-repeat: no-repeat !important;
         print-color-adjust: exact !important;
         -webkit-print-color-adjust: exact !important;

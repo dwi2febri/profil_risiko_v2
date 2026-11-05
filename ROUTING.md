@@ -404,7 +404,7 @@ kelompok parameter, sehingga garis terakhir mengikuti tinggi keterangan
 setelah pemisahan halaman. Pengukuran dilakukan pada lebar isi F4 dan
 dikembalikan sesudah dialog cetak ditutup. Unggah `assets/js/print-risk-compact.js`,
 `assets/css/print-table-grid.css`, serta controller cetak pada 20 folder role
-(versi script `20261105-07`). Setelah tes browser `--summaries`, jalankan
+(versi script `20261105-08`). Setelah tes browser `--summaries`, jalankan
 `python tests/print_parameter_grid_test.py` untuk memeriksa garis PDF pada
 subparameter TI Operasional dan batasnya terhadap rekap serta kop.
 
@@ -424,3 +424,11 @@ mengunci `fixed` pada tabel pembungkus kelompok dan grid subparameternya, sehing
 header berulang dan isi memakai lebar yang sama. Tinggi grid mengikuti isinya;
 tidak ada lagi `height:calc(100% - 16px)` yang dapat memotong baris teks.
 Tes PDF garis juga memeriksa teks parameter terhadap garis horizontal.
+
+Penyelarasan garis presisi (versi `20261105-08`): posisi pembatas dan lebar
+colgroup grid dalam diambil dari koordinat aktual header tabel, bukan dari
+persentase latar yang mengalami pembulatan berbeda. `background-origin` memakai
+border-box agar pusat garis isi tepat pada pusat garis header. Uji PDF aktual
+`python tests/print_column_strokes_test.py` memeriksa pergeseran serta ketebalan
+garis dalam raster, termasuk lanjutan Stratejik KPMR; uji ini melengkapi uji
+posisi elemen browser yang sebelumnya bertoleransi satu pixel.
