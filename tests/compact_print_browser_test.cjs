@@ -359,6 +359,11 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
     }
     await evaluate(`document.querySelectorAll('.print-section')[1].scrollIntoView({block:'start'})`);await delay(250);
     const liquidity=await cmd('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(artifacts,summaries?'compact-kpmr2-preview.png':'compact-liquidity-preview.png'),Buffer.from(liquidity.data,'base64'));
+    if(summaries) {
+      const alignment=await evaluate(`(()=>{prepareRiskPrintGroups();const results=[...document.querySelectorAll('.print-grouped-assessment')].map(table=>{const head=[...table.tHead.querySelectorAll('th')].find(cell=>cell.textContent.replace(/\\s+/g,' ').trim()==='PERINGKAT RISIKO');return {count:table.querySelectorAll('.print-parameter-grid').length,aligned:[...table.querySelectorAll('.print-parameter-grid')].every(grid=>{const score=grid.rows[0]?.cells[1];return head && score && Math.abs(score.getBoundingClientRect().left-head.getBoundingClientRect().left)<1;})};});window.dispatchEvent(new Event('afterprint'));return results;})()`);
+      assert(alignment.length===10 && alignment.every(item=>item.count>0 && item.aligned),'Print body/header column edges differ: '+JSON.stringify(alignment));
+      console.log('PASS all four Inheren and six KPMR print grids align their score columns with the repeated header');
+    }
     const pdf=await cmd('Page.printToPDF',{printBackground:true,preferCSSPageSize:true});
     const bytes=Buffer.from(pdf.data,'base64');assert(bytes.subarray(0,5).toString()==='%PDF-');fs.writeFileSync(path.join(artifacts,summaries?'compact-summaries-print.pdf':'compact-risk-print.pdf'),bytes);
     console.log(summaries?'PASS actual Inheren 2/KPMR 2 print sources and PDF without previous-period columns':'PASS actual credit/liquidity print source and PDF preview; nominal, score and merged notes retained');

@@ -23,6 +23,7 @@ window.prepareRiskPrintGroups=function(){
             details.appendChild(inner);number.rowSpan=1;note.rowSpan=1;row.replaceChildren(number,details,note);rows.slice(1).forEach(function(part){part.remove();});row.classList.add('print-parameter-group');
         });});
         Array.from(table.rows).filter(function(row){return row.closest('table')===table;}).forEach(function(row){Array.from(row.cells).forEach(function(cell){if(cell.colSpan===5)cell.colSpan=4;else if(cell.colSpan===3)cell.colSpan=2;else if(row.parentElement===table.tHead&&cell.colSpan===2)cell.colSpan=1;});});
+        table.querySelectorAll('th,td').forEach(function(cell){cell.removeAttribute('width');['width','min-width','max-width'].forEach(function(property){cell.style.setProperty(property,property==='min-width'?'0':property==='max-width'?'none':'auto','important');});});
         source.classList.add('print-group-source');source.after(table);table.style.setProperty('display','table','important');
         // Percentage height follows the final fragmented cell, unlike a screen
         // pixel height. Allow for Chromium's nested-table baseline and borders.

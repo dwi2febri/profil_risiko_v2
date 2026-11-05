@@ -404,6 +404,16 @@ kelompok parameter, sehingga garis terakhir mengikuti tinggi keterangan
 setelah pemisahan halaman. Pengukuran dilakukan pada lebar isi F4 dan
 dikembalikan sesudah dialog cetak ditutup. Unggah `assets/js/print-risk-compact.js`,
 `assets/css/print-table-grid.css`, serta controller cetak pada 20 folder role
-(versi script `20261105-05`). Setelah tes browser `--summaries`, jalankan
+(versi script `20261105-06`). Setelah tes browser `--summaries`, jalankan
 `python tests/print_parameter_grid_test.py` untuk memeriksa garis PDF pada
 subparameter TI Operasional dan batasnya terhadap rekap serta kop.
+
+Lebar sel lama di salinan cetak dinetralkan supaya colgroup mengatur header
+serta isi secara konsisten. Pembatas vertikal subparameter digambar sekali
+pada latar sel pembungkus dan dipotong per fragmen halaman; latar grid dalam
+transparan agar pembatas tetap utuh saat keterangannya lebih panjang. Baris
+parameter utama menutup pembatas huruf karena kolomnya digabung. Garis tidak
+menggunakan posisi absolut agar tidak melewati kop halaman berikutnya.
+Tes browser `--summaries` juga membandingkan posisi kolom nilai dengan header
+pada empat Inheren dan enam KPMR. Tes garis PDF membaca raster untuk mencakup
+batas asli dan pengisi garis pada bagian lanjutan.
