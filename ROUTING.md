@@ -301,3 +301,43 @@ python tests/tren_kc_export_files_test.py
 Pengujian mencakup seluruh cabang, pencarian/risiko terpilih, rentang lintas
 tahun yang panjang dan periode kosong. XLSX hasil uji juga dibuka melalui
 Microsoft Excel untuk memeriksa keterbacaan dan jumlah grafik tren.
+
+### Rekap per Risiko KC
+
+Submenu Rekap admin memakai rute `/admin/rekap_risiko_kc`, dengan filter GET
+`tahun`, `periode`, dan `wilayah`. Enam tabel menampilkan pilar, tingkat risiko,
+peringkat, pilar tertinggi dan parameter tertinggi pada pilar tersebut. Semua
+cabang pada wilayah terpilih ditampilkan tanpa paging. Filter risiko dan
+pencarian cabang bekerja di browser dan diikuti oleh ekspor.
+
+Nilai risiko memakai loader KC yang sama dengan tiga halaman rekap/tren.
+Pilar dinamis mengikuti checklist tahun terpilih. Nilai parameter utama
+dihitung dari rata-rata subparameter terpilih, atau nilai parameter langsung
+jika tidak memiliki subparameter terpilih. Kredit/likuiditas menggunakan nilai
+parameter utama tersimpan di isian inheren. Bila beberapa pilar atau parameter
+seri, seluruhnya dicantumkan. Pilar kosong tidak dimasukkan sebagai nol;
+peringkat tertinggi hanya dibandingkan dari nilai pilar yang tersedia.
+
+Excel menghasilkan satu sheet per risiko. PDF landscape A3 mengulang judul,
+legenda dan header kolom di setiap halaman serta menjaga baris tetap utuh.
+Kolom deskripsi membungkus teks panjang. Rata-rata mengikuti wilayah, sedangkan
+pencarian menyaring cabang saja, sama dengan tampilan web.
+
+File deployment:
+
+- `admin/index.php`
+- `admin/laporan/rekap_risiko_kc.php` (baru)
+- `admin/includes/rekap_risiko_kc_data.php` (baru)
+- `admin/includes/hasil_laporan_cabang_pillars.php` (tambahan nama dan nilai
+  parameter untuk pelacakan sumber)
+- `assets/css/rekap-risiko-kc.css` (baru)
+- `assets/js/rekap-risiko-kc.js` (baru)
+
+Memerlukan loader KC terbaru dan library lokal JSZip/pdfmake yang dijelaskan
+pada bagian sebelumnya. Tidak memerlukan tabel atau kolom database baru.
+
+```text
+php tests/rekap_risiko_kc_data_test.php
+node tests/rekap_risiko_kc_browser_test.cjs
+python tests/rekap_risiko_kc_files_test.py
+```

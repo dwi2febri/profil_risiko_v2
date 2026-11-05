@@ -680,6 +680,9 @@ body{zoom:0.72!important;font-size:14px!important;}
                                         <a href="index.php?page=tren_profil_kc">Tren Profil KC</a>
                                     </li>
                                     <li>
+                                        <a href="index.php?page=rekap_risiko_kc">Rekap per Risiko KC</a>
+                                    </li>
+                                    <li>
                                         <a href="index.php?page=progress_pengisian">Progress Pengisian</a>
                                     </li>
                                    
@@ -1671,6 +1674,9 @@ body{zoom:0.72!important;font-size:14px!important;}
                                 break;
                             case 'tren_profil_kc':
                                 include "laporan/tren_profil_kc.php";
+                                break;
+                            case 'rekap_risiko_kc':
+                                include "laporan/rekap_risiko_kc.php";
                                 break;
                             case 'progress_pengisian':
                                 include "laporan/progress_pengisian.php";

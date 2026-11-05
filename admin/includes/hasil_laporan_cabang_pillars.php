@@ -12,7 +12,7 @@ function hasil_kc_selected_pillars(mysqli $db, int $year): array
     $checked = [];
     foreach (hasil_kc_query_rows($db, 'SELECT ref_tipe,ref_id FROM pr_pilih_parameter_detail WHERE pr_pilih_parameter_id=' . (int)$header['id']) as $row) $checked[$row['ref_tipe'] . '|' . $row['ref_id']] = true;
     $groups = [];
-    $rows = hasil_kc_query_rows($db, "SELECT jr.nama_risiko,jr.id risk_id,p.id pillar_id,p.nama_pilar,p.urutan,pm.id parameter_id,sp.id sub_id FROM pr_jenis_risiko jr JOIN pr_pilar p ON p.jenis_risiko_id=jr.id AND p.pr_inheren_periode_id=$period JOIN pr_parameter pm ON pm.pilar_id=p.id AND pm.pr_inheren_periode_id=$period LEFT JOIN pr_sub_parameter sp ON sp.parameter_id=pm.id AND sp.pr_inheren_periode_id=$period WHERE jr.pr_inheren_periode_id=$period ORDER BY jr.urutan,p.urutan,p.id,pm.urutan,sp.urutan");
+    $rows = hasil_kc_query_rows($db, "SELECT jr.nama_risiko,jr.id risk_id,p.id pillar_id,p.nama_pilar,p.urutan,pm.id parameter_id,pm.nama_parameter,sp.id sub_id FROM pr_jenis_risiko jr JOIN pr_pilar p ON p.jenis_risiko_id=jr.id AND p.pr_inheren_periode_id=$period JOIN pr_parameter pm ON pm.pilar_id=p.id AND pm.pr_inheren_periode_id=$period LEFT JOIN pr_sub_parameter sp ON sp.parameter_id=pm.id AND sp.pr_inheren_periode_id=$period WHERE jr.pr_inheren_periode_id=$period ORDER BY jr.urutan,p.urutan,p.id,pm.urutan,sp.urutan");
     foreach ($rows as $row) {
         $risk = strtolower(trim(preg_replace('/^RISIKO\s+/i', '', $row['nama_risiko'])));
         if (!in_array($risk, ['operasional','kepatuhan','reputasi','stratejik'], true)) continue;
@@ -20,7 +20,7 @@ function hasil_kc_selected_pillars(mysqli $db, int $year): array
         $showSub = $sub > 0 && isset($checked['sub_parameter|' . $sub]);
         if (!isset($checked['parameter|' . $parameter]) && !$showSub) continue;
         if (!isset($groups[$risk][$pillar])) $groups[$risk][$pillar] = ['id'=>$pillar, 'name'=>$row['nama_pilar'], 'order'=>(int)$row['urutan'], 'risk_id'=>(int)$row['risk_id'], 'parameters'=>[]];
-        if (!isset($groups[$risk][$pillar]['parameters'][$parameter])) $groups[$risk][$pillar]['parameters'][$parameter] = ['subs'=>[]];
+        if (!isset($groups[$risk][$pillar]['parameters'][$parameter])) $groups[$risk][$pillar]['parameters'][$parameter] = ['name'=>$row['nama_parameter'],'subs'=>[]];
         if ($showSub) $groups[$risk][$pillar]['parameters'][$parameter]['subs'][$sub] = $sub;
     }
     return $groups;
@@ -40,10 +40,10 @@ function hasil_kc_calculate_pillar(array $pillar, array $detail, ?array $formula
             if (!hasil_kc_valid_score($value)) $missing++;
             else $items[] = (float)$value;
         }
-        if (count($items) === count($keys)) $scores[] = round(array_sum($items) / count($items), 2);
+        if (count($items) === count($keys)) $scores[$id] = round(array_sum($items) / count($items), 2);
     }
     $method = $weighted ? 'Pembobotan' : match ((int)($formula['perskalaan_metode'] ?? 3)) {1=>'Tertinggi', 2=>'Terendah', default=>'Rata-rata'};
-    if ($missing || !$scores) return ['value'=>null, 'method'=>$method, 'missing'=>$missing, 'parameters'=>count($pillar['parameters'])];
+    if ($missing || !$scores) return ['value'=>null, 'method'=>$method, 'missing'=>$missing, 'parameters'=>count($pillar['parameters']), 'parameter_values'=>$scores];
     $average = round(array_sum($scores) / count($scores), 2);
     if ($weighted) {
         $weight = (float)($formula['pembobotan'] ?? 0);
@@ -51,7 +51,7 @@ function hasil_kc_calculate_pillar(array $pillar, array $detail, ?array $formula
         $value = round($average * $weight / 100, 2);
         $method .= ' ' . $weight . '%';
     } else $value = match ($method) {'Tertinggi'=>max($scores), 'Terendah'=>min($scores), default=>$average};
-    return ['value'=>$value, 'method'=>$method, 'missing'=>0, 'parameters'=>count($pillar['parameters'])];
+    return ['value'=>$value, 'method'=>$method, 'missing'=>0, 'parameters'=>count($pillar['parameters']), 'parameter_values'=>$scores];
 }
 function hasil_kc_dynamic_pillars(mysqli $db, array $frames, int $year): array
 {
