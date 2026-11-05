@@ -1,4 +1,10 @@
 /* A single collapsed grid prevents doubled edges beside rowspan cells. */
+/* Remove editor separators below section titles; keep separators inside scores. */
+html body .report-wrap .clean-page hr:not(.clean-page table hr),
+html body .report-wrap .pernyataan-page .pernyataan-line {
+    display: none !important;
+}
+
 html body .report-wrap :is(.clean-page, .cover, .pernyataan-page)
     :is(table, table.print-close-page-cut, table.inheren-keterangan-rowspan) {
     border-collapse: collapse !important;
@@ -80,6 +86,7 @@ html body .report-wrap .clean-page :is(.kpmr-keterangan-merged, .inheren-keteran
     html body .report-wrap .clean-page table.print-grouped-assessment td.print-group-details {
         padding: 0 !important;
         vertical-align: top !important;
+        height: 1px !important;
     }
     html body .report-wrap .clean-page table.print-parameter-grid {
         margin: 0 !important;

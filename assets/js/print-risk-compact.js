@@ -2,6 +2,14 @@
 /* Chromium underestimates fragmented rowspans. In the print-only copy, each
    parameter group is one ordinary row; its parameter/subparameter grid is nested. */
 window.prepareRiskPrintGroups=function(){
+    // beforeprint can run while the viewport is still wider than the paper.
+    // Measure at the actual F4 content width, or the note later grows while
+    // the nested parameter grid retains its shorter screen height.
+    var paperWidth=document.body.classList.contains('print-landscape')?'306mm':'191mm';
+    document.querySelectorAll('.report-wrap').forEach(function(wrap){
+        if(!wrap.hasAttribute('data-print-width-style'))wrap.setAttribute('data-print-width-style',wrap.getAttribute('style')||'');
+        ['width','min-width','max-width'].forEach(function(property){wrap.style.setProperty(property,paperWidth,'important');});
+    });
     document.querySelectorAll('.clean-page table[data-compact-risk-score="1"]').forEach(function(source){
         if(source.classList.contains('print-group-source'))return;
         var table=source.cloneNode(true);table.removeAttribute('data-compact-risk-print');table.removeAttribute('data-compact-risk-score');table.removeAttribute('data-compact-inheren-score');table.removeAttribute('data-compact-kpmr-score');table.classList.add('print-grouped-assessment');
@@ -16,11 +24,13 @@ window.prepareRiskPrintGroups=function(){
         });});
         Array.from(table.rows).filter(function(row){return row.closest('table')===table;}).forEach(function(row){Array.from(row.cells).forEach(function(cell){if(cell.colSpan===5)cell.colSpan=4;else if(cell.colSpan===3)cell.colSpan=2;else if(row.parentElement===table.tHead&&cell.colSpan===2)cell.colSpan=1;});});
         source.classList.add('print-group-source');source.after(table);table.style.setProperty('display','table','important');
-        table.querySelectorAll('.print-parameter-grid').forEach(function(inner){inner.style.setProperty('height',Math.max(0,Math.ceil(inner.closest('.print-parameter-group').getBoundingClientRect().height)-2)+'px','important');});
+        // Percentage height follows the final fragmented cell, unlike a screen
+        // pixel height. Allow for Chromium's nested-table baseline and borders.
+        table.querySelectorAll('.print-parameter-grid').forEach(function(inner){inner.style.setProperty('height','calc(100% - 16px)','important');});
     });
 };
 window.addEventListener('beforeprint',window.prepareRiskPrintGroups);
-window.addEventListener('afterprint',function(){document.querySelectorAll('.print-grouped-assessment').forEach(function(table){table.remove();});document.querySelectorAll('.print-group-source').forEach(function(table){table.classList.remove('print-group-source');});});
+window.addEventListener('afterprint',function(){document.querySelectorAll('.print-grouped-assessment').forEach(function(table){table.remove();});document.querySelectorAll('.print-group-source').forEach(function(table){table.classList.remove('print-group-source');});document.querySelectorAll('[data-print-width-style]').forEach(function(wrap){var original=wrap.getAttribute('data-print-width-style');if(original)wrap.setAttribute('style',original);else wrap.removeAttribute('style');wrap.removeAttribute('data-print-width-style');});});
 window.removePrintEditorHeadings = function(root) {
     root.querySelectorAll('h1,h2,h3,h4,h5,h6,.card-header').forEach(function(el) {
         if (!el.closest('table') && !el.querySelector('table') && /^(Risiko\s|Profil\sRisiko|Isian\sKertas\sKerja)/i.test(el.textContent.trim())) el.remove();

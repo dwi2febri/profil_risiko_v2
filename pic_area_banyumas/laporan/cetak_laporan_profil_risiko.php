@@ -2177,7 +2177,7 @@ body.modal-view .clean-page .print-field{font-size:11px!important;line-height:1.
     <?php endif; ?>
 </tbody></table></div>
 
-<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261030-07"></script>
+<script src="<?= stripos(str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '')), '/laporan/') !== false ? '../../' : '../' ?>assets/js/print-risk-compact.js?v=20261105-05"></script>
 <script>
 (function(){
     window.setPrintOrientation = function(mode){

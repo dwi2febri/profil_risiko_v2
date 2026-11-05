@@ -398,3 +398,12 @@ Pemeriksaan: `php tests/compact_print_test.php`,
 `node tests/compact_print_browser_test.cjs --letterhead`, lalu
 `python tests/print_letterhead_pdf_test.py` untuk memeriksa setiap halaman
 PDF F4 vertikal dan horizontal.
+
+Perbaikan garis subparameter cetak memakai tinggi relatif tabel di dalam
+kelompok parameter, sehingga garis terakhir mengikuti tinggi keterangan
+setelah pemisahan halaman. Pengukuran dilakukan pada lebar isi F4 dan
+dikembalikan sesudah dialog cetak ditutup. Unggah `assets/js/print-risk-compact.js`,
+`assets/css/print-table-grid.css`, serta controller cetak pada 20 folder role
+(versi script `20261105-05`). Setelah tes browser `--summaries`, jalankan
+`python tests/print_parameter_grid_test.py` untuk memeriksa garis PDF pada
+subparameter TI Operasional dan batasnya terhadap rekap serta kop.

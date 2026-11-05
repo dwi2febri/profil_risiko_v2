@@ -57,7 +57,7 @@ unlink($file);echo json_encode(['cookie'=>$cookie]);`;
       if (packet.method === 'Runtime.exceptionThrown') runtimeErrors.push(packet.params.exceptionDetails);
     };
     const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
-      const id = ++seq, timer = setTimeout(() => { pending.delete(id); reject(new Error('CDP timeout: ' + method)); }, 20000);
+      const id = ++seq, timer = setTimeout(() => { pending.delete(id); reject(new Error('CDP timeout: ' + method)); }, method==='Page.printToPDF'?60000:20000);
       pending.set(id, { resolve, reject, timer }); socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
     });
     const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
