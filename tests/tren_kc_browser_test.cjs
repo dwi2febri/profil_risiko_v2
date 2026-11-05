@@ -55,7 +55,20 @@ function php(code){return JSON.parse(execFileSync('php',[],{cwd:root,input:'<?ph
   assert.equal(await evaluate(`document.querySelectorAll('.tren-kc-table td a').length`),0,'No invented scores for empty periods');
   await cmd('Page.navigate',{url:base+'admin/tren_profil_kc?start_year=2026&start_quarter=4&end_year=2026&end_quarter=1'});
   await waitFor(`document.querySelector('[role="alert"]')`);assert(!await evaluate(`!!document.querySelector('.tren-kc-table')`));
+  const reports=[];
+  for(const page of ['hasil_lapkc','rekap_cbg']){
+   await cmd('Page.navigate',{url:base+'admin/'+page+'?tahun=2026&periode=3&status_laporan=semua'});
+   await waitFor(`window.jQuery&&jQuery.fn.dataTable&&jQuery.fn.dataTable.isDataTable('#datatable-buttons1')`);
+   reports.push(await evaluate(`jQuery('#datatable-buttons1').DataTable().rows({order:'index'}).nodes().toArray().map(row=>({branch:Number(row.cells[1].textContent),scores:[...row.querySelectorAll('td[data-kind="score"]')].map(c=>c.textContent.trim())})).sort((a,b)=>a.branch-b.branch)`));
+  }
+  assert.deepEqual(reports[0],reports[1],'KC results and regional recap must display identical scores');
+  await cmd('Page.navigate',{url:base+'admin/tren_profil_kc?start_year=2026&start_quarter=3&end_year=2026&end_quarter=3&wilayah=semua'});
+  await waitFor(`document.querySelector('#tren-kc-count')?.textContent.includes('28 cabang')`);
+  const trend=await evaluate(`[...document.querySelectorAll('tr[data-branch]')].map(row=>({branch:Number(row.cells[0].textContent),scores:[...row.querySelectorAll('td[data-risk]:not(.tren-kc-trend)')].slice(0,6).map(c=>c.textContent.trim().replace(',','.').replace('—','–'))}))`);
+  assert.deepEqual(trend,reports[0],'Trend and both recap pages must display identical six risk scores for the same period');
+  assert.equal(reports[0].find(r=>r.branch===8).scores[5],'4.07','Wonogiri strategic must match profile, not stale 4.22');
   console.log('PASS: real route and GET filters, all 28 branches, 7-branch region, all period scores, composite rightmost, menu active, risk/search filters, missing/invalid range and mobile width');
+  console.log('PASS: all six risks agree across KC results, regional recap and KC trend; Wonogiri TW 3 strategic is 4.07');
   await send('Browser.close').catch(()=>{});
  } finally {
   if(socket)socket.close();chrome.kill();await delay(300);

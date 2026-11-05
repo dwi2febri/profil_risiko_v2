@@ -296,7 +296,7 @@
                                                                 <option value="reputasi">Rincian reputasi</option><option value="stratejik">Rincian stratejik</option>
                                                             </select>
                                                         </div>
-                                                        <p class="hasil-source-note">Nilai yang ditampilkan adalah nilai inheren. Klik angka untuk melihat sumbernya. Tanda &ndash; berarti nilai belum tersimpan. Kolom pilar mengikuti Pilih Parameter Inheren tahun terpilih. Pilar operasional, kepatuhan, reputasi, dan stratejik dihitung dari isian terpilih dengan metode perumusan yang berlaku.</p>
+                                                        <p class="hasil-source-note">Nilai yang ditampilkan adalah nilai inheren. Klik angka untuk melihat sumbernya. Tanda &ndash; berarti nilai belum tersedia. Kolom pilar mengikuti Pilih Parameter Inheren tahun terpilih. Nilai risiko operasional, kepatuhan, reputasi, dan stratejik mengikuti perhitungan Profil KC dari parameter terpilih dan metode penilaian yang berlaku.</p>
                                                         <div class="hasil-risk-legend" aria-label="Klasifikasi warna nilai pilar">
                                                             <span class="hasil-pillar-blue">Sangat rendah: 1&ndash;1,25</span>
                                                             <span class="hasil-pillar-green">Rendah: &gt;1,25&ndash;2,25</span>

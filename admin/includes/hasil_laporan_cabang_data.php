@@ -1,5 +1,6 @@
 <?php
-/** Read stored results only; never recalculate ratings or write to assessments. */
+require_once __DIR__ . '/hasil_laporan_cabang_dynamic_result.php';
+/** Read-only projections; never write assessment or profile results. */
 function hasil_kc_valid_score($value): bool
 {
     return is_numeric($value) && (float)$value >= 1 && (float)$value <= 5;
@@ -90,6 +91,18 @@ function hasil_kc_load_results(mysqli $db, array $frames): array
                 $out[$branch][$risk]['hasil_tingkat_risiko'] = $assessment['tingkat_risiko'];
                 $out[$branch][$risk]['hasil_peringkat'] = $assessment['peringkat'] ?? null;
                 $out[$branch][$risk]['_source'] = 'Assessment inheren';
+            }
+        }
+        foreach (['operasional','kepatuhan','reputasi','stratejik'] as $risk) {
+            // Profile forms calculate live; stored totals can predate edits.
+            $current = hasil_kc_source_dynamic_result($db, $id, $risk);
+            if (isset($current['_source'])) {
+                unset($out[$branch][$risk]['hasil_tingkat_risiko'], $out[$branch][$risk]['hasil_peringkat']);
+                $out[$branch][$risk]['_source'] = $current['_source'];
+                if (hasil_kc_valid_score($current['hasil_tingkat_risiko'])) {
+                    $out[$branch][$risk]['hasil_tingkat_risiko'] = number_format($current['hasil_tingkat_risiko'], 2, '.', '');
+                    $out[$branch][$risk]['hasil_peringkat'] = $current['hasil_peringkat'];
+                }
             }
         }
         $out[$branch]['total'] = $totals[$id] ?? [];

@@ -230,3 +230,28 @@ dipakai halaman Hasil Laporan KC. Pengujian baca saja:
 php tests/tren_kc_data_test.php
 node tests/tren_kc_browser_test.cjs
 ```
+
+### Konsistensi nilai inheren KC
+
+Ketiga halaman admin (Hasil Laporan KC, Rekap per Korwil, Tren Profil KC)
+memakai `hasil_kc_load_results()`. Untuk operasional, kepatuhan, reputasi,
+dan stratejik, skor dihitung saat dibaca dengan aturan halaman Profil KC:
+checklist parameter, rata-rata subparameter, rumus per pilar, serta metode
+risiko tertinggi/terendah/rata-rata atau pembobotan. Hasil tersimpan dipakai
+sebagai cadangan jika data perhitungan dinamis belum tersedia. Tidak ada
+penulisan ulang hasil maupun nilai komposit tersimpan saat membuka rekap.
+
+Perbaikan ini mencegah skor lama, misalnya Stratejik Wonogiri laporan 613
+tersimpan 4,22, mengalahkan hasil Profil KC yang berlaku 4,07.
+Rata-rata wilayah dan ekspor otomatis mengikuti sumber nilai yang sama.
+
+Unggah bersama:
+
+- `admin/includes/hasil_laporan_cabang_data.php`
+- `admin/includes/hasil_laporan_cabang_dynamic_result.php` (baru)
+- `admin/includes/hasil_laporan_cabang_table.php`
+
+`php tests/hasil_kc_data_test.php` membandingkan empat kalkulator secara
+independen dengan fungsi asli halaman profil, tanpa merender/menyimpan form.
+`node tests/tren_kc_browser_test.cjs` juga mencocokkan keenam nilai di ketiga
+halaman pada periode yang sama.

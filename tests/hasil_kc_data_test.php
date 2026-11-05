@@ -3,6 +3,7 @@ if (PHP_SAPI !== 'cli') exit(1);
 require __DIR__ . '/../conn/conn.php';
 require __DIR__ . '/../admin/includes/hasil_laporan_cabang_data.php';
 require __DIR__ . '/../admin/includes/hasil_laporan_cabang_pillars.php';
+require __DIR__ . '/kc_profile_source_fixture.php';
 function kc_assert($condition, string $message): void {if (!$condition) throw new RuntimeException($message);}
 foreach ([[1,'blue'],[1.25,'blue'],[1.26,'green'],[2.25,'green'],[2.26,'yellow'],[3.25,'yellow'],[3.26,'orange'],[4.25,'orange'],[4.26,'red'],[5,'red']] as [$score,$color]) {
     kc_assert(hasil_kc_pillar_band($score)[0] === $color, 'Incorrect pillar boundary: ' . $score);
@@ -40,7 +41,7 @@ kc_assert($regionFixture['solo']['values']['kredit'] === 3.0 && $regionFixture['
 kc_assert($regionFixture['semarang']['values']['kredit'] === null && $regionFixture['pekalongan']['values']['kredit'] === null, 'Empty region fabricated a zero risk value');
 $before = mysqli_fetch_assoc(mysqli_query($conn, 'SELECT COUNT(*) n,SUM(COALESCE(status_korwil,0)) korwil,SUM(COALESCE(status_skmr,0)) skmr FROM frame_laporan_profil_risiko'));
 $filled = 0;
-foreach ([1,2] as $quarter) {
+foreach ([1,2,3] as $quarter) {
     $frames = [];
     $result = mysqli_query($conn, 'SELECT id_profil_risiko,kantor_cabang FROM frame_laporan_profil_risiko WHERE user=3 AND tahun=2026 AND periode=' . $quarter . ' ORDER BY id_profil_risiko DESC');
     while ($row = mysqli_fetch_assoc($result)) if (!isset($frames[$row['kantor_cabang']])) $frames[$row['kantor_cabang']] = $row;
@@ -55,6 +56,12 @@ foreach ([1,2] as $quarter) {
             $expected = hasil_kc_valid_score($old['hasil_tingkat_risiko'] ?? null) ? $old['hasil_tingkat_risiko']
                 : (hasil_kc_valid_score($profile['inheren_' . $risk] ?? null) ? $profile['inheren_' . $risk]
                 : (hasil_kc_valid_score($assessment['tingkat_risiko'] ?? null) ? $assessment['tingkat_risiko'] : null));
+            if (in_array($risk, ['operasional','kepatuhan','reputasi','stratejik'], true)) {
+                $calculated = hasil_kc_source_dynamic_result($conn, $id, $risk);
+                $original = kc_profile_fixture_result($conn, $id, $risk);
+                kc_assert($calculated['hasil_tingkat_risiko'] === $original['hasil_tingkat_risiko'] && $calculated['hasil_peringkat'] === $original['hasil_peringkat'], "Profile calculator parity: $quarter/$branch/$risk");
+                if (isset($calculated['_source'])) $expected = hasil_kc_valid_score($original['hasil_tingkat_risiko']) ? number_format($original['hasil_tingkat_risiko'], 2, '.', '') : null;
+            }
             kc_assert(($data[$branch][$risk]['hasil_tingkat_risiko'] ?? null) === $expected, "Wrong source or report: $quarter/$branch/$risk");
             if (!hasil_kc_valid_score($old['hasil_tingkat_risiko'] ?? null) && $expected !== null) $filled++;
             foreach ($old as $key => $value) if (preg_match('/^pil[0-9]+_tingkat_risiko$/', $key)) kc_assert(($data[$branch][$risk][$key] ?? null) === $value, 'Stored pillar changed');
@@ -66,4 +73,6 @@ kc_assert(hasil_kc_load_results($conn, []) === [], 'Empty filter fabricated resu
 kc_assert(!hasil_kc_valid_score(0) && !hasil_kc_valid_score(null), 'Missing score treated as low risk');
 $after = mysqli_fetch_assoc(mysqli_query($conn, 'SELECT COUNT(*) n,SUM(COALESCE(status_korwil,0)) korwil,SUM(COALESCE(status_skmr,0)) skmr FROM frame_laporan_profil_risiko'));
 kc_assert($before === $after, 'Read-only results changed reports');
+$regression = hasil_kc_load_results($conn, [8=>['id_profil_risiko'=>613]]);
+kc_assert($regression[8]['stratejik']['hasil_tingkat_risiko'] === '4.07', 'Wonogiri strategic regression must match profile 4.07 rather than stored 4.22');
 echo "PASS branch results: source precedence, same-report matching, stored pillars, empty states; $filled previously missing risk values restored.\n";
