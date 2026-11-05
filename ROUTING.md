@@ -268,3 +268,36 @@ Pemeriksaan lengkap `php tests/kc_all_scores_composite_test.php` membandingkan
 keenam kalkulator, bobot, pembulatan dan peringkat komposit dengan fungsi asli
 halaman profil. Pada data lokal: 67 laporan, 402 nilai risiko; 29 komposit
 tersimpan kosong/tertinggal kini ditampilkan dari hasil perhitungan terkini.
+
+### Excel dan PDF Tren Profil KC
+
+Tombol Excel/PDF mengekspor rentang dan kantor wilayah yang sudah diterapkan,
+risiko yang sedang ditampilkan (komposit tetap terakhir), serta hasil pencarian
+cabang. Rata-rata wilayah mengikuti filter wilayah seperti pada web. Legenda,
+warna sel, nilai kosong, delta dan grafik tren kecil disertakan pada kedua
+format. Excel berupa XLSX asli, dengan angka numerik, kode cabang sebagai teks,
+header gabungan, kolom identitas beku, jumlah sampel rata-rata dan gambar tren.
+
+PDF landscape dibagi per risiko dan maksimum delapan triwulan per bagian.
+Grafik pada setiap bagian tetap mencakup seluruh rentang terpilih. A3 dipakai
+untuk lebih dari 12 baris, A4 untuk tabel lebih pendek. Baris tidak dipecah
+antarhalaman dan legenda diulang pada setiap bagian.
+
+Unggah:
+
+- `admin/laporan/tren_profil_kc.php`
+- `assets/css/tren-profil-kc.css`
+- `assets/js/tren-kc-export.js` (baru)
+
+Memakai library lokal yang sudah dipakai ekspor Hasil Laporan KC:
+`assets/js/vendor/jszip.min.js`, `assets/js/vendor/pdfmake.min.js`, dan
+`assets/js/vendor/pdfmake-vfs-fonts.js`. Pastikan ketiganya tersedia di server.
+
+```text
+node tests/tren_kc_export_browser_test.cjs
+python tests/tren_kc_export_files_test.py
+```
+
+Pengujian mencakup seluruh cabang, pencarian/risiko terpilih, rentang lintas
+tahun yang panjang dan periode kosong. XLSX hasil uji juga dibuka melalui
+Microsoft Excel untuk memeriksa keterbacaan dan jumlah grafik tren.

@@ -5,6 +5,7 @@
 .tren-kc-tools{display:flex;justify-content:space-between;gap:16px;margin:18px 0}.tren-kc-tools>div{width:260px;max-width:100%}
 .tren-kc-legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:12px}.tren-kc-legend span{padding:5px 9px;border-radius:5px;background:var(--pillar-bg);color:var(--pillar-ink)}
 .tren-kc-page .hasil-pillar-blue{--pillar-bg:#e7f1ff;--pillar-ink:#1746a2}.tren-kc-page .hasil-pillar-green{--pillar-bg:#e9f8ed;--pillar-ink:#176534}.tren-kc-page .hasil-pillar-yellow{--pillar-bg:#fff7cc;--pillar-ink:#735400}.tren-kc-page .hasil-pillar-orange{--pillar-bg:#fff0dc;--pillar-ink:#943c09}.tren-kc-page .hasil-pillar-red{--pillar-bg:#fde7e7;--pillar-ink:#a61e25}
+.tren-kc-export-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.tren-kc-export-tools button{border-color:#d8e1eb;color:#23364d;background:#fff;border-radius:7px}.tren-kc-export-tools button:hover{background:#edf4fc}.tren-kc-export-tools [role=status]{margin-left:6px}
 .tren-kc-scroll{width:100%;max-width:100%;overflow:auto;max-height:680px;border:1px solid #d8e1eb;border-radius:7px;scroll-behavior:auto;overflow-anchor:none}
 .tren-kc-scroll-top{height:18px;overflow-x:auto;overflow-y:hidden}.tren-kc-scroll-top>div{height:1px}.tren-kc-scroll-top[hidden]{display:none}
 .tren-kc-table{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;font-size:12px;color:#23364d;font-variant-numeric:tabular-nums}

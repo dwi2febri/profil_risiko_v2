@@ -23,7 +23,7 @@ while ($branch = mysqli_fetch_assoc($trenBranchQuery)) $trenBranches[(int)$branc
 $trenYearOptions = range(min(2024, max(2000, min($trenStartYear, $trenEndYear))), max((int)date('Y')+1, min(2100, max($trenStartYear, $trenEndYear, $trenDefaultYear))));
 $trenBase = $simproRouteConfig['roleBase'];
 ?>
-<link rel="stylesheet" href="../assets/css/tren-profil-kc.css?v=20261105-01">
+<link rel="stylesheet" href="../assets/css/tren-profil-kc.css?v=20261105-02">
 <div class="content-page"><div class="content"><div class="container-fluid tren-kc-page">
     <div class="page-title-box"><div class="page-title-right"><ol class="breadcrumb m-0"><li class="breadcrumb-item">Rekap</li><li class="breadcrumb-item active">Tren Profil KC</li></ol></div><h4 class="page-title">Tren Profil KC</h4></div>
     <div class="card"><div class="card-body">
@@ -46,6 +46,7 @@ $trenBase = $simproRouteConfig['roleBase'];
         <p class="tren-kc-note">Inheren: 1–1,25; &gt;1,25–2,25; &gt;2,25–3,25; &gt;3,25–4,25; &gt;4,25–5. Komposit: &lt;1,25; 1,25–&lt;2,25; 2,25–&lt;3,25; 3,25–&lt;4,25; ≥4,25.</p>
         <?php if (!$trenData): ?><div class="alert alert-light border" role="status">Belum ada laporan pada rentang dan wilayah ini. Seluruh cabang tetap ditampilkan agar kelengkapan data terlihat.</div><?php endif; ?>
         <div class="tren-kc-tools"><div><label for="tren-risk-view">Tampilan risiko</label><select id="tren-risk-view" class="form-select"><option value="semua">Semua risiko</option><?php foreach ($trenNames as $risk=>$label): if ($risk==='komposit') continue; ?><option value="<?= $risk ?>"><?= $label ?></option><?php endforeach; ?></select></div><div><label for="tren-branch-search">Cari cabang</label><input id="tren-branch-search" type="search" class="form-control" placeholder="Kode atau nama cabang"></div></div>
+        <div class="tren-kc-export-tools"><button type="button" class="btn btn-outline-secondary" id="tren-export-excel">Excel</button><button type="button" class="btn btn-outline-secondary" id="tren-export-pdf">PDF</button><span id="tren-export-status" class="tren-kc-note mb-0" role="status" aria-live="polite"></span></div>
         <div class="tren-kc-scroll-top" aria-label="Geser kolom tabel" tabindex="0"><div></div></div>
         <div class="tren-kc-scroll" tabindex="0" role="region" aria-label="Tabel tren per risiko, geser untuk melihat nilai komposit di kanan">
         <table class="tren-kc-table"><caption class="visually-hidden">Tren Profil KC, <?= count($trenPeriods) ?> triwulan. Nilai komposit pada kelompok paling kanan.</caption><thead><tr>
@@ -77,3 +78,9 @@ $trenBase = $simproRouteConfig['roleBase'];
     </div></div>
 </div></div></div>
 <script src="../assets/js/tren-profil-kc.js?v=20261105-01"></script>
+<?php if (!$trenError): ?>
+<script>window.trenKCExportContext=<?= json_encode(['region'=>$trenRegions[$trenRegion][0], 'range'=>'TW '.$trenStartQuarter.' '.$trenStartYear.' sampai TW '.$trenEndQuarter.' '.$trenEndYear, 'filename'=>'tren_profil_kc_'.$trenRegion.'_'.$trenStartYear.'_tw'.$trenStartQuarter.'_'.$trenEndYear.'_tw'.$trenEndQuarter], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR) ?>;</script>
+<script src="../assets/js/vendor/pdfmake.min.js?v=0.2.20"></script>
+<script src="../assets/js/vendor/pdfmake-vfs-fonts.js?v=0.2.20"></script>
+<script src="../assets/js/tren-kc-export.js?v=20261105-01"></script>
+<?php endif; ?>
