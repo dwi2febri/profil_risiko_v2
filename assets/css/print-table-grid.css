@@ -92,6 +92,7 @@ html body .report-wrap .clean-page :is(.kpmr-keterangan-merged, .inheren-keteran
         break-inside: auto !important;
         page-break-inside: auto !important;
     }
+    html body .report-wrap .clean-page table.print-grouped-assessment :is(td, th) { border: 1px solid #111 !important; }
     html body .report-wrap .clean-page table.print-grouped-assessment td.print-group-details {
         padding: 0 !important;
         vertical-align: top !important;
@@ -119,14 +120,34 @@ html body .report-wrap .clean-page :is(.kpmr-keterangan-merged, .inheren-keteran
     }
     html body .report-wrap .clean-page table.print-parameter-grid tr:first-child > :is(th, td) { border-top: 0 !important; }
     /* Main parameters span the letter/text columns: cover that divider here. */
-    html body .report-wrap .clean-page table.print-parameter-grid tr:first-child > :is(th, td) { background: #fff !important; }
-    html body .report-wrap .clean-page table.print-parameter-grid tr:first-child > :first-child { border-right: 1px solid #111 !important; }
+    html body .report-wrap .clean-page table.print-parameter-grid tr:first-child > :first-child {
+        background: #fff !important;
+        background-clip: padding-box !important;
+        border-right: 1px solid transparent !important;
+    }
     html body .report-wrap .clean-page table.print-parameter-grid tr:last-child > :is(th, td) { border-bottom: 0 !important; }
     html body .report-wrap .clean-page table.print-parameter-grid tr > :first-child { border-left: 0 !important; }
     html body .report-wrap .clean-page table.print-parameter-grid tr > :last-child { border-right: 0 !important; }
     html body .report-wrap .clean-page table.print-grouped-assessment > thead th {
         overflow-wrap: normal !important;
         word-break: normal !important;
+    }
+    /* Draw this boundary by the same method as the body, without overlapping
+       collapsed cell borders whose rounding differs at high print zoom. */
+    html body .report-wrap .clean-page tr.print-assessment-headings {
+        background: linear-gradient(#111, #111) var(--print-score-heading) 0 / 1px 100% no-repeat #e6e6e6 !important;
+        background-origin: border-box !important;
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+    }
+    html body .report-wrap .clean-page tr.print-assessment-headings > th { background: transparent !important; }
+    html body .report-wrap .clean-page tr.print-assessment-headings > th:nth-child(2) { border-right-color: transparent !important; }
+    html body .report-wrap .clean-page tr.print-assessment-headings > th:nth-child(3) { border-left-color: transparent !important; }
+    /* Do not leave an empty sliver of the next subparameter at a page bottom. */
+    html body .report-wrap .clean-page table.print-parameter-grid tr,
+    html body .report-wrap .clean-page table.print-parameter-grid :is(th, td) {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
     }
 }
 

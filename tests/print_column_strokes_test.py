@@ -15,15 +15,23 @@ with fitz.open(pdf) as document:
         if not kind or not headings:
             continue
         heading = headings[0]
-        edges = [item['rect'] for item in page.get_drawings()
-                 if item['rect'].width < 1.6 and 0 < heading.x0 - item['rect'].x0 < 15
-                 and item['rect'].y0 <= heading.y0 and item['rect'].y1 >= heading.y1]
-        if not edges:
-            continue
-        edge = max(edges, key=lambda rect: rect.x0)
-        centre = (edge.x0 + edge.x1) / 2
         raster = page.get_pixmap(matrix=fitz.Matrix(4, 4), alpha=False)
         pixels = memoryview(raster.samples)
+        # Header and body deliberately share the same clipped stroke painter.
+        # Read the header stroke from pixels instead of assuming a native border.
+        header_y = round((heading.y0 + heading.y1) * 2)
+        runs = []
+        for x in range(round((heading.x0 - 15) * 4), round((heading.x0 - 1) * 4)):
+            offset = (header_y * raster.width + x) * 3
+            if max(pixels[offset:offset + 3]) < 150:
+                if runs and runs[-1][-1] == x - 1:
+                    runs[-1].append(x)
+                else:
+                    runs.append([x])
+        runs = [run for run in runs if 2 <= len(run) <= 4]
+        assert runs, (number, 'Header divider missing or too thick')
+        run = runs[-1]
+        centre = (run[0] + run[-1] + 1) / 8
         checked = 0
         recaps = page.search_for('REKAP PENILAIAN')
         stop = min([page.rect.height - 40] + [rect.y0 - 20 for rect in recaps if rect.y0 > heading.y1])

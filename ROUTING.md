@@ -383,52 +383,48 @@ Unggah bersama:
 akhir tabel, wheel horizontal native dan alur event pointer saat drag. Pemeriksaan
 filter/data tetap tersedia di `node tests/tren_kc_browser_test.cjs`.
 
-### Kop cetak laporan profil risiko
+### Kop dan grid cetak laporan profil risiko
 
 Cetak laporan lengkap dan tindak lanjut memakai kop logo BKK, judul kantor,
-alamat, dan garis ganda. Kop berada pada header tabel pembungkus sehingga
-berulang pada setiap halaman fisik, termasuk halaman lanjutan tabel panjang.
-Jenis Profil Risiko dan Tanggal Cetak dihapus dari identitas halaman awal;
-Kantor, Tahun, dan Periode tetap ditampilkan. Uraian tetap di bawah ringkasan.
+alamat, dan garis ganda. Kop berulang pada halaman fisik melalui header tabel
+pembungkus. Identitas awal hanya menampilkan Kantor, Tahun, dan Periode.
+Uraian tetap berada di bawah ringkasan.
 
-Unggah `fungsi/cetak_ringkas.php`, `assets/css/print-cover-summary.css`, dan
-`laporan/cetak_laporan_profil_risiko.php` pada seluruh folder role bersama-sama.
-CSS dibaca inline sehingga tidak memerlukan penggantian versi URL cache.
-Pemeriksaan: `php tests/compact_print_test.php`,
-`node tests/compact_print_browser_test.cjs --letterhead`, lalu
-`python tests/print_letterhead_pdf_test.py` untuk memeriksa setiap halaman
-PDF F4 vertikal dan horizontal.
+Tabel Inheren/KPMR kualitatif menggunakan susunan kolom tetap pada grid dalam
+dan tabel luar, termasuk dalam mode modal. Sel dibersihkan dari border dan
+latar inline bawaan. Garis peringkat pada header dan isi digambar dengan metode
+yang sama pada koordinat aktual header; tidak ada tumpukan border native pada
+garis tersebut. Baris subparameter dijaga utuh saat pindah halaman. Footer
+kosong buatan dihilangkan dari salinan tabel ini agar tidak menghasilkan kotak
+tipis di tepi halaman. Semua teks dan nilai asli dipertahankan.
 
-Perbaikan garis subparameter cetak memakai tinggi relatif tabel di dalam
-kelompok parameter, sehingga garis terakhir mengikuti tinggi keterangan
-setelah pemisahan halaman. Pengukuran dilakukan pada lebar isi F4 dan
-dikembalikan sesudah dialog cetak ditutup. Unggah `assets/js/print-risk-compact.js`,
-`assets/css/print-table-grid.css`, serta controller cetak pada 20 folder role
-(versi script `20261105-08`). Setelah tes browser `--summaries`, jalankan
-`python tests/print_parameter_grid_test.py` untuk memeriksa garis PDF pada
-subparameter TI Operasional dan batasnya terhadap rekap serta kop.
+Unggah bersama:
 
-Lebar sel lama di salinan cetak dinetralkan supaya colgroup mengatur header
-serta isi secara konsisten. Pembatas vertikal subparameter digambar sekali
-pada latar sel pembungkus dan dipotong per fragmen halaman; latar grid dalam
-transparan agar pembatas tetap utuh saat keterangannya lebih panjang. Baris
-parameter utama menutup pembatas huruf karena kolomnya digabung. Garis tidak
-menggunakan posisi absolut agar tidak melewati kop halaman berikutnya.
-Tes browser `--summaries` juga membandingkan posisi kolom nilai dengan header
-pada empat Inheren dan enam KPMR. Tes garis PDF membaca raster untuk mencakup
-batas asli dan pengisi garis pada bagian lanjutan.
+- `fungsi/cetak_ringkas.php` untuk kop bersama (jika belum diperbarui).
+- `assets/css/print-cover-summary.css` untuk tata letak kop (jika belum diperbarui).
+- `assets/css/print-table-grid.css`.
+- `assets/js/print-risk-compact.js`.
+- `laporan/cetak_laporan_profil_risiko.php` pada seluruh 20 folder role,
+  dengan versi script `20261105-09`.
 
-Pemeriksaan cetak modal: `node tests/compact_print_browser_test.cjs --summaries --modal`.
-Mode modal sebelumnya mengubah `table-layout` ke `auto`. Override cetak sekarang
-mengunci `fixed` pada tabel pembungkus kelompok dan grid subparameternya, sehingga
-header berulang dan isi memakai lebar yang sama. Tinggi grid mengikuti isinya;
-tidak ada lagi `height:calc(100% - 16px)` yang dapat memotong baris teks.
-Tes PDF garis juga memeriksa teks parameter terhadap garis horizontal.
+CSS dibaca inline. Versi script pada controller harus ikut diperbarui agar
+browser production mengambil JavaScript terbaru.
 
-Penyelarasan garis presisi (versi `20261105-08`): posisi pembatas dan lebar
-colgroup grid dalam diambil dari koordinat aktual header tabel, bukan dari
-persentase latar yang mengalami pembulatan berbeda. `background-origin` memakai
-border-box agar pusat garis isi tepat pada pusat garis header. Uji PDF aktual
-`python tests/print_column_strokes_test.py` memeriksa pergeseran serta ketebalan
-garis dalam raster, termasuk lanjutan Stratejik KPMR; uji ini melengkapi uji
-posisi elemen browser yang sebelumnya bertoleransi satu pixel.
+Pemeriksaan data dan tampilan:
+
+- `php tests/compact_print_test.php`
+- `php tests/print_declaration_test.php`
+- `node tests/compact_print_browser_test.cjs --summaries --modal`
+- `node tests/compact_print_browser_test.cjs --summaries`
+- `node tests/compact_print_browser_test.cjs --modal` (Kredit/Likuiditas)
+- `python tests/print_column_strokes_test.py` memeriksa garis PDF aktual,
+  termasuk tebal dan pusat garis pada header serta halaman lanjutan.
+- `python tests/print_parameter_grid_test.py` memeriksa garis lanjutan
+  Operasional serta teks yang melintasi batas baris.
+- `python tests/print_note_bounds_test.py <file.pdf>` memeriksa batas keterangan.
+
+Tes browser memeriksa header dan isi pada empat Inheren dan enam KPMR,
+larangan pecah baris subparameter, tidak adanya footer kosong, serta kesamaan
+semua node teks pada tabel sumber dan salinan cetak. Pemeriksaan kop terpisah:
+`node tests/compact_print_browser_test.cjs --letterhead`, dilanjutkan
+`python tests/print_letterhead_pdf_test.py`.

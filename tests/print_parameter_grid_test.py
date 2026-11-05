@@ -22,9 +22,8 @@ with fitz.open(pdf) as document:
         strokes = [drawing['rect'] for drawing in page.get_drawings()]
         horizontal = [r for r in strokes if r.height < 1.6 and r.width > page.rect.width * .3
                       and label.y1 < r.y0 < summary_top]
-        assert horizontal, 'Recap top border missing'
-        boundary = max(r.y0 for r in horizontal)
         vertical = [r for r in strokes if r.width < 1.6 and r.height > 3]
+        boundary = max(r.y0 for r in horizontal) if horizontal else max(r.y1 for r in vertical if r.x0 > page.rect.width * .8)
         letter_edges = [r for r in vertical if label.x0 - 12 < r.x0 < label.x0]
         score_edges = [r for r in vertical if label.x1 < r.x0 < label.x1 + 20]
         # Full-height dividers are clipped cell backgrounds; rasterize so the
@@ -34,7 +33,17 @@ with fitz.open(pdf) as document:
         def dark_near(x, y):
             return any(max(pixels[(y * raster.width + xx) * 3:(y * raster.width + xx) * 3 + 3]) < 100
                        for xx in range(max(0, round(x * 3) - 3), min(raster.width, round(x * 3) + 4)))
-        score_x = min(r.x0 for r in score_edges)
+        heading = page.search_for('PERINGKAT')[0]
+        header_y = round((heading.y0 + heading.y1) * 1.5)
+        runs = []
+        for x in range(round((heading.x0 - 15) * 3), round((heading.x0 - 1) * 3)):
+            offset = (header_y * raster.width + x) * 3
+            if max(pixels[offset:offset + 3]) < 150:
+                if runs and runs[-1][-1] == x - 1: runs[-1].append(x)
+                else: runs.append([x])
+        runs = [run for run in runs if 1 <= len(run) <= 4]
+        assert runs, 'Header divider missing'
+        score_x = (runs[-1][0] + runs[-1][-1] + 1) / 6
         for name, x in [('letter', label.x0 - 5), ('score', score_x)]:
             gap = longest = 0
             for y in range(round(label.y0 * 3), round(boundary * 3)):

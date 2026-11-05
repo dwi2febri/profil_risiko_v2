@@ -12,7 +12,8 @@ window.prepareRiskPrintGroups=function(){
     });
     document.querySelectorAll('.clean-page table[data-compact-risk-score="1"]').forEach(function(source){
         if(source.classList.contains('print-group-source'))return;
-        var table=source.cloneNode(true);table.removeAttribute('data-compact-risk-print');table.removeAttribute('data-compact-risk-score');table.removeAttribute('data-compact-inheren-score');table.removeAttribute('data-compact-kpmr-score');table.classList.add('print-grouped-assessment');
+        var table=source.cloneNode(true);table.removeAttribute('data-compact-risk-print');table.removeAttribute('data-compact-risk-score');table.removeAttribute('data-compact-inheren-score');table.removeAttribute('data-compact-kpmr-score');table.classList.add('print-grouped-assessment');table.style.setProperty('border','1px solid #111','important');
+        if(table.tFoot)table.tFoot.remove();
         table.querySelectorAll('colgroup').forEach(function(group){group.remove();});var group=document.createElement('colgroup');['5%','45%','12%','38%'].forEach(function(width){var col=document.createElement('col');col.style.width=width;group.appendChild(col);});table.prepend(group);
         Array.from(table.tBodies).forEach(function(body){Array.from(body.rows).forEach(function(row){
             var note=row.querySelector(':scope > .kpmr-keterangan-merged');if(!note)return;
@@ -23,11 +24,12 @@ window.prepareRiskPrintGroups=function(){
             details.appendChild(inner);number.rowSpan=1;note.rowSpan=1;row.replaceChildren(number,details,note);rows.slice(1).forEach(function(part){part.remove();});row.classList.add('print-parameter-group');
         });});
         Array.from(table.rows).filter(function(row){return row.closest('table')===table;}).forEach(function(row){Array.from(row.cells).forEach(function(cell){if(cell.colSpan===5)cell.colSpan=4;else if(cell.colSpan===3)cell.colSpan=2;else if(row.parentElement===table.tHead&&cell.colSpan===2)cell.colSpan=1;});});
-        table.querySelectorAll('th,td').forEach(function(cell){cell.removeAttribute('width');['width','min-width','max-width'].forEach(function(property){cell.style.setProperty(property,property==='min-width'?'0':property==='max-width'?'none':'auto','important');});});
+        table.querySelectorAll('th,td').forEach(function(cell){cell.removeAttribute('width');Array.from(cell.style).filter(function(property){return property.indexOf('border')===0||property.indexOf('background')===0;}).forEach(function(property){cell.style.removeProperty(property);});['width','min-width','max-width'].forEach(function(property){cell.style.setProperty(property,property==='min-width'?'0':property==='max-width'?'none':'auto','important');});});
         source.classList.add('print-group-source');source.after(table);table.style.setProperty('display','table','important');
         // Percent backgrounds and nested collapsed borders round differently.
         // Use the repeated header's actual edge for both grid and divider paint.
         var scoreHeading=Array.from(table.tHead.querySelectorAll('th')).find(function(cell){return cell.textContent.replace(/\s+/g,' ').trim()==='PERINGKAT RISIKO';});
+        if(scoreHeading){var headingRow=scoreHeading.parentElement;headingRow.classList.add('print-assessment-headings');headingRow.style.setProperty('--print-score-heading',(scoreHeading.getBoundingClientRect().left-headingRow.getBoundingClientRect().left-parseFloat(getComputedStyle(table).borderLeftWidth))+'px');}
         if(scoreHeading)table.querySelectorAll('.print-parameter-grid').forEach(function(inner){
             var details=inner.parentElement,gridRect=inner.getBoundingClientRect(),cellRect=details.getBoundingClientRect();
             var scoreStart=scoreHeading.getBoundingClientRect().left-gridRect.left;
