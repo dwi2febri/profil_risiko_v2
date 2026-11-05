@@ -317,7 +317,7 @@ if (isset($_POST['submit'])) {
                                         
                                         <h4 class="header-title mb-4">Filter</h4>
 
-                                        <form class="needs-validation" action="" method="POST" enctype="multipart/form-data">  <form class="needs-validation" action="" method="POST" enctype="multipart/form-data">
+                                        <form class="needs-validation" action="<?= htmlspecialchars(simpro_route_url($simproRouteConfig['roleBase'], ['page' => 'hasil_lapkc']), ENT_QUOTES, 'UTF-8') ?>" method="GET">
                                             <div class="row">
                                                
                                                 <div class="mb-3">
@@ -355,7 +355,7 @@ if (isset($_POST['submit'])) {
                                                         </select>
                                                 </div>
                                                 <div class="mb-3 text-center">
-                                                        <button class="btn btn-primary" type="submit" name="submit">Cari</button>
+                                                        <button class="btn btn-primary" type="submit">Cari</button>
                                                 </div>
 
                                             </div>

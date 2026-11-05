@@ -137,3 +137,31 @@ Regresi lokal:
 php -d short_open_tag=1 tests/php_short_tags_test.php
 php -d short_open_tag=0 tests/php_short_tags_test.php
 ```
+
+### Filter rekap divisi / hasil laporan KC pada PHP-FPM
+
+Form filter memakai GET ke alias `rekap_dvs` dan `hasil_lapkc`, sehingga tahun,
+periode, dan status laporan langsung menjadi parameter URL. Tag form ganda pada
+rekap divisi juga dihapus. Kiriman POST dari form versi lama ditangani di awal
+`simpro_routes_bootstrap()` dengan redirect 303 ke GET sebelum layout dikeluarkan.
+
+Sebelumnya controller memuat HTML layout, kemudian file laporan memanggil
+`header('Location: ...')` dan `exit`. Pada PHP-FPM dengan output buffer kecil,
+header HTTP bisa sudah terkirim; redirect gagal dan layout berhenti sebelum
+JavaScript tema menghapus keadaan loading. Gejalanya dapat berupa layar gelap.
+
+Untuk deployment admin, unggah bersama:
+
+- `fungsi/pretty_routes.php`
+- `admin/laporan/rekap_divisi.php`
+- `admin/laporan/hasil_laporan_cabang.php`
+
+Perubahan form yang sama juga diterapkan pada role lain yang mempunyai halaman
+tersebut. Jika OPcache production tidak memeriksa perubahan file, reload PHP 8.4
+setelah upload. Aturan rewrite Nginx tetap digunakan.
+
+Pengujian HTTP `tests/report_filter_http_test.php` memeriksa redirect POST 303,
+URL filter, form GET tunggal, pilihan tahun/periode, dan HTML sampai penutup serta
+script layout; mencakup status semua/diterima dan periode tanpa data. Pengujian
+lokal juga dijalankan pada server PHP dengan `output_buffering=4096` dan
+`short_open_tag=1` untuk meniru perbedaan konfigurasi production.

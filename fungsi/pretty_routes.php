@@ -52,6 +52,22 @@ function simpro_routes_bootstrap(): array
     }
     // Legacy includes occasionally read REQUEST rather than GET.
     foreach (['page', 'id', 'tab'] as $key) if (isset($_GET[$key])) $_REQUEST[$key] = $_GET[$key];
+    // Older cached filter forms still POST to the role controller. Redirect
+    // these read-only filters before any layout output can flush PHP headers.
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['submit'])
+        && in_array($_GET['page'] ?? '', ['rekap_dvs', 'hasil_lapkc'], true)) {
+        $filters = ['page' => $_GET['page']];
+        foreach (['tahun', 'periode'] as $key) {
+            $value = $_POST[$key] ?? $_GET[$key] ?? 0;
+            $filters[$key] = is_scalar($value) ? (int)$value : 0;
+        }
+        if ($filters['page'] === 'hasil_lapkc') {
+            $status = $_POST['status_laporan'] ?? $_GET['status_laporan'] ?? 'semua';
+            $filters['status_laporan'] = in_array($status, ['semua', 'diterima'], true) ? $status : 'semua';
+        }
+        header('Location: '.simpro_route_url($roleBase, $filters), true, 303);
+        exit;
+    }
     // Progress Excel is dispatched by the existing role controller after its
     // layout. Hold that layout so the download can discard it before XML output,
     // including on PHP-FPM installations with output_buffering disabled/small.
