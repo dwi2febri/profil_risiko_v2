@@ -234,12 +234,17 @@ node tests/tren_kc_browser_test.cjs
 ### Konsistensi nilai inheren KC
 
 Ketiga halaman admin (Hasil Laporan KC, Rekap per Korwil, Tren Profil KC)
-memakai `hasil_kc_load_results()`. Untuk operasional, kepatuhan, reputasi,
-dan stratejik, skor dihitung saat dibaca dengan aturan halaman Profil KC:
+memakai `hasil_kc_load_results()`. Untuk kredit, operasional, kepatuhan,
+reputasi, dan stratejik, skor dihitung saat dibaca dengan aturan Profil KC:
 checklist parameter, rata-rata subparameter, rumus per pilar, serta metode
 risiko tertinggi/terendah/rata-rata atau pembobotan. Hasil tersimpan dipakai
-sebagai cadangan jika data perhitungan dinamis belum tersedia. Tidak ada
-penulisan ulang hasil maupun nilai komposit tersimpan saat membuka rekap.
+sebagai cadangan jika data perhitungan dinamis belum tersedia. Likuiditas
+mengikuti hasil inheren yang dibaca halaman Profil Likuiditas. Komposit
+dihitung dari enam nilai inheren dan bobot yang sama dengan Profil Nilai KC
+(tahun dan user profil 3), dengan pembulatan akhir dua desimal. Rumus tidak
+menormalkan ulang bobot ketika input belum lengkap; kelengkapan disertakan
+dalam metadata `_missing` dan tooltip nilai pada tabel. Tidak ada penulisan
+ulang hasil maupun nilai komposit tersimpan saat membuka rekap.
 
 Perbaikan ini mencegah skor lama, misalnya Stratejik Wonogiri laporan 613
 tersimpan 4,22, mengalahkan hasil Profil KC yang berlaku 4,07.
@@ -249,9 +254,17 @@ Unggah bersama:
 
 - `admin/includes/hasil_laporan_cabang_data.php`
 - `admin/includes/hasil_laporan_cabang_dynamic_result.php` (baru)
+- `admin/includes/hasil_laporan_cabang_composite.php` (baru)
 - `admin/includes/hasil_laporan_cabang_table.php`
+- `admin/kc/nilai_peringkat/nilai_profil.php` (pemilihan rumus operasional
+  disamakan dengan Profil Operasional)
 
 `php tests/hasil_kc_data_test.php` membandingkan empat kalkulator secara
 independen dengan fungsi asli halaman profil, tanpa merender/menyimpan form.
 `node tests/tren_kc_browser_test.cjs` juga mencocokkan keenam nilai di ketiga
 halaman pada periode yang sama.
+
+Pemeriksaan lengkap `php tests/kc_all_scores_composite_test.php` membandingkan
+keenam kalkulator, bobot, pembulatan dan peringkat komposit dengan fungsi asli
+halaman profil. Pada data lokal: 67 laporan, 402 nilai risiko; 29 komposit
+tersimpan kosong/tertinggal kini ditampilkan dari hasil perhitungan terkini.

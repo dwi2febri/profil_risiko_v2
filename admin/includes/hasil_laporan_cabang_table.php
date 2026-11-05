@@ -296,7 +296,7 @@
                                                                 <option value="reputasi">Rincian reputasi</option><option value="stratejik">Rincian stratejik</option>
                                                             </select>
                                                         </div>
-                                                        <p class="hasil-source-note">Nilai yang ditampilkan adalah nilai inheren. Klik angka untuk melihat sumbernya. Tanda &ndash; berarti nilai belum tersedia. Kolom pilar mengikuti Pilih Parameter Inheren tahun terpilih. Nilai risiko operasional, kepatuhan, reputasi, dan stratejik mengikuti perhitungan Profil KC dari parameter terpilih dan metode penilaian yang berlaku.</p>
+                                                        <p class="hasil-source-note">Nilai yang ditampilkan adalah nilai inheren. Klik angka untuk melihat sumbernya. Tanda &ndash; berarti nilai belum tersedia. Kolom pilar mengikuti Pilih Parameter Inheren tahun terpilih. Nilai risiko mengikuti sumber perhitungan Profil KC. Komposit dihitung menggunakan nilai inheren dan bobot Profil Nilai KC untuk tahun laporan yang sama.</p>
                                                         <div class="hasil-risk-legend" aria-label="Klasifikasi warna nilai pilar">
                                                             <span class="hasil-pillar-blue">Sangat rendah: 1&ndash;1,25</span>
                                                             <span class="hasil-pillar-green">Rendah: &gt;1,25&ndash;2,25</span>
@@ -346,7 +346,7 @@
                                                                                 <?php endif; ?>
                                                                             </td>
                                                                         <?php endforeach; ?>
-                                                                        <td <?= hasil_kc_composite_attributes($hasilKCResults[$branch]['total']['total_nilai'] ?? null) ?>><?= hasil_kc_escape($hasilKCResults[$branch]['total']['total_nilai'] ?? '-') ?></td>
+                                                                        <td <?= hasil_kc_composite_attributes($hasilKCResults[$branch]['total']['total_nilai'] ?? null) ?>><span title="<?= hasil_kc_escape(empty($hasilKCResults[$branch]['total']['_missing']) ? 'Komposit sesuai bobot Profil Nilai KC' : 'Perhitungan sesuai Profil Nilai KC; nilai risiko belum lengkap: '.implode(', ', $hasilKCResults[$branch]['total']['_missing'])) ?>"><?= hasil_kc_escape($hasilKCResults[$branch]['total']['total_nilai'] ?? '-') ?></span></td>
                                                                         <td <?= hasil_kc_composite_attributes($hasilKCResults[$branch]['total']['total_nilai'] ?? null) ?>><?= hasil_kc_escape($hasilKCResults[$branch]['total']['ket_total_nilai'] ?? '-') ?></td>
                                                                     </tr>
                                                                 <?php endforeach; ?>

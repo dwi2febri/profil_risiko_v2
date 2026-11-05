@@ -1194,7 +1194,7 @@ function opr_compute_inheren2_operasional($conn, $id){
     $framePerumusan = opr_find_frame_perumusan($conn, $frame);
     $riskPerumusan = null;
     if ($framePerumusan && opr_table_exists($conn, 'perumusan_inheren')) {
-        $riskPerumusan = opr_db_one($conn, "SELECT * FROM perumusan_inheren WHERE id_frame_perumusan='".(int)$framePerumusan['id_frame_perumusan']."' AND UPPER(nama_risiko)=UPPER('RISIKO OPERASIONAL') LIMIT 1");
+        $riskPerumusan = opr_db_one($conn, "SELECT * FROM perumusan_inheren WHERE id_frame_perumusan='".(int)$framePerumusan['id_frame_perumusan']."' AND UPPER(TRIM(nama_risiko))=UPPER('RISIKO OPERASIONAL') ORDER BY id_perumusan_inheren DESC LIMIT 1");
     }
     $pilarPerumusanMap = $riskPerumusan ? opr_pilar_perumusan_map($conn, 'perumusan_inheren_pilar', 'id_perumusan_inheren', (int)$riskPerumusan['id_perumusan_inheren']) : [];
     $rekapPilar = [];

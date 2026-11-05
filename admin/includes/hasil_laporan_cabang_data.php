@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/hasil_laporan_cabang_dynamic_result.php';
+require_once __DIR__ . '/hasil_laporan_cabang_composite.php';
 /** Read-only projections; never write assessment or profile results. */
 function hasil_kc_valid_score($value): bool
 {
@@ -74,6 +75,8 @@ function hasil_kc_load_results(mysqli $db, array $frames): array
     $profiles = [];
     foreach ($risks as $risk) $profiles[$risk] = hasil_kc_latest_rows($db, 'keterangan_profil_' . $risk, $ids);
     $totals = hasil_kc_latest_rows($db, 'nilai_profil', $ids);
+    $reportYears = hasil_kc_latest_rows($db, 'frame_laporan_profil_risiko', $ids);
+    $weights = [];
     foreach ($frames as $branch => $frame) {
         $id = (int)$frame['id_profil_risiko'];
         foreach ($risks as $risk) {
@@ -93,12 +96,13 @@ function hasil_kc_load_results(mysqli $db, array $frames): array
                 $out[$branch][$risk]['_source'] = 'Assessment inheren';
             }
         }
-        foreach (['operasional','kepatuhan','reputasi','stratejik'] as $risk) {
+        foreach ($risks as $risk) {
             // Profile forms calculate live; stored totals can predate edits.
-            $current = hasil_kc_source_dynamic_result($db, $id, $risk);
+            $current = hasil_kc_source_inherent_result($db, $id, $risk);
             if (isset($current['_source'])) {
                 unset($out[$branch][$risk]['hasil_tingkat_risiko'], $out[$branch][$risk]['hasil_peringkat']);
                 $out[$branch][$risk]['_source'] = $current['_source'];
+                $out[$branch][$risk]['_profile_score'] = $current['hasil_tingkat_risiko'];
                 if (hasil_kc_valid_score($current['hasil_tingkat_risiko'])) {
                     $out[$branch][$risk]['hasil_tingkat_risiko'] = number_format($current['hasil_tingkat_risiko'], 2, '.', '');
                     $out[$branch][$risk]['hasil_peringkat'] = $current['hasil_peringkat'];
@@ -106,6 +110,12 @@ function hasil_kc_load_results(mysqli $db, array $frames): array
             }
         }
         $out[$branch]['total'] = $totals[$id] ?? [];
+        $frame = $reportYears[$id] ?? [];
+        if ((int)($frame['user'] ?? 0) === 3) {
+            $year = (int)$frame['tahun'];
+            $weights[$year] ??= hasil_kc_weights($db, $year, 3)['bobot'];
+            $out[$branch]['total'] = array_replace($out[$branch]['total'], hasil_kc_composite($out[$branch], $weights[$year]));
+        }
     }
     return $out;
 }

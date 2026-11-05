@@ -1,6 +1,6 @@
 <?php
 /**
- * Read-only counterpart of the four KC profile calculators.
+ * Read-only counterpart of the dynamic KC profile calculators.
  * Keep rounding, selected parameter hierarchy, formula frame and dynamic method
  * identical to the admin KC profile forms.
  */
@@ -171,8 +171,32 @@ function hasil_kc_source_dynamic_method($conn, $table, $id){
     return $metode;
 }
 
+function hasil_kc_source_inherent_result(mysqli $conn, int $id, string $risk): array
+{
+    if ($risk !== 'likuiditas') {
+        $result = hasil_kc_source_dynamic_result($conn, $id, $risk);
+        $result['_source'] ??= 'Hasil inheren - Profil KC';
+        return $result;
+    }
+    $result = ['hasil_tingkat_risiko'=>0.0, 'hasil_peringkat'=>'', '_source'=>'Hasil inheren - Profil KC'];
+    if ($id <= 0 || !hasil_kc_source_table_exists($conn, 'hasil_inheren_likuiditas')) return $result;
+    $row = hasil_kc_source_db_one($conn, "SELECT * FROM hasil_inheren_likuiditas WHERE id_profil_risiko='$id' LIMIT 1") ?? [];
+    foreach (['hasil_tingkat_risiko','tingkat_risiko','hasil_kpmr','hasil_penilaian_kpmr','nilai_kpmr','total_nilai','hasil_rata_rata','rata_rata','nilai'] as $key) {
+        if (isset($row[$key]) && trim((string)$row[$key]) !== '') {
+            $result['hasil_tingkat_risiko'] = (float)str_replace(',', '.', (string)$row[$key]);
+            if ($result['hasil_tingkat_risiko'] > 0) break;
+        }
+    }
+    foreach (['hasil_peringkat','peringkat','predikat','hasil_predikat','ket_tingkat_risiko'] as $key) {
+        if (isset($row[$key]) && trim((string)$row[$key]) !== '') { $result['hasil_peringkat'] = trim((string)$row[$key]); break; }
+    }
+    if ($result['hasil_peringkat'] === '') $result['hasil_peringkat'] = hasil_kc_source_label_inheren($result['hasil_tingkat_risiko']);
+    $result['hasil_tingkat_risiko'] = round($result['hasil_tingkat_risiko'], 2);
+    return $result;
+}
+
 function hasil_kc_source_dynamic_result($conn, $id, string $risk){
-    if (!in_array($risk, ['operasional','kepatuhan','reputasi','stratejik'], true)) throw new InvalidArgumentException('Unsupported inherent risk');
+    if (!in_array($risk, ['kredit','operasional','kepatuhan','reputasi','stratejik'], true)) throw new InvalidArgumentException('Unsupported inherent risk');
     $riskName = 'RISIKO ' . strtoupper($risk);
     $fallback = hasil_kc_source_fallback_result($conn, 'hasil_inheren_' . $risk, $id, 'inheren');
     if ((int)$id <= 0) return $fallback;

@@ -20,8 +20,15 @@ function kc_profile_fixture_result(mysqli $db, int $id, string $risk): array
             $original = file_get_contents($directory.'profil_risiko_'.$key.'/'.$key.'_profil.php');
             eval(str_replace('op_', 'fixture_op_', $extract($original, 'op_compute_inheren2_'.$key)));
         }
+        $credit = file_get_contents($directory.'profil_risiko_kredit/kredit_profil.php');
+        eval(str_replace('kre_', 'fixture_op_', $extract($credit, 'kre_compute_inheren2_kredit')));
+        $liquidity = file_get_contents($directory.'profil_risiko_likuiditas/likuiditas_profil.php');
+        foreach (['db_one','table_exists','label_inheren','label_kpmr','pick_result','result_from_tables'] as $name) {
+            eval(str_replace('lik_', 'fixture_lik_', $extract($liquidity, 'lik_'.$name)));
+        }
         $loaded = true;
     }
+    if ($risk === 'likuiditas') return fixture_lik_result_from_tables($db, $id, ['hasil_inheren_likuiditas'], 'inheren');
     $function = 'fixture_op_compute_inheren2_'.$risk;
     return $function($db, $id);
 }
