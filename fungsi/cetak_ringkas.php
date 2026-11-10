@@ -1,4 +1,41 @@
 <?php
+/** Branch print projections use the same read-only calculators as the KC forms. */
+function cetak_ringkas_kc_snapshot(mysqli $conn, int $id): ?array
+{
+    static $cache;
+    $cache ??= new WeakMap();
+    $reports = $cache[$conn] ?? [];
+    if (array_key_exists($id, $reports)) return $reports[$id];
+    require_once dirname(__DIR__) . '/admin/includes/hasil_laporan_cabang_data.php';
+    $frame = $id > 0 ? hasil_kc_source_db_one($conn,
+        "SELECT * FROM frame_laporan_profil_risiko WHERE id_profil_risiko='$id' LIMIT 1") : null;
+    $snapshot = null;
+    if ((int)($frame['user'] ?? 0) === 3) {
+        $rows = [];
+        foreach (['kredit','operasional','kepatuhan','likuiditas','reputasi','stratejik'] as $risk) {
+            $rows[$risk] = hasil_kc_source_inherent_result($conn, $id, $risk);
+            // Nilai Profil uses exclusive upper boundaries for its computed ranks.
+            if (($rows[$risk]['_source'] ?? '') === 'Perhitungan Profil KC dari parameter terpilih'
+                || trim((string)$rows[$risk]['hasil_peringkat']) === '') {
+                $value = (float)$rows[$risk]['hasil_tingkat_risiko'];
+                $rows[$risk]['hasil_peringkat'] = match (true) {
+                    $value < 1 || $value > 5 => '',
+                    $value < 1.25 => 'Sangat Rendah',
+                    $value < 2.25 => 'Rendah',
+                    $value < 3.25 => 'Sedang',
+                    $value < 4.25 => 'Tinggi',
+                    default => 'Sangat Tinggi',
+                };
+            }
+        }
+        $weights = hasil_kc_weights($conn, $frame['tahun'], 3)['bobot'];
+        $snapshot = ['risks' => $rows, 'total' => hasil_kc_composite($rows, $weights)];
+    }
+    $reports[$id] = $snapshot;
+    $cache[$conn] = $reports;
+    return $snapshot;
+}
+
 /** Shared letterhead repeated by the outer print table on every physical page. */
 function cetak_ringkas_letterhead(array $frame, string $projectRoot): string
 {

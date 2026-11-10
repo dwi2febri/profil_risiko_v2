@@ -437,6 +437,13 @@ function pdf_get_profil_risk($conn, $id, $key){
     ];
     if (!isset($defs[$key])) return [];
     $d = $defs[$key];
+    $branch = cetak_ringkas_kc_snapshot($conn, (int)$id);
+    if ($branch !== null) {
+        $result = $branch['risks'][$key];
+        return ['label' => $d['label'],
+            'nilai_in' => $result['hasil_tingkat_risiko'], 'rank_in' => $result['hasil_peringkat'],
+            'nilai_kp' => 0, 'rank_kp' => '', 'nilai_t' => 0, 'rank_t' => '', 'kualitas' => ''];
+    }
     $ket = pdf_table_exists($conn, $d['ket']) ? pdf_one($conn, "SELECT * FROM `{$d['ket']}` WHERE id_profil_risiko='".(int)$id."' LIMIT 1") : [];
     $hin = pdf_result_from_table($conn, $d['in'], $id, 'inheren');
     $hkp = pdf_result_from_table($conn, $d['kp'], $id, 'kpmr');
@@ -660,6 +667,13 @@ function pdf_cover_profil_nilai_peringkat_html($conn, $id, $frame){
         $total = count($vals) ? array_sum($vals)/count($vals) : 0;
     }
     $totalRank = pdf_label_inheren($total);
+    if ($isCabang) {
+        $branch = cetak_ringkas_kc_snapshot($conn, (int)$id);
+        if ($branch !== null) {
+            $total = (float)$branch['total']['total_nilai'];
+            $totalRank = $branch['total']['ket_total_nilai'];
+        }
+    }
 
     $html = '<div class="cover-summary"><div class="cover-summary-title">RINGKASAN PROFIL NILAI DAN PERINGKAT</div>';
 
