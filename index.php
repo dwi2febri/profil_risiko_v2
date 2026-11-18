@@ -15,8 +15,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if ($data) {
         session_regenerate_id(true);
         foreach (['username','nama','user_id','lokasi_kerja','tipe'] as $key) $_SESSION[$key] = $data[$key];
+
+        $GLOBALS['simpro_activity_explicit'] = true;
+        $activity = simpro_activity_context($_SERVER, [], []);
+        $activity['aktivitas'] = 'Login';
+        simpro_activity_write($conn, $data, $activity, 302);
         header('Location: '.$appBase.simpro_role_folder((string)$data['tipe']).'/', true, 302);
     } else {
+
+        $GLOBALS['simpro_activity_explicit'] = true;
+        $activity = simpro_activity_context($_SERVER, [], []);
+        $activity['aktivitas'] = 'Login gagal';
+        simpro_activity_write($conn, ['username'=>is_string($username) ? $username : ''], $activity, 302);
         header('Location: '.$appBase.'?alert=gagal', true, 302);
     }
     exit;

@@ -9,3 +9,6 @@ if (PHP_SAPI !== 'cli') {
 $conn = mysqli_connect("localhost", "root", "", "profil_risiko_v2");
 
 mysqli_set_charset($conn, 'utf8mb4');
+
+require_once dirname(__DIR__).'/fungsi/activity_log.php';
+simpro_activity_bootstrap($conn);

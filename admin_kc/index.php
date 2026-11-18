@@ -1435,6 +1435,12 @@ body{zoom:0.72!important;font-size:14px!important;}
                                 <span> Info User </span>
                             </a>
                         </li>
+                        <li class="side-nav-item">
+                            <a href="index.php?page=log_aktivitas" class="side-nav-link">
+                                <i class="uil-history"></i>
+                                <span> Log Aktivitas </span>
+                            </a>
+                        </li>
 
                         <li class="side-nav-item">
                             <a href="index.php?page=list_user" class="side-nav-link">
@@ -1550,6 +1556,9 @@ body{zoom:0.72!important;font-size:14px!important;}
                                 include "pembanding/delete_final.php";
                                 break;
 
+                            case 'log_aktivitas':
+                                include dirname(__DIR__).'/fungsi/activity_log_page.php';
+                                break;
                             case 'profile':
                                 include "profile.php";
                                 break;

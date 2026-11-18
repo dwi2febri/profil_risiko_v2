@@ -572,6 +572,12 @@ body {
                                 <span> Info User </span>
                             </a>
                         </li>
+                        <li class="side-nav-item">
+                            <a href="index.php?page=log_aktivitas" class="side-nav-link">
+                                <i class="uil-history"></i>
+                                <span> Log Aktivitas </span>
+                            </a>
+                        </li>
 
                         
                         <!-- end Help Box -->
@@ -645,6 +651,9 @@ body {
                                 include "laporan/delete_frame.php";
                                 break;
 
+                            case 'log_aktivitas':
+                                include dirname(__DIR__).'/fungsi/activity_log_page.php';
+                                break;
                             case 'profile':
                                 include "profile.php";
                                 break;
