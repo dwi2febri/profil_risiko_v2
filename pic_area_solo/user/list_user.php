@@ -53,7 +53,8 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
-<div class="content-page">
+<?php require dirname(__DIR__,2).'/fungsi/user_page_layout.php'; ?>
+<div class="content-page simpro-user-page">
     <div class="content">
 
 
@@ -89,9 +90,6 @@ if (isset($_POST['submit'])) {
                                                     <center>Username</center>
                                                 </th>
                                                 <th>
-                                                    <center>Password</center>
-                                                </th>
-                                                <th>
                                                     <center>Nama</center>
                                                 </th>
                                                 <th>
@@ -109,7 +107,7 @@ if (isset($_POST['submit'])) {
                                             <?php
                                             require dirname(__DIR__, 2).'/conn/conn.php';
                                             $no = 1;
-                                            $query = mysqli_query($conn, "SELECT * FROM user order by user_id desc");
+                                            $query = mysqli_query($conn, "SELECT user_id,username,nama,gender,jabatan FROM user order by user_id desc");
                                             while ($data = mysqli_fetch_array($query)) { ?>
                                                 <tr>
                                                     <td>
@@ -117,9 +115,6 @@ if (isset($_POST['submit'])) {
                                                     </td>
                                                     <td>
                                                         <center><?= $data['username'] ?></center>
-                                                    </td>
-                                                    <td>
-                                                        <center><?= $data['password'] ?></center>
                                                     </td>
                                                     <td>
                                                         <center><?= ucwords($data['nama']) ?></center>

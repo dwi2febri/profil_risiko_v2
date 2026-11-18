@@ -27,17 +27,31 @@ function activity_render(): string {
     return ob_get_clean();
 }
 $body = activity_render();
-activity_assert(str_contains($body, 'audit-user-a') && !str_contains($body, 'audit-user-b'), 'Cross-user log disclosure');
+activity_assert(str_contains($body, '&lt;script&gt;') && !str_contains($body, 'Other user'), 'Cross-user log disclosure');
+activity_assert(!str_contains($body, 'audit-user-a') && !str_contains($body, 'audit-user-b'), 'Username should not be rendered');
 activity_assert(str_contains($body, '&lt;script&gt;') && !str_contains($body, '<script>alert'), 'Stored XSS');
 $_SESSION = $userB;
 $body = activity_render();
-activity_assert(str_contains($body, 'audit-user-a') && str_contains($body, 'audit-user-b'), 'Admin cannot see all users');
+activity_assert(str_contains($body, '&lt;script&gt;') && str_contains($body, 'Other user'), 'Admin cannot see all users');
 $_GET = ['cari'=>"' OR 1=1 --"];
 $body = activity_render();
-activity_assert(!str_contains($body, 'audit-user-a'), 'Search SQL injection');
+activity_assert(!str_contains($body, 'Other user'), 'Search SQL injection');
 $_GET = ['aktivitas'=>'Login gagal', 'mulai'=>date('Y-m-d'), 'sampai'=>date('Y-m-d')];
 $body = activity_render();
 activity_assert(str_contains($body, '1 aktivitas tercatat.'), 'Date/action filters');
 $conn->query('DROP TEMPORARY TABLE log_aktivitas');
 session_destroy();
+require dirname(__DIR__).'/fungsi/excel_export.php';
+$file = tempnam(sys_get_temp_dir(), 'activity-xlsx-test-');
+try {
+    simpro_excel_file($file, ['Pengguna','Aktivitas'], [['=HYPERLINK("bad")', "Teks & <xml>\x01"]]);
+    $zip = new ZipArchive();
+    activity_assert($zip->open($file) === true, 'Invalid XLSX archive');
+    $sheet = $zip->getFromName('xl/worksheets/sheet1.xml');
+    activity_assert(simplexml_load_string($sheet) !== false, 'Invalid worksheet XML');
+    activity_assert(!str_contains($sheet, '<f>') && str_contains($sheet, 'inlineStr') && str_contains($sheet, '=HYPERLINK'), 'Spreadsheet formula injection');
+    activity_assert(!str_contains($sheet, "\x01"), 'Invalid XML control character');
+    $zip->close();
+} finally { @unlink($file); }
 echo "PASS: payload privacy, classification, inserts, role isolation, XSS, SQL injection and filters\n";
+echo "PASS: XLSX structure, XML escaping, formula safety\n";
